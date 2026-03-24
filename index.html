@@ -305,6 +305,7 @@ html{scrollbar-width:none}
     <button class="filter-pill" onclick="filterClips(this,'tiktok')">TikTok</button>
     <button class="filter-pill" onclick="filterClips(this,'instagram')">Instagram</button>
     <button class="filter-pill" onclick="filterClips(this,'youtube')">YouTube</button>
+    <button class="filter-pill" onclick="filterClips(this,'x')">X</button>
   </div>
 
   <!-- Clips list -->
@@ -611,6 +612,33 @@ html{scrollbar-width:none}
   </div>
 </div>
 
+<!-- ═══ VIDEO PLAYER ═══ -->
+<div id="videoPlayer" style="display:none;position:fixed;inset:0;z-index:10001;background:#000;flex-direction:column">
+  <!-- Top bar -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top));background:rgba(0,0,0,0.6);position:absolute;top:0;left:0;right:0;z-index:2">
+    <button onclick="closeVideo()" style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;gap:6px;color:#fff;font-family:inherit;font-size:13px;font-weight:600">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+    <button onclick="openVideoLink()" style="background:rgba(255,255,255,0.15);border:none;cursor:pointer;padding:6px 12px;border-radius:8px;color:#fff;font-family:inherit;font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px;backdrop-filter:blur(8px)">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Open original
+    </button>
+  </div>
+  <!-- Video -->
+  <video id="videoEl" style="width:100%;height:100%;object-fit:contain;background:#000" playsinline webkit-playsinline controls autoplay></video>
+  <!-- Bottom info -->
+  <div style="position:absolute;bottom:0;left:0;right:0;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(0,0,0,0.8));z-index:2">
+    <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px" id="videoTitle"></div>
+    <div style="display:flex;gap:16px;font-size:12px;color:rgba(255,255,255,0.7);font-weight:600">
+      <span id="videoViews"></span>
+      <span id="videoLikes"></span>
+      <span id="videoEarned" style="color:#4ade80"></span>
+    </div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px" id="videoCamp"></div>
+  </div>
+</div>
+
 <!-- ═══ WITHDRAW MODAL ═══ -->
 <div id="withdrawModal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);align-items:center;justify-content:center" onclick="if(event.target===this)closeWithdraw()">
   <div style="background:#fff;border-radius:24px;width:380px;max-width:90vw;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,0.2);position:relative" id="withdrawContent">
@@ -743,22 +771,22 @@ html{scrollbar-width:none}
 <script>
 /* ═══ REAL SUBMISSION DATA FROM NEON DB ═══ */
 var _realSubs = [
-  {t:"Him looking at the beads",u:"https://www.instagram.com/reel/DU3Lo_SEXgx/",p:"instagram",v:11287114,l:581262,c:3368,pay:100,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_0.jpg",d:"Feb 17",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
-  {t:"He didn't think the other side would have recorded",u:"https://www.instagram.com/reel/DUq2gVzEQaF/",p:"instagram",v:8169825,l:392123,c:680,pay:500,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_1.jpg",d:"Feb 12",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true},
-  {t:"There's an app for THAT",u:"https://www.instagram.com/reel/DUp0VxQCMG1/",p:"instagram",v:4740181,l:327406,c:1640,pay:400.10,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_2.jpg",d:"Feb 12",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true},
-  {t:"Legendary moments that made history",u:"https://www.instagram.com/reel/DUpthQIDLYO/",p:"instagram",v:4703165,l:155373,c:492,pay:459.90,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_3.jpg",d:"Feb 12",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true},
+  {t:"Him looking at the beads",u:"https://www.instagram.com/reel/DU3Lo_SEXgx/",p:"instagram",v:11287114,l:581262,c:3368,pay:100,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_0.jpg",d:"Feb 17",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true,vid:"https://scontent-lhr8-2.cdninstagram.com/o1/v/t16/f2/m69/AQP8PC0hfLBhEoUFm7RhQ0JnatwABfXivF8xkrRhTeDK8n6q60sxOw71-gt0x2YP8MRLl0fuUT0tpnJjP0ATrHy3.mp4?stp=dst-mp4&_nc_cat=103&vs=904056445558722_189546804&ccb=9-4&oh=00_AfwvAwXuNqHYpybi61NKXT51mySRryYErqQ5g5sd-AdYgw&oe=69B46F68&_nc_sid=10d13b"},
+  {t:"He didn't think the other side would have recorded",u:"https://www.instagram.com/reel/DUq2gVzEQaF/",p:"instagram",v:8169825,l:392123,c:680,pay:500,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_1.jpg",d:"Feb 12",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true,vid:"https://scontent-bog2-1.cdninstagram.com/o1/v/t16/f2/m69/AQO90Plz09GDHgfiOXLg2Z4KkeowoLRLgodwdVxCV_SkBI7CFLrF1LD75ZeCFpVc2x5QnEZ8-TztTDWxQxWO2gR0.mp4?stp=dst-mp4&_nc_cat=101&vs=1964463284490049_1599202383&ccb=9-4&oh=00_AfzhEJLXagJHSmI61Lz_QT5a0uKiLlTdGjk7tcVkqNB5WQ&oe=69C13C2A&_nc_sid=10d13b"},
+  {t:"There's an app for THAT",u:"https://www.instagram.com/reel/DUp0VxQCMG1/",p:"instagram",v:4740181,l:327406,c:1640,pay:400.10,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_2.jpg",d:"Feb 12",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true,vid:"https://scontent-nrt1-1.cdninstagram.com/o1/v/t16/f2/m69/AQOmkltCZYXgHkmFtzPT1LP37lXsW6NT7twTrAeJz_mv-I7ALjvykWuN_JeWUS4j9jPi_Mh-L9XhSmLycYyuB8jh.mp4?stp=dst-mp4&_nc_cat=108&vs=4182096912042378_3465496813&ccb=9-4&oh=00_Afynp0DNSxP9FV5fLYdRRXUrzDM8hyfdbxGu9iUIIWz0pw&oe=69C14887&_nc_sid=10d13b"},
+  {t:"Legendary moments that made history",u:"https://www.instagram.com/reel/DUpthQIDLYO/",p:"instagram",v:4703165,l:155373,c:492,pay:459.90,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_3.jpg",d:"Feb 12",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true,vid:"https://instagram.ftlc3-1.fna.fbcdn.net/o1/v/t16/f2/m69/AQOm4PUOzymsCq__ovf7BVRuGt7quRuki-aosq0zCRBZnokbufNTyNpB66jTHJrhxiYJTRSVSLfqNXuNgIqixNSk.mp4?stp=dst-mp4&_nc_cat=110&vs=1613189919868654_219323245&ccb=9-4&oh=00_AfzwKiU7Zx26cu0Q4JFK3CTCwAYri452UVJiWHjDE6Ah2w&oe=69C13321&_nc_sid=10d13b"},
   {t:"Brooklyn 3",u:"https://www.tiktok.com/t/ZP89EMhSD/",p:"tiktok",v:3393859,l:393111,c:635,pay:100,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_4.jpg",d:"Feb 16",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
-  {t:"Who should start today between Joao Pedro and Liam Delap?",u:"https://x.com/CFC_dennoh/status/2013881824779366731",p:"x",v:3348855,l:4887,c:44,pay:100,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_5.jpg",d:"Jan 21",camp:"PolyMarket Clipping",s:"approved",paid:true},
+  {t:"Who should start today between Joao Pedro and Liam Delap?",u:"https://x.com/CFC_dennoh/status/2013881824779366731",p:"x",v:3348855,l:4887,c:44,pay:100,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_5.jpg",d:"Jan 21",camp:"PolyMarket Clipping",s:"approved",paid:true,vid:"https://video.twimg.com/ext_tw_video/2013881651160342528/pu/vid/avc1/720x720/5TOGvXg1pm5VwpUH.mp4?tag=12"},
   {t:"yonna's gonna be the biggest star",u:"https://vt.tiktok.com/ZSmSD4dGg/",p:"tiktok",v:3275895,l:322362,c:446,pay:100,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_6.jpg",d:"Feb 16",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
-  {t:"is that a cart for him in case he gets tired?",u:"https://www.instagram.com/reel/DU0EwWbDgzi/",p:"instagram",v:3090088,l:188331,c:204,pay:100,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_7.jpg",d:"Feb 16",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
+  {t:"is that a cart for him in case he gets tired?",u:"https://www.instagram.com/reel/DU0EwWbDgzi/",p:"instagram",v:3090088,l:188331,c:204,pay:100,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_7.jpg",d:"Feb 16",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true,vid:"https://scontent-bog2-2.cdninstagram.com/o1/v/t16/f2/m69/AQMgSYfMkOTrrkSaaDzZmYUJCZp6razwLxc7-AzSa87lhsReH5rjRtTS_3Bf23iytlMIX0BlXOOlZHGWgiQJ6fAp.mp4?stp=dst-mp4&_nc_cat=109&vs=4352222848394501_3005802295&ccb=9-4&oh=00_AfyzI8030jseO8T4hV246-Wo1YhJIUOVCF2HRY86EMr7Jg&oe=69B3F687&_nc_sid=10d13b"},
   {t:"Glow up tips",u:"https://vm.tiktok.com/ZNRawKcx7/",p:"tiktok",v:2741720,l:152403,c:399,pay:500,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_8.jpg",d:"Mar 3",camp:"NOBS Toothpaste [LOOKSMAXXING]",s:"approved",paid:true},
-  {t:"Cooper Kupp IS greatness",u:"https://www.instagram.com/reel/DUumuW6EReq/",p:"instagram",v:2135972,l:81662,c:284,pay:95.58,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_9.jpg",d:"Feb 14",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true},
+  {t:"Cooper Kupp IS greatness",u:"https://www.instagram.com/reel/DUumuW6EReq/",p:"instagram",v:2135972,l:81662,c:284,pay:95.58,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_9.jpg",d:"Feb 14",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true,vid:"https://scontent-lhr6-2.cdninstagram.com/o1/v/t16/f2/m69/AQP0Jth_0y1YNpxLP1V4P6gx04-6C59bvYddkN2c6tvZVAoV0ynwC8cEk2gSQEbSUCSBci03jqx_ie18yuVUive9.mp4?stp=dst-mp4&_nc_cat=104&vs=1500052818351385_2109099506&ccb=9-4&oh=00_AfxNdDHTLa_ZlZ0zI0__xN2GG5jHCMnxBwdsNiLV9VQnHg&oe=69B56A3C&_nc_sid=10d13b"},
   {t:"Yonna Jay Clip with correct viewer analytics",u:"https://www.tiktok.com/t/ZThCdr6wL/",p:"tiktok",v:1947995,l:232285,c:550,pay:100,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_10.jpg",d:"Feb 16",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
   {t:"cellular device",u:"https://vt.tiktok.com/ZSm8osCKp/",p:"tiktok",v:1548123,l:144479,c:105,pay:84.86,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_11.jpg",d:"Feb 11",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
-  {t:"St james",u:"https://www.instagram.com/reel/DWMwix1ibum/",p:"instagram",v:1536328,l:70411,c:520,pay:109.98,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_12.jpg",d:"Mar 22",camp:"Content Rewards [Logo Clipping]",s:"approved",paid:false},
+  {t:"St james",u:"https://www.instagram.com/reel/DWMwix1ibum/",p:"instagram",v:1536328,l:70411,c:520,pay:109.98,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_12.jpg",d:"Mar 22",camp:"Content Rewards [Logo Clipping]",s:"approved",paid:false,vid:"https://scontent-lga3-1.cdninstagram.com/o1/v/t16/f2/m86/AQM7TKyo6Nb56EhG34CiD-O8BB_dX1jowR3K5JwjaMx3WU1aqE-LVWG6tVEwNo_Nqawba5tmJt3cFIzA7pD7Dg7ePRUE1fs_QzjiRqA.mp4?stp=dst-mp4&_nc_cat=111&vs=967225589056177_1863241855&ccb=9-4&oh=00_Afw856pZe8NzHIqmPQzTiRTCad-dLoiN-LXGhqTqJDciXA&oe=69C20EF8&_nc_sid=10d13b"},
   {t:"yonna with a young fan",u:"https://vt.tiktok.com/ZSmrMEUno/",p:"tiktok",v:1422481,l:210731,c:62,pay:98.45,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_13.jpg",d:"Feb 14",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
   {t:"from unc to stepdad",u:"https://www.tiktok.com/@juztheteap/video/7606195533950094612",p:"tiktok",v:1317731,l:194391,c:361,pay:100,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_14.jpg",d:"Feb 13",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
-  {t:"this is how i meet",u:"https://www.instagram.com/reel/DWLcwcNigof/",p:"instagram",v:1208241,l:23358,c:154,pay:120.34,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_15.jpg",d:"Mar 22",camp:"Content Rewards [Logo Clipping]",s:"approved",paid:false},
+  {t:"this is how i meet",u:"https://www.instagram.com/reel/DWLcwcNigof/",p:"instagram",v:1208241,l:23358,c:154,pay:120.34,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_15.jpg",d:"Mar 22",camp:"Content Rewards [Logo Clipping]",s:"approved",paid:false,vid:"https://scontent-muc2-1.cdninstagram.com/o1/v/t16/f2/m69/AQNV9ZdnoAZqB_vuXUGtWvVxfgfUnLeI25avQuWydt2yAQ1sJC1GsKDfVRoqqjL8r2I9WodO0j3GJ6OkMkKFK1Kw.mp4?stp=dst-mp4&_nc_cat=103&vs=704931492646608_1577926500&ccb=9-4&oh=00_AfyOTZvyBUyhW2TuZ7kW_M21wYuSvWImlt2v27qJbBWCag&oe=69C1909F&_nc_sid=10d13b"},
   {t:"yonna singing strange",u:"https://www.tiktok.com/@juztheteap/video/7606252717715246357",p:"tiktok",v:1144454,l:168046,c:218,pay:86.77,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_16.jpg",d:"Feb 13",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
   {t:"Bali and DDG wholesome moment",u:"https://www.tiktok.com/t/ZThx199L5/",p:"tiktok",v:997696,l:131630,c:230,pay:54.29,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_17.jpg",d:"Feb 14",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true},
   {t:"Queen naija face",u:"https://www.tiktok.com/t/ZTham4ejL/",p:"tiktok",v:875081,l:63076,c:282,pay:73.67,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_18.jpg",d:"Feb 9",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:false},
@@ -871,7 +899,8 @@ function renderClips(filter){
     var platIcon='<span class="plat-icon" style="background:'+(platColors[s.p]||'#999')+'">'+(platSvgs[s.p]||'')+'</span>';
 
     var hasLink=s.u&&s.u!=='#';
-    return '<div class="sub-card" style="cursor:pointer" onclick="'+(hasLink?'window.open(\''+s.u+'\',\'_blank\')':'')+'">' +
+    var idx=_realSubs.indexOf(s);
+    return '<div class="sub-card" style="cursor:pointer" onclick="openVideo('+idx+')">' +
       '<div style="position:relative">' +
         '<img class="sub-thumb" src="'+s.thumb+'" alt="" onerror="this.style.background=\'#e0ddd8\';this.style.minHeight=\'160px\'" loading="lazy">' +
         (hasLink?'<div class="sub-play"><div class="sub-play-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" stroke="none"><polygon points="6 3 20 12 6 21 6 3"/></svg></div></div>':'') +
