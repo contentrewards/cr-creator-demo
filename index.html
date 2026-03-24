@@ -488,12 +488,12 @@ function generateData(){
   d.earningsChange=Math.round(vary(23,15,rng));
   d.viewsChange=Math.round(vary(12,20,rng));
   d.campaigns=[
-    {name:'Cantina - TikTok Clips',brand:'Cantina',clips:Math.round(vary(68,8,rng)),cpm:'$3.50',earned:Math.round(vary(34200,5,rng)),color:'#1a1a2e',views:Math.round(vary(9800000,5,rng))},
-    {name:'Flooz Clipping',brand:'Flooz',clips:Math.round(vary(54,8,rng)),cpm:'$4.20',earned:Math.round(vary(28600,5,rng)),color:'#2d1b00',views:Math.round(vary(6800000,5,rng))},
-    {name:'Flip.gg - Superbowl UGC',brand:'Flip.gg',clips:Math.round(vary(42,8,rng)),cpm:'$2.80',earned:Math.round(vary(19400,5,rng)),color:'#001a33',views:Math.round(vary(6900000,5,rng))},
-    {name:'Cantina - YouTube Shorts',brand:'Cantina',clips:Math.round(vary(48,8,rng)),cpm:'$3.00',earned:Math.round(vary(21800,5,rng)),color:'#0d1a0d',views:Math.round(vary(7300000,5,rng))},
-    {name:'Betway - Street Interviews',brand:'Betway',clips:Math.round(vary(36,8,rng)),cpm:'$3.80',earned:Math.round(vary(14200,5,rng)),color:'#1a0033',views:Math.round(vary(3700000,5,rng))},
-    {name:'Atricent Hub',brand:'Atricent',clips:Math.round(vary(29,8,rng)),cpm:'$2.50',earned:Math.round(vary(9600,5,rng)),color:'#330d00',views:Math.round(vary(3800000,5,rng))}
+    {name:'Cantina - TikTok Clips',brand:'Cantina',clips:Math.round(vary(68,8,rng)),cpm:'$3.50',earned:Math.round(vary(34200,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/bf6f7701-b4b9-4551-89ee-677f3bbd26f6/thumbnail_url/1771609165105.png',views:Math.round(vary(9800000,5,rng))},
+    {name:'Flooz Clipping',brand:'Flooz',clips:Math.round(vary(54,8,rng)),cpm:'$4.20',earned:Math.round(vary(28600,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/337a5087-537a-42aa-b7d8-91a64ff36986/thumbnail_url/1769077668302.png',views:Math.round(vary(6800000,5,rng))},
+    {name:'Flip.gg [Street Interviews]',brand:'Flip.gg',clips:Math.round(vary(42,8,rng)),cpm:'$2.80',earned:Math.round(vary(19400,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/7072f038-17c7-4be9-9849-f2399d0d77b2/thumbnail_url/1770743490376.jpg',views:Math.round(vary(6900000,5,rng))},
+    {name:'NOBS Toothpaste [STREET INTERVIEWS]',brand:'NOBS',clips:Math.round(vary(48,8,rng)),cpm:'$3.00',earned:Math.round(vary(21800,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/64554043-7c4d-4aa2-a8dd-1316afc24c9c/thumbnail_url/1770465594714.jpeg',views:Math.round(vary(7300000,5,rng))},
+    {name:'Plutus.gg [Logo Clipping]',brand:'Plutus',clips:Math.round(vary(36,8,rng)),cpm:'$3.80',earned:Math.round(vary(14200,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/e3ebd7c3-c64d-472b-8624-71fc1281cd21/thumbnail_url/1770744497658.png',views:Math.round(vary(3700000,5,rng))},
+    {name:'Atricent [GENERAL LOGO]',brand:'Atricent',clips:Math.round(vary(29,8,rng)),cpm:'$2.50',earned:Math.round(vary(9600,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/704e87b7-c6c2-463c-aa1e-061fe14b4a25/thumbnail_url/1770385160927.jpeg',views:Math.round(vary(3800000,5,rng))}
   ];
   var months=['Oct','Nov','Dec','Jan','Feb','Mar'];
   var monthAmts=[8200,11400,14800,16200,19100,d.thisMonthEarnings];
@@ -613,7 +613,7 @@ function render(){
   var maxBar=Math.max.apply(null,d.chartBars);
   document.getElementById('earnings-chart').innerHTML=d.chartBars.map(function(v){return'<div class="bar" style="height:'+Math.max(8,(v/maxBar)*100)+'%"></div>'}).join('');
 
-  var campsHtml=d.campaigns.map(function(c){return'<div class="campaign-row"><div class="campaign-icon" style="background:'+c.color+'">'+c.brand.charAt(0)+'</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:#1a1a1a">'+c.name+'</div><div style="font-size:11px;color:#999">'+c.clips+' clips - '+c.cpm+' CPM - '+fmtViews(c.views)+' views</div></div><div style="font-size:14px;font-weight:800;color:#1a1a1a">'+fmtMoney(c.earned)+'</div></div>'}).join('');
+  var campsHtml=d.campaigns.map(function(c){return'<div class="campaign-row"><img src="'+c.logo+'" style="width:40px;height:40px;border-radius:10px;object-fit:cover;flex-shrink:0" alt="" onerror="this.style.background=\'#eee\';this.alt=\''+c.brand.charAt(0)+'\'"><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:#1a1a1a">'+c.name+'</div><div style="font-size:11px;color:#999">'+c.clips+' clips - '+c.cpm+' CPM - '+fmtViews(c.views)+' views</div></div><div style="font-size:14px;font-weight:800;color:#1a1a1a">'+fmtMoney(c.earned)+'</div></div>'}).join('');
   document.getElementById('campaigns-list').innerHTML=campsHtml;
   document.getElementById('campaign-count').textContent=d.campaigns.length+' active';
   document.getElementById('wallet-campaigns').innerHTML=campsHtml;
