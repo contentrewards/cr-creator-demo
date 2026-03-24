@@ -145,18 +145,6 @@ html{scrollbar-width:none}
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
-  <div style="display:flex;gap:6px">
-    <button onclick="document.getElementById('photoUpload').click()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:8px;cursor:pointer;color:rgba(255,255,255,0.6);font-size:11px;font-weight:700;font-family:inherit">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-      Upload Photo
-    </button>
-    <button onclick="document.getElementById('cameraCapture').click()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:8px;cursor:pointer;color:rgba(255,255,255,0.6);font-size:11px;font-weight:700;font-family:inherit">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-      Take Photo
-    </button>
-  </div>
-  <input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="handlePhotoUpload(this)">
-  <input type="file" id="cameraCapture" accept="image/*" capture="user" style="display:none" onchange="handlePhotoUpload(this)">
   <label>Creator name</label>
   <input type="text" id="devNameInput" placeholder="Type a name..." value="hasan" onkeydown="if(event.key==='Enter'){event.preventDefault();applyDevName()}">
   <div class="dev-menu-btns">
@@ -500,7 +488,128 @@ html{scrollbar-width:none}
 
 <style>
 @keyframes notifSlide{from{transform:translateX(100%)}to{transform:translateX(0)}}
+
+/* Discover */
+.discover-search{width:100%;padding:14px 16px;border:none;background:#f0edea;border-radius:14px;font-size:14px;font-weight:500;color:#1a1a1a;font-family:inherit;outline:none;box-sizing:border-box}
+.discover-search::placeholder{color:#aaa}
+.discover-controls{display:flex;align-items:center;gap:10px;padding:0 16px;margin:12px 0 16px}
+.disc-filter-btn{width:44px;height:40px;border-radius:12px;border:1.5px solid #e0ddd8;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;flex-shrink:0}
+.disc-filter-btn svg{width:18px;height:18px;stroke:#1a1a1a;fill:none;stroke-width:2}
+.disc-filter-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;background:#E8734E;color:#fff;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center}
+.disc-filter-badge.show{display:flex}
+.view-toggle{display:flex;border:1.5px solid #e0ddd8;border-radius:12px;overflow:hidden;flex:1}
+.view-toggle button{flex:1;padding:10px 0;border:none;background:#fff;font-size:13px;font-weight:700;color:#999;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.view-toggle button.active{color:#1a1a1a;background:#f5f3f0}
+.disc-card{background:#fff;border-radius:20px;margin:0 16px 16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);cursor:pointer;transition:transform 0.15s}
+.disc-card:active{transform:scale(0.98)}
+.disc-card-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.disc-card-body{padding:14px 16px 16px}
+.disc-brand-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.disc-brand-logo{width:22px;height:22px;border-radius:50%;object-fit:cover}
+.disc-brand-name{font-size:12px;font-weight:600;color:#666}
+.disc-title{font-size:15px;font-weight:700;color:#1a1a1a;line-height:1.35;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.disc-cpm{font-size:15px;font-weight:800;color:#1a1a1a;margin-bottom:10px}
+.disc-cpm span{font-weight:500;color:#999;font-size:13px}
+.disc-footer{display:flex;align-items:center;justify-content:space-between}
+.disc-creators{display:flex;align-items:center;gap:6px}
+.disc-avatars{display:flex}
+.disc-avatars div{width:22px;height:22px;border-radius:50%;border:2px solid #fff;margin-left:-6px;background:#e0ddd8;font-size:8px;font-weight:800;color:#999;display:flex;align-items:center;justify-content:center}
+.disc-avatars div:first-child{margin-left:0}
+.disc-earned{font-size:13px;font-weight:800;color:#1a1a1a}
+.disc-platforms{display:flex;gap:2px}
+.disc-platforms span{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.disc-list-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(0,0,0,0.04);cursor:pointer;transition:background 0.1s}
+.disc-list-item:active{background:rgba(0,0,0,0.02)}
+.disc-list-logo{width:42px;height:42px;border-radius:12px;object-fit:cover;flex-shrink:0}
+.disc-list-info{flex:1;min-width:0}
+.disc-list-title{font-size:13px;font-weight:700;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.disc-list-meta{display:flex;align-items:center;gap:6px;margin-top:3px}
+.disc-list-right{text-align:right;flex-shrink:0}
+.disc-list-cpm{font-size:13px;font-weight:800;color:#1a1a1a}
+.disc-list-cpm span{font-weight:500;color:#999;font-size:11px}
+.disc-list-earned{font-size:12px;font-weight:700;color:#1a1a1a}
+.disc-empty{text-align:center;padding:60px 20px;color:#999;font-size:14px;font-weight:600}
+
+/* Filter modal */
+.disc-filter-overlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.45);backdrop-filter:blur(4px)}
+.disc-filter-overlay.open{display:block}
+.disc-filter-sheet{position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:24px 24px 0 0;padding:28px 24px calc(28px + env(safe-area-inset-bottom));max-height:85vh;overflow-y:auto;animation:discSlideUp 0.25s ease-out}
+@keyframes discSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.disc-filter-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.disc-filter-header h3{font-size:20px;font-weight:800;color:#1a1a1a}
+.disc-filter-section{margin-bottom:20px}
+.disc-filter-section-label{font-size:12px;font-weight:600;color:#999;margin-bottom:10px}
+.cat-pills{display:flex;flex-wrap:wrap;gap:8px}
+.cat-pill{padding:8px 14px;border-radius:20px;border:1.5px solid #e0ddd8;background:#fff;font-size:13px;font-weight:600;color:#666;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition:all 0.15s;-webkit-user-select:none;user-select:none}
+.cat-pill.active{background:#16a34a;border-color:#16a34a;color:#fff}
+.disc-filter-input{width:100%;padding:14px 16px;border:1.5px solid #e0ddd8;border-radius:14px;font-size:15px;font-weight:600;color:#1a1a1a;font-family:inherit;outline:none;box-sizing:border-box;background:#faf8f6}
+.disc-filter-input:focus{border-color:#1a1a1a}
+.disc-filter-input-wrap{position:relative}
+.disc-filter-input-clear{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:none}
+.disc-filter-input-clear.show{display:block}
+.disc-filter-apply{width:100%;padding:16px;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;border:none;margin-bottom:8px;transition:all 0.15s}
+.disc-filter-apply.has-results{background:#1a1a1a;color:#fff}
+.disc-filter-apply.no-results{background:rgba(232,115,78,0.1);color:#E8734E}
+.disc-filter-clear{width:100%;padding:16px;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;border:1.5px solid #e0ddd8;background:#fff;color:#1a1a1a}
 </style>
+
+<!-- ═══ PAGE: DISCOVER ═══ -->
+<div class="page" id="page-discover">
+  <div style="padding:calc(16px + env(safe-area-inset-top)) 20px 12px;background:#fff;border-bottom:1px solid rgba(0,0,0,0.04)">
+    <div style="font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-0.3px;margin-bottom:14px">discover</div>
+    <input class="discover-search" type="text" placeholder="Search" id="discoverSearch" oninput="renderDiscover()">
+  </div>
+  <div class="discover-controls">
+    <button class="disc-filter-btn" onclick="openDiscoverFilters()">
+      <svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+      <div class="disc-filter-badge" id="discFilterBadge">0</div>
+    </button>
+    <div class="view-toggle">
+      <button class="active" id="discListBtn" onclick="setDiscoverView('list')">List</button>
+      <button id="discCardBtn" onclick="setDiscoverView('card')">Card</button>
+    </div>
+  </div>
+  <div id="discoverContent"></div>
+</div>
+
+<!-- ═══ DISCOVER FILTER MODAL ═══ -->
+<div class="disc-filter-overlay" id="discFilterOverlay" onclick="if(event.target===this)closeDiscoverFilters()">
+  <div class="disc-filter-sheet">
+    <div class="disc-filter-header">
+      <h3>filters</h3>
+      <button onclick="closeDiscoverFilters()" style="background:none;border:none;cursor:pointer;padding:4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="disc-filter-section">
+      <div class="disc-filter-section-label">categories</div>
+      <div class="cat-pills" id="discCatPills">
+        <button class="cat-pill" data-cat="Gaming" onclick="toggleDiscCat(this)"><span class="cat-emoji">&#x1F3AE;</span> Gaming</button>
+        <button class="cat-pill" data-cat="Beauty" onclick="toggleDiscCat(this)"><span class="cat-emoji">&#x2764;&#xFE0F;</span> Beauty</button>
+        <button class="cat-pill" data-cat="Finance" onclick="toggleDiscCat(this)"><span class="cat-emoji">&#x1F4B0;</span> Finance</button>
+        <button class="cat-pill" data-cat="Tech" onclick="toggleDiscCat(this)"><span class="cat-emoji">&#x2699;&#xFE0F;</span> Tech</button>
+        <button class="cat-pill" data-cat="Fashion" onclick="toggleDiscCat(this)"><span class="cat-emoji">&#x1F45C;</span> Fashion</button>
+        <button class="cat-pill" data-cat="Lifestyle" onclick="toggleDiscCat(this)"><span class="cat-emoji">&#x1F31F;</span> Lifestyle</button>
+        <button class="cat-pill" data-cat="Comedy" onclick="toggleDiscCat(this)"><span class="cat-emoji">&#x1F602;</span> Comedy</button>
+        <button class="cat-pill" data-cat="Food" onclick="toggleDiscCat(this)"><span class="cat-emoji">&#x1F37D;&#xFE0F;</span> Food</button>
+      </div>
+    </div>
+    <div class="disc-filter-section">
+      <div class="disc-filter-section-label">min CPM</div>
+      <div class="disc-filter-input-wrap">
+        <input class="disc-filter-input" type="text" value="$0.00" id="discMinCpm" onfocus="if(this.value==='$0.00')this.value='$'" oninput="updateDiscFilterCount()">
+        <button class="disc-filter-input-clear" id="discCpmClear" onclick="document.getElementById('discMinCpm').value='$0.00';this.classList.remove('show');updateDiscFilterCount()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+    </div>
+    <div class="disc-filter-section">
+      <div class="disc-filter-section-label">min budget</div>
+      <div class="disc-filter-input-wrap">
+        <input class="disc-filter-input" type="text" value="$0.00" id="discMinBudget" onfocus="if(this.value==='$0.00')this.value='$'" oninput="updateDiscFilterCount()">
+        <button class="disc-filter-input-clear" id="discBudgetClear" onclick="document.getElementById('discMinBudget').value='$0.00';this.classList.remove('show');updateDiscFilterCount()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+    </div>
+    <button class="disc-filter-apply has-results" id="discFilterApply" onclick="applyDiscoverFilters()">show 20 campaigns</button>
+    <button class="disc-filter-clear" onclick="clearDiscoverFilters()">clear all</button>
+  </div>
+</div>
 
 <!-- ═══ WITHDRAW MODAL ═══ -->
 <div id="withdrawModal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);align-items:center;justify-content:center" onclick="if(event.target===this)closeWithdraw()">
@@ -617,6 +726,10 @@ html{scrollbar-width:none}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
     <span>My Clips</span>
   </div>
+  <div class="nav-item" onclick="switchPage('discover')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <span>Discover</span>
+  </div>
   <div class="nav-item" onclick="switchPage('earnings')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
     <span>Wallet</span>
@@ -681,55 +794,55 @@ var platSvgs = {
 
 function generateData(){
   var rng=seededRandom(getHourlySeed());var d={};
-  d.totalEarnings=Math.round(vary(127849,40,rng));
-  d.availableBalance=Math.round(vary(14291,50,rng)*100)/100;
-  d.pendingAmount=Math.round(vary(3842,60,rng)*100)/100;
-  d.thisMonthEarnings=Math.round(vary(18492,45,rng)*100)/100;
-  d.totalViews=Math.round(vary(48200000,40,rng));
-  d.approvalRate=Math.min(99,Math.max(80,Math.round(vary(93,8,rng))));
-  d.clipsSubmitted=Math.round(vary(312,35,rng));
+  d.totalEarnings=Math.round(vary(127849,3,rng));
+  d.availableBalance=Math.round(vary(14291,5,rng)*100)/100;
+  d.pendingAmount=Math.round(vary(3842,8,rng)*100)/100;
+  d.thisMonthEarnings=Math.round(vary(18492,4,rng)*100)/100;
+  d.totalViews=Math.round(vary(48200000,3,rng));
+  d.approvalRate=Math.min(99,Math.max(91,Math.round(vary(96,2,rng))));
+  d.clipsSubmitted=Math.round(vary(312,3,rng));
   d.clipsApproved=Math.round(d.clipsSubmitted*(d.approvalRate/100));
-  d.trustScore=Math.min(99,Math.max(82,Math.round(vary(93,8,rng))));
-  d.earningsChange=Math.round(vary(23,60,rng));
-  d.viewsChange=Math.round(vary(12,70,rng));
+  d.trustScore=Math.min(99,Math.max(90,Math.round(vary(94,2,rng))));
+  d.earningsChange=Math.round(vary(23,15,rng));
+  d.viewsChange=Math.round(vary(12,20,rng));
   d.campaigns=[
-    {name:'Cantina - TikTok Clips',brand:'Cantina',clips:Math.round(vary(68,40,rng)),cpm:'$3.50',earned:Math.round(vary(34200,40,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/bf6f7701-b4b9-4551-89ee-677f3bbd26f6/thumbnail_url/1771609165105.png',views:Math.round(vary(9800000,40,rng))},
-    {name:'Flooz Clipping',brand:'Flooz',clips:Math.round(vary(54,40,rng)),cpm:'$4.20',earned:Math.round(vary(28600,40,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/337a5087-537a-42aa-b7d8-91a64ff36986/thumbnail_url/1769077668302.png',views:Math.round(vary(6800000,40,rng))},
-    {name:'Flip.gg [Street Interviews]',brand:'Flip.gg',clips:Math.round(vary(42,40,rng)),cpm:'$2.80',earned:Math.round(vary(19400,40,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/7072f038-17c7-4be9-9849-f2399d0d77b2/thumbnail_url/1770743490376.jpg',views:Math.round(vary(6900000,40,rng))},
-    {name:'NOBS Toothpaste [STREET INTERVIEWS]',brand:'NOBS',clips:Math.round(vary(48,40,rng)),cpm:'$3.00',earned:Math.round(vary(21800,40,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/64554043-7c4d-4aa2-a8dd-1316afc24c9c/thumbnail_url/1770465594714.jpeg',views:Math.round(vary(7300000,40,rng))},
-    {name:'Plutus.gg [Logo Clipping]',brand:'Plutus',clips:Math.round(vary(36,40,rng)),cpm:'$3.80',earned:Math.round(vary(14200,40,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/e3ebd7c3-c64d-472b-8624-71fc1281cd21/thumbnail_url/1770744497658.png',views:Math.round(vary(3700000,40,rng))},
-    {name:'Atricent [GENERAL LOGO]',brand:'Atricent',clips:Math.round(vary(29,40,rng)),cpm:'$2.50',earned:Math.round(vary(9600,40,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/704e87b7-c6c2-463c-aa1e-061fe14b4a25/thumbnail_url/1770385160927.jpeg',views:Math.round(vary(3800000,40,rng))}
+    {name:'Cantina - TikTok Clips',brand:'Cantina',clips:Math.round(vary(68,8,rng)),cpm:'$3.50',earned:Math.round(vary(34200,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/bf6f7701-b4b9-4551-89ee-677f3bbd26f6/thumbnail_url/1771609165105.png',views:Math.round(vary(9800000,5,rng))},
+    {name:'Flooz Clipping',brand:'Flooz',clips:Math.round(vary(54,8,rng)),cpm:'$4.20',earned:Math.round(vary(28600,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/337a5087-537a-42aa-b7d8-91a64ff36986/thumbnail_url/1769077668302.png',views:Math.round(vary(6800000,5,rng))},
+    {name:'Flip.gg [Street Interviews]',brand:'Flip.gg',clips:Math.round(vary(42,8,rng)),cpm:'$2.80',earned:Math.round(vary(19400,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/7072f038-17c7-4be9-9849-f2399d0d77b2/thumbnail_url/1770743490376.jpg',views:Math.round(vary(6900000,5,rng))},
+    {name:'NOBS Toothpaste [STREET INTERVIEWS]',brand:'NOBS',clips:Math.round(vary(48,8,rng)),cpm:'$3.00',earned:Math.round(vary(21800,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/64554043-7c4d-4aa2-a8dd-1316afc24c9c/thumbnail_url/1770465594714.jpeg',views:Math.round(vary(7300000,5,rng))},
+    {name:'Plutus.gg [Logo Clipping]',brand:'Plutus',clips:Math.round(vary(36,8,rng)),cpm:'$3.80',earned:Math.round(vary(14200,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/e3ebd7c3-c64d-472b-8624-71fc1281cd21/thumbnail_url/1770744497658.png',views:Math.round(vary(3700000,5,rng))},
+    {name:'Atricent [GENERAL LOGO]',brand:'Atricent',clips:Math.round(vary(29,8,rng)),cpm:'$2.50',earned:Math.round(vary(9600,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/704e87b7-c6c2-463c-aa1e-061fe14b4a25/thumbnail_url/1770385160927.jpeg',views:Math.round(vary(3800000,5,rng))}
   ];
   var months=['Oct','Nov','Dec','Jan','Feb','Mar'];
   var monthAmts=[8200,11400,14800,16200,19100,d.thisMonthEarnings];
-  d.monthlyBreakdown=months.map(function(m,i){return{month:m,amount:Math.round(vary(monthAmts[i],i===5?0:35,rng))}});
+  d.monthlyBreakdown=months.map(function(m,i){return{month:m,amount:Math.round(vary(monthAmts[i],i===5?0:5,rng))}});
   d.payouts=[
-    {method:'PayPal',date:'Mar 22, 2026',amount:vary(4250,40,rng),status:'processing'},
-    {method:'PayPal',date:'Mar 15, 2026',amount:vary(3180,40,rng),status:'completed'},
-    {method:'PayPal',date:'Mar 8, 2026',amount:vary(2940,40,rng),status:'completed'},
-    {method:'PayPal',date:'Mar 1, 2026',amount:vary(3510,40,rng),status:'completed'},
-    {method:'PayPal',date:'Feb 22, 2026',amount:vary(2860,40,rng),status:'completed'},
-    {method:'PayPal',date:'Feb 15, 2026',amount:vary(3220,40,rng),status:'completed'}
+    {method:'PayPal',date:'Mar 22, 2026',amount:vary(4250,3,rng),status:'processing'},
+    {method:'PayPal',date:'Mar 15, 2026',amount:vary(3180,3,rng),status:'completed'},
+    {method:'PayPal',date:'Mar 8, 2026',amount:vary(2940,3,rng),status:'completed'},
+    {method:'PayPal',date:'Mar 1, 2026',amount:vary(3510,3,rng),status:'completed'},
+    {method:'PayPal',date:'Feb 22, 2026',amount:vary(2860,3,rng),status:'completed'},
+    {method:'PayPal',date:'Feb 15, 2026',amount:vary(3220,3,rng),status:'completed'}
   ];
   d.activity=[
     {icon:'check',color:'#16a34a',bg:'rgba(22,163,74,0.1)',title:'Clip approved',desc:'Street Interview #47 - Cantina',time:'2h ago',tab:'clips'},
-    {icon:'dollar',color:'#E8734E',bg:'rgba(232,115,78,0.1)',title:'Payout received',desc:fmtMoneyDec(vary(3180,40,rng))+' via PayPal',time:'5h ago',tab:'earnings'},
-    {icon:'eye',color:'#7c3aed',bg:'rgba(124,58,237,0.1)',title:'Viral clip!',desc:fmtViews(Math.round(vary(1200000,50,rng)))+' views on Flooz Clipping',time:'8h ago',tab:'clips'},
-    {icon:'check',color:'#16a34a',bg:'rgba(22,163,74,0.1)',title:Math.round(vary(3,40,rng))+' clips approved',desc:'Flip.gg Superbowl UGC',time:'12h ago',tab:'clips'},
-    {icon:'star',color:'#ca8a04',bg:'rgba(202,138,4,0.1)',title:'Trust score updated',desc:d.trustScore+' (+'+Math.round(vary(2,60,rng))+' from last week)',time:'1d ago',tab:'analytics'},
+    {icon:'dollar',color:'#E8734E',bg:'rgba(232,115,78,0.1)',title:'Payout received',desc:fmtMoneyDec(vary(3180,3,rng))+' via PayPal',time:'5h ago',tab:'earnings'},
+    {icon:'eye',color:'#7c3aed',bg:'rgba(124,58,237,0.1)',title:'Viral clip!',desc:'1.2M views on Flooz Clipping',time:'8h ago',tab:'clips'},
+    {icon:'check',color:'#16a34a',bg:'rgba(22,163,74,0.1)',title:'3 clips approved',desc:'Flip.gg Superbowl UGC',time:'12h ago',tab:'clips'},
+    {icon:'star',color:'#ca8a04',bg:'rgba(202,138,4,0.1)',title:'Trust score updated',desc:d.trustScore+' (+2 from last week)',time:'1d ago',tab:'analytics'},
     {icon:'upload',color:'#3b82f6',bg:'rgba(59,130,246,0.1)',title:'Clip submitted',desc:'Betway Street Interview #12',time:'1d ago',tab:'clips'},
-    {icon:'dollar',color:'#E8734E',bg:'rgba(232,115,78,0.1)',title:'Payout received',desc:fmtMoneyDec(vary(2940,40,rng))+' via PayPal',time:'2d ago',tab:'earnings'}
+    {icon:'dollar',color:'#E8734E',bg:'rgba(232,115,78,0.1)',title:'Payout received',desc:fmtMoneyDec(vary(2940,3,rng))+' via PayPal',time:'2d ago',tab:'earnings'}
   ];
   d.topClips=_realSubs.filter(function(s){return s.s==='approved'}).slice(0,5).map(function(s){return{title:s.t,views:s.v,earned:s.pay,platform:platNames[s.p]||s.p}});
   d.platforms=[
-    {name:'TikTok',views:vary(32100000,40,rng),earnings:vary(78400,40,rng),pct:Math.round(vary(67,15,rng)),color:'#1a1a1a'},
-    {name:'YouTube',views:vary(9800000,40,rng),earnings:vary(28900,40,rng),pct:Math.round(vary(20,25,rng)),color:'#ef4444'},
-    {name:'Instagram',views:vary(6300000,40,rng),earnings:vary(20549,40,rng),pct:Math.round(vary(13,30,rng)),color:'#e040a0'}
+    {name:'TikTok',views:vary(32100000,3,rng),earnings:vary(78400,4,rng),pct:67,color:'#1a1a1a'},
+    {name:'YouTube',views:vary(9800000,3,rng),earnings:vary(28900,4,rng),pct:20,color:'#ef4444'},
+    {name:'Instagram',views:vary(6300000,3,rng),earnings:vary(20549,4,rng),pct:13,color:'#e040a0'}
   ];
   d.avgViewsPerClip=Math.round(d.totalViews/d.clipsApproved);
   d.avgEarningsPerClip=Math.round(d.totalEarnings/d.clipsApproved);
-  d.engagementRate=(vary(8.4,35,rng)).toFixed(1);
-  d.chartBars=[];for(var i=0;i<30;i++){d.chartBars.push(Math.round(vary(400+(i/30)*300,50,rng)))}
+  d.engagementRate=(vary(8.4,5,rng)).toFixed(1);
+  d.chartBars=[];for(var i=0;i<30;i++){d.chartBars.push(Math.round(vary(400+(i/30)*300,30,rng)))}
   return d;
 }
 
@@ -791,7 +904,8 @@ function filterClips(btn,filter){
 function render(){
   var d=generateData();
   document.getElementById('creator-name').textContent=_creatorName;
-  _updateAvatar();
+  var avatarSeed=0;for(var ci=0;ci<_creatorName.length;ci++)avatarSeed+=_creatorName.charCodeAt(ci);
+  document.getElementById('header-avatar').src='https://i.pravatar.cc/76?img='+(avatarSeed%70+1);
   document.getElementById('total-earnings').textContent=fmtMoney(d.totalEarnings);
   document.getElementById('available-balance').textContent=fmtMoneyDec(d.availableBalance);
   document.getElementById('pending-amount').textContent=fmtMoneyDec(d.pendingAmount);
@@ -846,7 +960,7 @@ function render(){
 }
 
 /* ═══ NAV ═══ */
-var _pages=['home','clips','earnings','analytics'];
+var _pages=['home','clips','discover','earnings','analytics'];
 function switchPage(page){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
   document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active')});
@@ -1001,24 +1115,11 @@ function withdrawProcess(){
 }
 
 /* Dev */
-var _customAvatar=null;
-var _maleAvatars=[3,7,8,11,12,13,14,15,33,51,52,53,55,56,57,58,59,60,61,62,63,64,65,67,68,69,70];
-var _femaleAvatars=[1,5,6,9,10,16,17,19,20,21,23,24,25,26,27,28,29,30,31,32,34,35,36,38,39,40,41,42,43,44,45,47,48,49];
-var _maleNames=['hasan','alex','marcus','jay','omar','kai','rishi','zain','noah','tyler','liam','amir','samir','mike','chris','james','will','tom','sam','derek','malik','jordan','theo','andre'];
-var _femaleNames=['maya','sofia','aria','zara','luna','nyla','priya','amira','layla','jade','talia','nia','kira','sara','leah','mia','eva','ava','chloe','dina','aisha','elena','jasmine','nadia'];
-var _currentAvatarId=11;
-var _currentGender='m';
-
-function _setAvatar(url){
+function _updateAvatar(){
+  var s=0;for(var i=0;i<_creatorName.length;i++)s+=_creatorName.charCodeAt(i);
+  var url='https://i.pravatar.cc/76?img='+(s%70+1);
   document.getElementById('header-avatar').src=url;
   document.getElementById('dev-avatar-preview').src=url;
-}
-function _updateAvatar(){
-  if(_customAvatar){_setAvatar(_customAvatar);return}
-  var s=0;for(var i=0;i<_creatorName.length;i++)s+=_creatorName.charCodeAt(i);
-  var pool=_currentGender==='f'?_femaleAvatars:_maleAvatars;
-  _currentAvatarId=pool[s%pool.length];
-  _setAvatar('https://i.pravatar.cc/76?img='+_currentAvatarId);
 }
 function openDevMenu(){
   document.getElementById('devNameInput').value=_creatorName;
@@ -1034,42 +1135,211 @@ function closeDevMenu(){
 }
 function applyDevName(){
   var n=document.getElementById('devNameInput').value.trim();
-  if(n){_creatorName=n;_customAvatar=null;_updateAvatar();render();document.getElementById('dev-current-name').textContent=_creatorName;closeDevMenu();showToast('Name set to: '+_creatorName)}
+  if(n){_creatorName=n;render();_updateAvatar();document.getElementById('dev-current-name').textContent=_creatorName;closeDevMenu();showToast('Name set to: '+_creatorName)}
 }
+var _rn=['hasan','alex','marcus','jay','omar','kai','rishi','zain','noah','tyler','liam','amir','samir','dan','mike','chris','james','will','tom','sam'];
 function randomizeName(){
-  _customAvatar=null;
-  var gender=Math.random()<0.5?'m':'f';
-  _currentGender=gender;
-  var names=gender==='f'?_femaleNames:_maleNames;
-  var avatars=gender==='f'?_femaleAvatars:_maleAvatars;
-  var n=names[Math.floor(Math.random()*names.length)];
-  _currentAvatarId=avatars[Math.floor(Math.random()*avatars.length)];
-  _creatorName=n;
-  document.getElementById('devNameInput').value=n;
-  document.getElementById('dev-current-name').textContent=n;
-  _setAvatar('https://i.pravatar.cc/76?img='+_currentAvatarId);
-  render();
-}
-function handlePhotoUpload(input){
-  if(!input.files||!input.files[0])return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    _customAvatar=e.target.result;
-    _setAvatar(_customAvatar);
-    document.getElementById('dev-current-name').textContent=_creatorName;
-    showToast('Photo updated');
-  };
-  reader.readAsDataURL(input.files[0]);
-  input.value='';
+  var n=_rn[Math.floor(Math.random()*_rn.length)];
+  document.getElementById('devNameInput').value=n;_creatorName=n;render();_updateAvatar();
+  document.getElementById('dev-current-name').textContent=_creatorName;
 }
 function regenerateNumbers(){_forceRegenSeed=Math.floor(Math.random()*100000);render();showToast('Numbers regenerated')}
 
+/* ═══ DISCOVER ═══ */
+var _discoverCampaigns=[
+  {id:'1',title:'Yomi Denzel Clipping',desc:'Clippe le contenu de Yomi Denzel et gagne $1 pour chaque 1000 vues.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/14f743b2-c5ca-4f3e-8c0d-3010c485005d/thumbnail_url/1764537133671.jpg',brandLogo:'https://assets-2-prod.whop.com/uploads/user_13472183/image/bots/2025-11-24/7b49270c-557d-439c-a150-ce2119b5e64b.jpg',brand:'Yomi Denzel',cpm:1.00,budget:70000,creators:78,views:110902593,paid:59268,cat:'Finance',plats:['tiktok','instagram','youtube']},
+  {id:'2',title:'TJR Elite Clippers',desc:'Clip for TJR Trades and earn $1 per 1k views on viral trading content.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/ac0e2371-5b1f-4b80-9ce9-8282ad41f608/thumbnail_url/1772372589481.jpg',brandLogo:'https://assets-2-prod.whop.com/uploads/user_225446/image/access_passes/2025-10-22/b019b397-f943-4bc3-95ee-4fbaef9b969e.jpeg',brand:'TJRTrades',cpm:1.00,budget:33650,creators:12,views:41789838,paid:32098,cat:'Finance',plats:['tiktok','instagram']},
+  {id:'3',title:'JWaller Clipping',desc:'Elevate Justin\'s image and share your best moments. Earn $0.75 per 1,000 views.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/2f9ee807-268f-49b0-96d4-4d52da5376f5/thumbnail_url/1768250458282.jpeg',brandLogo:'https://assets-2-prod.whop.com/uploads/user_17232994/image/bots/2025-12-15/5fee0fbd-2801-49fd-b59f-9e1b983cbc16.jpeg',brand:'JWaller',cpm:0.75,budget:24000,creators:532,views:64408966,paid:17859,cat:'Lifestyle',plats:['tiktok','instagram','youtube']},
+  {id:'4',title:'TripRank [TikTok]',desc:'Clip TripRank for $0.50 per 1k views. All guidelines and resources linked below.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/c44c38ed-fa5c-4baa-8ae7-0d4d8e57adea/thumbnail_url/1772404935724.jpg',brandLogo:'https://assets-2-prod.whop.com/uploads/user_4554122/image/bots/2026-02-02/13ebb384-4059-4982-9ed5-c0caab7c9d6d.jpeg',brand:'TripRank',cpm:0.50,budget:19000,creators:310,views:33330731,paid:12292,cat:'Tech',plats:['tiktok']},
+  {id:'5',title:'ROBTHEBANK CLIPS',desc:'Clip for viral content creator Rob The Bank at $1 CPM.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/10764ec4-b429-44c4-88db-fc1aef8e24a3/thumbnail_url/1771794824847.png',brandLogo:'https://assets-2-prod.whop.com/uploads/user_14457404/image/bots/2026-02-22/aab5062a-b43d-49ab-b61d-26a18ed39cd3.png',brand:'RobTheBank',cpm:1.00,budget:15000,creators:177,views:38521066,paid:11584,cat:'Entertainment',plats:['tiktok','instagram']},
+  {id:'6',title:'Blow Up Creators',desc:'$1 RPM pour faire des videos qui parlent de Blow Up!',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/fb48756f-68f3-4413-a62d-8ce9fec97b8b/thumbnail_url/1770482635207.png',brandLogo:'https://assets-2-prod.whop.com/uploads/user_1339815/image/bots/2026-02-11/14bda61b-91a5-44e2-b952-515a98247609.png',brand:'Blow Up',cpm:1.00,budget:14250,creators:65,views:31898284,paid:7616,cat:'Tech',plats:['tiktok','instagram','youtube']},
+  {id:'7',title:'Content Rewards Clipping [X]',desc:'Exclusive X campaign. Message @virality on Whop with your experience.',thumb:'https://cdn.contentrewards.com/user_s02gTzhH6CPLK/1773614198250.jpg',brandLogo:'https://cdn.contentrewards.com/admin/cr-logo-gradient.png',brand:'Content Rewards',cpm:1.00,budget:10000,creators:8,views:15235825,paid:7224,cat:'Tech',plats:['x']},
+  {id:'8',title:'Loganwithaf x Rainbet',desc:'Clip Loganwithaf gambling content for Rainbet. $1 CPM.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/d6cf654a-55a5-4066-b9f6-5e63d5c0c880/thumbnail_url/1772302830281.png',brandLogo:'https://assets-2-prod.whop.com/uploads/user_3644019/image/apps/2025-12-21/e41086d3-bc15-459d-9a50-9c28c9e47921.png',brand:'Loganwithaf',cpm:1.00,budget:10000,creators:111,views:40455626,paid:5790,cat:'Gaming',plats:['tiktok','instagram']},
+  {id:'9',title:'Polymarket UGC Reposting',desc:'Post clips from the provided Google Drive of UGC content. $0.50 per 1k views.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/275a139d-1779-478e-9374-ce034a9fd9f3/thumbnail_url/1771997438257.jpg',brandLogo:'https://assets-2-prod.whop.com/uploads/user_8191454/image/bots/2026-02-25/bc974b8a-3567-40dc-b970-9e72e08e3872.avif',brand:'Polymarket',cpm:0.50,budget:25000,creators:354,views:69993910,paid:5416,cat:'Finance',plats:['tiktok','instagram','youtube']},
+  {id:'10',title:'Metawin Logo Campaign',desc:'Non-exclusive logo campaign for Metawin Casino. Round 3.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/11b666b2-e513-4804-80de-68df23495d4f/thumbnail_url/1769028718174.png',brandLogo:'https://s3.us-east-2.amazonaws.com/assets.whop.com/uploads/2025-06-21/user_7512544_ba0699f6-226b-4c9b-8904-d77cd6f2ccfd.jpeg',brand:'Metawin Casino',cpm:1.00,budget:10000,creators:35,views:66442366,paid:5183,cat:'Gaming',plats:['tiktok','instagram']},
+  {id:'11',title:'Flooz Clipping Campaign',desc:'Create short videos showing how Flooz helps people trade safely. $1 per 1k views.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/337a5087-537a-42aa-b7d8-91a64ff36986/thumbnail_url/1769077668302.png',brandLogo:'https://assets-2-prod.whop.com/uploads/2026-02-26/3f845db1-a76a-499c-8819-14cadb3fd34a/image.png',brand:'Flooz',cpm:1.00,budget:6402,creators:1982,views:76562498,paid:4560,cat:'Finance',plats:['tiktok','instagram','youtube']},
+  {id:'12',title:'Talking Head Tarteel',desc:'Make organic talking head videos showcasing the Tarteel app. $2.50 per 1k views.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/c0ee41b4-d2d6-4dfb-8ddb-473767673733/thumbnail_url/1765431184963.jpg',brandLogo:'https://s3.us-east-2.amazonaws.com/assets.whop.com/uploads/2025-07-26/user_13217765_771dae14-6fbe-451c-9c28-118580457bdc.svg',brand:'Tarteel AI',cpm:2.50,budget:5000,creators:12,views:3131326,paid:4418,cat:'Lifestyle',plats:['tiktok','instagram']},
+  {id:'13',title:'Caffeine.ai UGC Reels',desc:'Create short-form content highlighting Caffeine.ai - AI-powered app builder. $1 CPM.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/175ba064-3be5-4d49-9aed-26336dd8c630/thumbnail_url/1770844229134.jpeg',brandLogo:'https://assets-2-prod.whop.com/uploads/user_22481547/image/bots/2026-02-09/9bdfa231-5fe7-44ec-aab0-62b42119a988.png',brand:'Caffeine AI',cpm:1.00,budget:20000,creators:273,views:9387351,paid:3671,cat:'Tech',plats:['tiktok','instagram','youtube']},
+  {id:'14',title:'Polymarket Clipping',desc:'Post celebrity clips from Google Drive. $1 per 1k views.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/97a4ca4f-98f1-4641-96d5-dc94a0f7e072/thumbnail_url/1771986406585.png',brandLogo:'https://assets-2-prod.whop.com/uploads/user_8191454/image/bots/2026-02-25/bc974b8a-3567-40dc-b970-9e72e08e3872.avif',brand:'Polymarket',cpm:1.00,budget:25000,creators:383,views:11794075,paid:3632,cat:'Finance',plats:['tiktok','instagram']},
+  {id:'15',title:'TradeTalks Podcast',desc:'Crea clips de TradeTalks y gana $1 por cada mil vistas.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/8488a11d-2662-4abf-9958-d81ec7658637/thumbnail_url/1770657685316.png',brandLogo:'https://assets-2-prod.whop.com/uploads/user_1711868/image/bots/2026-02-09/04cafaae-49ef-4454-bd9b-eae95f556a7d.jpg',brand:'TradeTalks',cpm:1.00,budget:4960,creators:17,views:14133182,paid:3365,cat:'Finance',plats:['tiktok','youtube']},
+  {id:'16',title:'TripRank [Instagram]',desc:'Clip TripRank for $0.50 per 1k views on Instagram Reels.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/92fac0fc-9569-4a3b-b2cb-0f95954f29be/thumbnail_url/1771896443279.PNG',brandLogo:'https://assets-2-prod.whop.com/uploads/user_4554122/image/bots/2026-02-02/13ebb384-4059-4982-9ed5-c0caab7c9d6d.jpeg',brand:'TripRank',cpm:0.50,budget:5800,creators:132,views:20786701,paid:3139,cat:'Tech',plats:['instagram']},
+  {id:'17',title:'Jay Shetty Fan Pages',desc:'Create clips for Jay Shetty and On Purpose podcast. Mindset and personal growth.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/c636c696-5f3b-42ea-be8f-c5eb36c8acd4/thumbnail_url/1770499439925.png',brandLogo:'https://s3.us-east-2.amazonaws.com/assets.whop.com/uploads/2025-02-12/user_7360996_ec1b21d3-153f-42f9-8a35-38f237bb5822.png',brand:'creatorXchange',cpm:1.00,budget:10000,creators:94,views:6888853,paid:3105,cat:'Lifestyle',plats:['tiktok','instagram','youtube']},
+  {id:'18',title:'Lark Davis Clipping',desc:'Clip crypto content from Lark Davis. $1 CPM.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/9392ce8d-adcd-45f7-b391-38f40e6985fa/thumbnail_url/1771114736968.jpg',brandLogo:'https://assets-2-prod.whop.com/uploads/user_16946294/image/bots/2025-10-29/cbcfeb20-3f68-431e-aa9e-08f01540c6b6.png',brand:'Scene Society',cpm:1.00,budget:3750,creators:696,views:4511265,paid:3082,cat:'Finance',plats:['tiktok','instagram']},
+  {id:'19',title:'Clay Street Unit Album',desc:'Drive awareness to Sin & Squalor album via live performance clips.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/34159f24-5c23-40e9-a2c3-7d2c8f1736d2/thumbnail_url/1771871784994.jpg',brandLogo:'https://assets-2-prod.whop.com/uploads/user_16946294/image/bots/2025-10-29/cbcfeb20-3f68-431e-aa9e-08f01540c6b6.png',brand:'Scene Society',cpm:1.00,budget:4000,creators:742,views:3723596,paid:3082,cat:'Entertainment',plats:['tiktok','instagram','youtube']},
+  {id:'20',title:'Elite Talkinghead $2CPM',desc:'Create talking head videos for Rob The Bank at premium $2 CPM rate.',thumb:'https://cdn.contentrewards.com/supabase_assets/campaigns/28dedc05-376f-4e25-9042-0c517eb7af46/thumbnail_url/1771740140516.png',brandLogo:'https://assets-2-prod.whop.com/uploads/user_14457404/image/bots/2026-02-22/aab5062a-b43d-49ab-b61d-26a18ed39cd3.png',brand:'RobTheBank',cpm:2.00,budget:8000,creators:17,views:9700794,paid:4832,cat:'Entertainment',plats:['tiktok','instagram']}
+];
 
+var _discView='list';
+var _discFilters={cats:[],minCpm:0,minBudget:0};
+var _discAppliedFilters={cats:[],minCpm:0,minBudget:0};
+
+function getFilteredCampaigns(){
+  var q=(document.getElementById('discoverSearch')||{}).value||'';
+  q=q.toLowerCase().trim();
+  return _discoverCampaigns.filter(function(c){
+    if(q&&c.title.toLowerCase().indexOf(q)===-1&&c.brand.toLowerCase().indexOf(q)===-1&&c.desc.toLowerCase().indexOf(q)===-1)return false;
+    if(_discAppliedFilters.cats.length>0&&_discAppliedFilters.cats.indexOf(c.cat)===-1)return false;
+    if(_discAppliedFilters.minCpm>0&&c.cpm<_discAppliedFilters.minCpm)return false;
+    if(_discAppliedFilters.minBudget>0&&c.budget<_discAppliedFilters.minBudget)return false;
+    return true;
+  });
+}
+
+function getPreviewFilteredCount(){
+  var cats=[];
+  document.querySelectorAll('.cat-pill.active').forEach(function(p){cats.push(p.getAttribute('data-cat'))});
+  var minCpm=parseFloat((document.getElementById('discMinCpm').value||'').replace(/[^0-9.]/g,''))||0;
+  var minBudget=parseFloat((document.getElementById('discMinBudget').value||'').replace(/[^0-9.]/g,''))||0;
+  return _discoverCampaigns.filter(function(c){
+    if(cats.length>0&&cats.indexOf(c.cat)===-1)return false;
+    if(minCpm>0&&c.cpm<minCpm)return false;
+    if(minBudget>0&&c.budget<minBudget)return false;
+    return true;
+  }).length;
+}
+
+function makeAvatarStack(count){
+  var n=Math.min(count,3);
+  var colors=['#e0ddd8','#d4c9be','#c8bdb0'];
+  var html='<div class="disc-avatars">';
+  for(var i=0;i<n;i++){html+='<div style="background:'+colors[i]+'"></div>'}
+  html+='</div><span style="font-size:11px;font-weight:700;color:#666">'+count+'</span>';
+  return html;
+}
+
+function makePlatIcons(plats){
+  var html='<div class="disc-platforms">';
+  plats.forEach(function(p){
+    var bg=platColors[p]||'#999';
+    html+='<span style="background:'+bg+'">'+(platSvgs[p]||'')+'</span>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function renderDiscover(){
+  var camps=getFilteredCampaigns();
+  var container=document.getElementById('discoverContent');
+  if(!container)return;
+  if(camps.length===0){
+    container.innerHTML='<div class="disc-empty">No campaigns match your filters</div>';
+    return;
+  }
+  if(_discView==='card'){
+    container.innerHTML=camps.map(function(c){
+      return '<div class="disc-card" onclick="showToast(\'Opening '+c.brand+' campaign...\')">'+
+        '<img class="disc-card-img" src="'+c.thumb+'" alt="" onerror="this.style.background=\'#e0ddd8\';this.style.minHeight=\'180px\'" loading="lazy">'+
+        '<div class="disc-card-body">'+
+          '<div class="disc-brand-row"><img class="disc-brand-logo" src="'+c.brandLogo+'" alt="" onerror="this.style.background=\'#e0ddd8\'"><span class="disc-brand-name">'+c.brand+'</span></div>'+
+          '<div class="disc-title">'+c.desc+'</div>'+
+          '<div class="disc-cpm">$'+c.cpm.toFixed(0)+' <span>/ 1k views</span></div>'+
+          '<div class="disc-footer">'+
+            '<div class="disc-creators">'+makeAvatarStack(c.creators)+'<span class="disc-earned">$'+Math.round(c.paid).toLocaleString()+'</span></div>'+
+            makePlatIcons(c.plats)+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  } else {
+    container.innerHTML=camps.map(function(c){
+      return '<div class="disc-list-item" onclick="showToast(\'Opening '+c.brand+' campaign...\')">'+
+        '<img class="disc-list-logo" src="'+c.brandLogo+'" alt="" onerror="this.style.background=\'#e0ddd8\'">'+
+        '<div class="disc-list-info">'+
+          '<div class="disc-list-title">'+c.desc+'</div>'+
+          '<div class="disc-list-meta">'+makeAvatarStack(c.creators)+' <span style="color:#ccc;font-size:10px">|</span> '+makePlatIcons(c.plats)+'</div>'+
+        '</div>'+
+        '<div class="disc-list-right">'+
+          '<div class="disc-list-cpm">$'+c.cpm.toFixed(0)+' <span>/ 1k</span></div>'+
+          '<div class="disc-list-earned">$'+Math.round(c.paid).toLocaleString()+'</div>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }
+}
+
+function setDiscoverView(view){
+  _discView=view;
+  document.getElementById('discListBtn').classList.toggle('active',view==='list');
+  document.getElementById('discCardBtn').classList.toggle('active',view==='card');
+  renderDiscover();
+}
+
+function openDiscoverFilters(){
+  // Sync UI with current pending filters
+  document.querySelectorAll('.cat-pill').forEach(function(p){
+    p.classList.toggle('active',_discAppliedFilters.cats.indexOf(p.getAttribute('data-cat'))!==-1);
+  });
+  document.getElementById('discMinCpm').value=_discAppliedFilters.minCpm>0?'$'+_discAppliedFilters.minCpm.toFixed(2):'$0.00';
+  document.getElementById('discMinBudget').value=_discAppliedFilters.minBudget>0?'$'+_discAppliedFilters.minBudget.toFixed(2):'$0.00';
+  updateDiscFilterCount();
+  document.getElementById('discFilterOverlay').classList.add('open');
+}
+
+function closeDiscoverFilters(){
+  document.getElementById('discFilterOverlay').classList.remove('open');
+}
+
+function toggleDiscCat(btn){
+  btn.classList.toggle('active');
+  updateDiscFilterCount();
+}
+
+function updateDiscFilterCount(){
+  var count=getPreviewFilteredCount();
+  var btn=document.getElementById('discFilterApply');
+  var minCpm=document.getElementById('discMinCpm').value;
+  var minBudget=document.getElementById('discMinBudget').value;
+  document.getElementById('discCpmClear').classList.toggle('show',minCpm!=='$0.00'&&minCpm!=='$');
+  document.getElementById('discBudgetClear').classList.toggle('show',minBudget!=='$0.00'&&minBudget!=='$');
+  if(count>0){
+    btn.textContent='show '+count+' campaigns';
+    btn.className='disc-filter-apply has-results';
+  } else {
+    btn.textContent='0 campaigns';
+    btn.className='disc-filter-apply no-results';
+  }
+  // Update badge
+  var cats=[];
+  document.querySelectorAll('.cat-pill.active').forEach(function(p){cats.push(p.getAttribute('data-cat'))});
+  var filterCount=cats.length+(parseFloat(minCpm.replace(/[^0-9.]/g,''))>0?1:0)+(parseFloat(minBudget.replace(/[^0-9.]/g,''))>0?1:0);
+  var badge=document.getElementById('discFilterBadge');
+  if(filterCount>0){badge.textContent=filterCount;badge.classList.add('show')}
+  else{badge.classList.remove('show')}
+}
+
+function applyDiscoverFilters(){
+  var cats=[];
+  document.querySelectorAll('.cat-pill.active').forEach(function(p){cats.push(p.getAttribute('data-cat'))});
+  _discAppliedFilters.cats=cats;
+  _discAppliedFilters.minCpm=parseFloat((document.getElementById('discMinCpm').value||'').replace(/[^0-9.]/g,''))||0;
+  _discAppliedFilters.minBudget=parseFloat((document.getElementById('discMinBudget').value||'').replace(/[^0-9.]/g,''))||0;
+  // Update badge on filter button
+  var filterCount=cats.length+(_discAppliedFilters.minCpm>0?1:0)+(_discAppliedFilters.minBudget>0?1:0);
+  var badge=document.getElementById('discFilterBadge');
+  if(filterCount>0){badge.textContent=filterCount;badge.classList.add('show')}
+  else{badge.classList.remove('show')}
+  closeDiscoverFilters();
+  renderDiscover();
+}
+
+function clearDiscoverFilters(){
+  document.querySelectorAll('.cat-pill').forEach(function(p){p.classList.remove('active')});
+  document.getElementById('discMinCpm').value='$0.00';
+  document.getElementById('discMinBudget').value='$0.00';
+  document.getElementById('discCpmClear').classList.remove('show');
+  document.getElementById('discBudgetClear').classList.remove('show');
+  _discAppliedFilters={cats:[],minCpm:0,minBudget:0};
+  document.getElementById('discFilterBadge').classList.remove('show');
+  updateDiscFilterCount();
+  closeDiscoverFilters();
+  renderDiscover();
+}
 
 /* ═══ INIT ═══ */
 render();
+renderDiscover();
 setInterval(render,3600000);
-document.addEventListener('visibilitychange',function(){if(!document.hidden)render()});
+document.addEventListener('visibilitychange',function(){if(!document.hidden){render();renderDiscover()}});
 </script>
 </body>
 </html>
