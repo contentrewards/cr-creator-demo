@@ -92,6 +92,9 @@ html{scrollbar-width:none}
 /* Submission cards */
 .sub-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);margin-bottom:12px}
 .sub-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;background:#eee;display:block}
+.sub-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.sub-play-btn{width:48px;height:48px;border-radius:50%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:transform 0.15s}
+.sub-card:active .sub-play-btn{transform:scale(0.9)}
 .sub-body{padding:14px 16px}
 .sub-title{font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sub-meta{display:flex;gap:12px;font-size:11px;color:#999;font-weight:600;margin-bottom:8px;flex-wrap:wrap}
@@ -632,8 +635,12 @@ function renderClips(filter){
     var payBadge=isReview?'':'<span class="sub-badge '+(s.paid?'paid':'unpaid')+'">'+(s.paid?'Paid':'Pending payout')+'</span>';
     var platIcon='<span class="plat-icon" style="background:'+(platColors[s.p]||'#999')+'"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>';
 
-    return '<div class="sub-card">' +
-      '<img class="sub-thumb" src="'+s.thumb+'" alt="" onerror="this.style.background=\'#e0ddd8\';this.style.minHeight=\'160px\'" loading="lazy">' +
+    var hasLink=s.u&&s.u!=='#';
+    return '<div class="sub-card" style="cursor:pointer" onclick="'+(hasLink?'window.open(\''+s.u+'\',\'_blank\')':'')+'">' +
+      '<div style="position:relative">' +
+        '<img class="sub-thumb" src="'+s.thumb+'" alt="" onerror="this.style.background=\'#e0ddd8\';this.style.minHeight=\'160px\'" loading="lazy">' +
+        (hasLink?'<div class="sub-play"><div class="sub-play-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" stroke="none"><polygon points="6 3 20 12 6 21 6 3"/></svg></div></div>':'') +
+      '</div>' +
       '<div class="sub-body">' +
         '<div class="sub-title">'+s.t+'</div>' +
         '<div class="sub-meta">'+platIcon+' <span>'+(platNames[s.p]||s.p)+'</span> <span style="color:#ccc">|</span> <span>'+s.camp+'</span> <span style="color:#ccc">|</span> <span>'+s.d+'</span></div>' +
