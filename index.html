@@ -145,6 +145,18 @@ html{scrollbar-width:none}
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
+  <div style="display:flex;gap:6px">
+    <button onclick="document.getElementById('photoUpload').click()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:8px;cursor:pointer;color:rgba(255,255,255,0.6);font-size:11px;font-weight:700;font-family:inherit">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      Upload Photo
+    </button>
+    <button onclick="document.getElementById('cameraCapture').click()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:8px;cursor:pointer;color:rgba(255,255,255,0.6);font-size:11px;font-weight:700;font-family:inherit">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      Take Photo
+    </button>
+  </div>
+  <input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="handlePhotoUpload(this)">
+  <input type="file" id="cameraCapture" accept="image/*" capture="user" style="display:none" onchange="handlePhotoUpload(this)">
   <label>Creator name</label>
   <input type="text" id="devNameInput" placeholder="Type a name..." value="hasan" onkeydown="if(event.key==='Enter'){event.preventDefault();applyDevName()}">
   <div class="dev-menu-btns">
@@ -779,8 +791,7 @@ function filterClips(btn,filter){
 function render(){
   var d=generateData();
   document.getElementById('creator-name').textContent=_creatorName;
-  var avatarSeed=0;for(var ci=0;ci<_creatorName.length;ci++)avatarSeed+=_creatorName.charCodeAt(ci);
-  document.getElementById('header-avatar').src='https://i.pravatar.cc/76?img='+(avatarSeed%70+1);
+  _updateAvatar();
   document.getElementById('total-earnings').textContent=fmtMoney(d.totalEarnings);
   document.getElementById('available-balance').textContent=fmtMoneyDec(d.availableBalance);
   document.getElementById('pending-amount').textContent=fmtMoneyDec(d.pendingAmount);
@@ -990,11 +1001,24 @@ function withdrawProcess(){
 }
 
 /* Dev */
-function _updateAvatar(){
-  var s=0;for(var i=0;i<_creatorName.length;i++)s+=_creatorName.charCodeAt(i);
-  var url='https://i.pravatar.cc/76?img='+(s%70+1);
+var _customAvatar=null;
+var _maleAvatars=[3,7,8,11,12,13,14,15,33,51,52,53,55,56,57,58,59,60,61,62,63,64,65,67,68,69,70];
+var _femaleAvatars=[1,5,6,9,10,16,17,19,20,21,23,24,25,26,27,28,29,30,31,32,34,35,36,38,39,40,41,42,43,44,45,47,48,49];
+var _maleNames=['hasan','alex','marcus','jay','omar','kai','rishi','zain','noah','tyler','liam','amir','samir','mike','chris','james','will','tom','sam','derek','malik','jordan','theo','andre'];
+var _femaleNames=['maya','sofia','aria','zara','luna','nyla','priya','amira','layla','jade','talia','nia','kira','sara','leah','mia','eva','ava','chloe','dina','aisha','elena','jasmine','nadia'];
+var _currentAvatarId=11;
+var _currentGender='m';
+
+function _setAvatar(url){
   document.getElementById('header-avatar').src=url;
   document.getElementById('dev-avatar-preview').src=url;
+}
+function _updateAvatar(){
+  if(_customAvatar){_setAvatar(_customAvatar);return}
+  var s=0;for(var i=0;i<_creatorName.length;i++)s+=_creatorName.charCodeAt(i);
+  var pool=_currentGender==='f'?_femaleAvatars:_maleAvatars;
+  _currentAvatarId=pool[s%pool.length];
+  _setAvatar('https://i.pravatar.cc/76?img='+_currentAvatarId);
 }
 function openDevMenu(){
   document.getElementById('devNameInput').value=_creatorName;
@@ -1010,13 +1034,33 @@ function closeDevMenu(){
 }
 function applyDevName(){
   var n=document.getElementById('devNameInput').value.trim();
-  if(n){_creatorName=n;render();_updateAvatar();document.getElementById('dev-current-name').textContent=_creatorName;closeDevMenu();showToast('Name set to: '+_creatorName)}
+  if(n){_creatorName=n;_customAvatar=null;_updateAvatar();render();document.getElementById('dev-current-name').textContent=_creatorName;closeDevMenu();showToast('Name set to: '+_creatorName)}
 }
-var _rn=['hasan','alex','marcus','jay','omar','kai','rishi','zain','noah','tyler','liam','amir','samir','dan','mike','chris','james','will','tom','sam'];
 function randomizeName(){
-  var n=_rn[Math.floor(Math.random()*_rn.length)];
-  document.getElementById('devNameInput').value=n;_creatorName=n;render();_updateAvatar();
-  document.getElementById('dev-current-name').textContent=_creatorName;
+  _customAvatar=null;
+  var gender=Math.random()<0.5?'m':'f';
+  _currentGender=gender;
+  var names=gender==='f'?_femaleNames:_maleNames;
+  var avatars=gender==='f'?_femaleAvatars:_maleAvatars;
+  var n=names[Math.floor(Math.random()*names.length)];
+  _currentAvatarId=avatars[Math.floor(Math.random()*avatars.length)];
+  _creatorName=n;
+  document.getElementById('devNameInput').value=n;
+  document.getElementById('dev-current-name').textContent=n;
+  _setAvatar('https://i.pravatar.cc/76?img='+_currentAvatarId);
+  render();
+}
+function handlePhotoUpload(input){
+  if(!input.files||!input.files[0])return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    _customAvatar=e.target.result;
+    _setAvatar(_customAvatar);
+    document.getElementById('dev-current-name').textContent=_creatorName;
+    showToast('Photo updated');
+  };
+  reader.readAsDataURL(input.files[0]);
+  input.value='';
 }
 function regenerateNumbers(){_forceRegenSeed=Math.floor(Math.random()*100000);render();showToast('Numbers regenerated')}
 
