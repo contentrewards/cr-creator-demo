@@ -1421,17 +1421,129 @@ function closeNotifications(){
   document.getElementById('notifPanel').style.display='none';
 }
 
-/* Submit clip */
+/* Submit clip - with OAuth video picker */
+var _recentVideos={
+  tiktok:[
+    {title:'Street interview gone wrong pt.3',url:'https://www.tiktok.com/@user/video/1001',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_4.jpg',views:'2.1M',date:'2d ago'},
+    {title:'This guy had the BEST reaction',url:'https://www.tiktok.com/@user/video/1002',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_6.jpg',views:'1.8M',date:'3d ago'},
+    {title:'POV: explaining crypto to your mom',url:'https://www.tiktok.com/@user/video/1003',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_8.jpg',views:'945K',date:'4d ago'},
+    {title:'He did NOT expect this answer',url:'https://www.tiktok.com/@user/video/1004',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_10.jpg',views:'672K',date:'5d ago'},
+    {title:'Yonna reacts to fan edits',url:'https://www.tiktok.com/@user/video/1005',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_13.jpg',views:'534K',date:'6d ago'},
+    {title:'Day in the life of a clipper',url:'https://www.tiktok.com/@user/video/1006',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_16.jpg',views:'321K',date:'1w ago'},
+    {title:'Why everyone is talking about this',url:'https://www.tiktok.com/@user/video/1007',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_17.jpg',views:'289K',date:'1w ago'},
+    {title:'Street reactions London pt.1',url:'https://www.tiktok.com/@user/video/1008',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_14.jpg',views:'198K',date:'1w ago'},
+    {title:'The funniest clip I have ever seen',url:'https://www.tiktok.com/@user/video/1009',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_18.jpg',views:'156K',date:'2w ago'},
+    {title:'Quick edit tutorial for beginners',url:'https://www.tiktok.com/@user/video/1010',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_19.jpg',views:'94K',date:'2w ago'}
+  ],
+  instagram:[
+    {title:'Cantina logo placement tips',url:'https://www.instagram.com/reel/ABC123/',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_0.jpg',views:'1.4M',date:'1d ago'},
+    {title:'Before vs after edits comparison',url:'https://www.instagram.com/reel/ABC124/',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_1.jpg',views:'892K',date:'3d ago'},
+    {title:'How I earned $500 from one clip',url:'https://www.instagram.com/reel/ABC125/',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_2.jpg',views:'567K',date:'4d ago'},
+    {title:'Best moments compilation March',url:'https://www.instagram.com/reel/ABC126/',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_3.jpg',views:'445K',date:'5d ago'},
+    {title:'The clip that changed everything',url:'https://www.instagram.com/reel/ABC127/',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_7.jpg',views:'334K',date:'1w ago'},
+    {title:'BTS of my content workflow',url:'https://www.instagram.com/reel/ABC128/',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_9.jpg',views:'201K',date:'1w ago'},
+    {title:'Top 5 clips this week',url:'https://www.instagram.com/reel/ABC129/',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_11.jpg',views:'178K',date:'1w ago'},
+    {title:'New editing style test',url:'https://www.instagram.com/reel/ABC130/',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_12.jpg',views:'145K',date:'2w ago'},
+    {title:'Creator house vlog',url:'https://www.instagram.com/reel/ABC131/',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_15.jpg',views:'98K',date:'2w ago'},
+    {title:'Quick transitions tutorial',url:'https://www.instagram.com/reel/ABC132/',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_5.jpg',views:'67K',date:'2w ago'}
+  ],
+  youtube:[
+    {title:'Full street interview compilation',url:'https://youtube.com/watch?v=abc1',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_5.jpg',views:'3.2M',date:'2d ago'},
+    {title:'Reacting to my most viral clips',url:'https://youtube.com/watch?v=abc2',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_3.jpg',views:'1.1M',date:'5d ago'},
+    {title:'How Content Rewards works',url:'https://youtube.com/watch?v=abc3',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_9.jpg',views:'456K',date:'1w ago'},
+    {title:'My editing setup tour 2026',url:'https://youtube.com/watch?v=abc4',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_11.jpg',views:'234K',date:'1w ago'},
+    {title:'Making $10K/month clipping',url:'https://youtube.com/watch?v=abc5',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_2.jpg',views:'189K',date:'2w ago'}
+  ],
+  x:[
+    {title:'This thread went crazy',url:'https://x.com/user/status/1001',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_5.jpg',views:'890K',date:'1d ago'},
+    {title:'Hot take on clipping industry',url:'https://x.com/user/status/1002',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_7.jpg',views:'345K',date:'3d ago'},
+    {title:'Behind the scenes clip edit',url:'https://x.com/user/status/1003',thumb:'https://cdn.contentrewards.com/admin/creator-demo/thumb_15.jpg',views:'167K',date:'5d ago'}
+  ]
+};
+var _submitSelectedVideo=null;
+
 function openSubmitClip(){
   document.getElementById('submitStep1').style.display='';
   document.getElementById('submitSuccess').style.display='none';
   document.getElementById('submitUrl').value='';
   document.getElementById('submitTitle').value='';
+  _submitSelectedVideo=null;
+  renderSubmitAcctTabs();
   document.getElementById('submitModal').style.display='flex';
+}
+
+function renderSubmitAcctTabs(){
+  var connected=[];
+  _acctPlatforms.forEach(function(p){if(_acctConnected[p.key])connected.push(p)});
+  var tabsEl=document.getElementById('submitAcctTabs');
+  var gridEl=document.getElementById('submitVideoGrid');
+  var noAcctEl=document.getElementById('submitNoAccounts');
+  if(connected.length===0){
+    tabsEl.innerHTML='';gridEl.style.display='none';noAcctEl.style.display='';return;
+  }
+  noAcctEl.style.display='none';
+  tabsEl.innerHTML=connected.map(function(p,i){
+    return '<button onclick="selectSubmitAcct(\''+p.key+'\')" id="submitTab-'+p.key+'" style="display:flex;align-items:center;gap:5px;padding:8px 12px;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;border:1.5px solid '+(i===0?p.color:'#e0ddd8')+';background:'+(i===0?p.color:'#fff')+';color:'+(i===0?'#fff':'#666')+';transition:all 0.15s">'+
+      '<span style="width:16px;height:16px;border-radius:50%;background:'+(i===0?'rgba(255,255,255,0.2)':p.color)+';display:inline-flex;align-items:center;justify-content:center">'+p.icon.replace(/width="\d+"/g,'width="10"').replace(/height="\d+"/g,'height="10"')+'</span>'+
+      p.name+'</button>';
+  }).join('');
+  selectSubmitAcct(connected[0].key);
+}
+
+function selectSubmitAcct(key){
+  var p=_acctPlatforms.filter(function(x){return x.key===key})[0];
+  if(!p)return;
+  document.querySelectorAll('#submitAcctTabs button').forEach(function(btn){
+    var bKey=btn.id.replace('submitTab-','');
+    var bPlat=_acctPlatforms.filter(function(x){return x.key===bKey})[0];
+    if(bKey===key){
+      btn.style.borderColor=bPlat.color;btn.style.background=bPlat.color;btn.style.color='#fff';
+      btn.querySelector('span').style.background='rgba(255,255,255,0.2)';
+    } else {
+      btn.style.borderColor='#e0ddd8';btn.style.background='#fff';btn.style.color='#666';
+      btn.querySelector('span').style.background=bPlat.color;
+    }
+  });
+  var vids=_recentVideos[key]||[];
+  var gridEl=document.getElementById('submitVideoGrid');
+  if(vids.length===0){gridEl.style.display='none';return}
+  gridEl.style.display='';
+  document.getElementById('submitVideos').innerHTML=vids.map(function(v,i){
+    return '<div onclick="selectSubmitVideo(\''+key+'\','+i+')" id="submitVid-'+key+'-'+i+'" style="position:relative;border-radius:10px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color 0.15s;aspect-ratio:9/16">'+
+      '<img src="'+v.thumb+'" style="width:100%;height:100%;object-fit:cover;display:block" alt="" loading="lazy">'+
+      '<div style="position:absolute;bottom:0;left:0;right:0;padding:8px;background:linear-gradient(transparent,rgba(0,0,0,0.8))">'+
+        '<div style="font-size:10px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+v.title+'</div>'+
+        '<div style="font-size:9px;color:rgba(255,255,255,0.6);margin-top:2px">'+v.views+' views - '+v.date+'</div>'+
+      '</div>'+
+      '<div class="submit-vid-check" style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:#E8734E;display:none;align-items:center;justify-content:center">'+
+        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  var platBtns=document.getElementById('platPicker').querySelectorAll('button');
+  var platMap={tiktok:0,instagram:1,youtube:2,x:3};
+  platBtns.forEach(function(b,i){
+    if(i===platMap[key]){b.style.borderColor='#1a1a1a';b.style.background='rgba(0,0,0,0.04)';b.style.color='#1a1a1a'}
+    else{b.style.borderColor='#eee';b.style.background='#fff';b.style.color='#999'}
+  });
+}
+
+function selectSubmitVideo(key,idx){
+  var v=(_recentVideos[key]||[])[idx];
+  if(!v)return;
+  document.querySelectorAll('#submitVideos .submit-vid-check').forEach(function(c){c.style.display='none'});
+  document.querySelectorAll('#submitVideos > div').forEach(function(d){d.style.borderColor='transparent'});
+  var el=document.getElementById('submitVid-'+key+'-'+idx);
+  el.style.borderColor='#E8734E';
+  el.querySelector('.submit-vid-check').style.display='flex';
+  document.getElementById('submitUrl').value=v.url;
+  document.getElementById('submitTitle').value=v.title;
+  _submitSelectedVideo=v;
 }
 
 function closeSubmit(){
   document.getElementById('submitModal').style.display='none';
+  _submitSelectedVideo=null;
 }
 
 function pickPlatform(btn){
