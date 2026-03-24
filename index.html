@@ -16,13 +16,11 @@ body{padding-top:env(safe-area-inset-top)}
 ::-webkit-scrollbar{display:none}
 html{scrollbar-width:none}
 
-/* Dev dot */
-.dev-dot{position:fixed;bottom:100px;right:12px;z-index:600;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.08);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;-webkit-user-select:none;user-select:none}
-.dev-dot:active{transform:scale(0.85)}
-.dev-dot svg{width:8px;height:8px;stroke:rgba(0,0,0,0.2);stroke-width:2;fill:none}
-.dev-menu{position:fixed;bottom:126px;right:12px;z-index:600;background:#1a1a1a;border-radius:14px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,0.3);display:none;flex-direction:column;gap:10px;width:200px;transform-origin:bottom right;animation:devPop 0.15s ease-out}
-.dev-menu.open{display:flex}
-@keyframes devPop{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+/* Dev panel */
+.dev-overlay{position:fixed;inset:0;z-index:699;background:rgba(0,0,0,0.4);opacity:0;pointer-events:none;transition:opacity 0.3s}
+.dev-overlay.open{opacity:1;pointer-events:auto}
+.dev-menu{position:fixed;top:0;left:0;right:0;z-index:700;background:#1a1a1a;border-radius:0 0 20px 20px;padding:calc(16px + env(safe-area-inset-top)) 20px 20px;box-shadow:0 8px 32px rgba(0,0,0,0.4);display:flex;flex-direction:column;gap:12px;transform:translateY(-110%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);pointer-events:none}
+.dev-menu.open{transform:translateY(0);pointer-events:auto}
 .dev-menu label{font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px}
 .dev-menu input{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;padding:8px 10px;border-radius:8px;font-size:13px;font-family:inherit;font-weight:600;width:100%;outline:none;box-sizing:border-box}
 .dev-menu input:focus{border-color:#E8734E}
@@ -130,17 +128,29 @@ html{scrollbar-width:none}
 </head>
 <body>
 
-<!-- Dev dot + menu -->
-<button class="dev-dot" id="devDot" onclick="toggleDevMenu()">
-  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg>
-</button>
+<!-- Dev panel -->
+<div class="dev-overlay" id="devOverlay" onclick="closeDevMenu()"></div>
 <div class="dev-menu" id="devMenu">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:40px;height:40px;border-radius:50%;overflow:hidden;background:rgba(255,255,255,0.1)">
+        <img id="dev-avatar-preview" src="https://i.pravatar.cc/80?img=11" style="width:40px;height:40px;object-fit:cover">
+      </div>
+      <div>
+        <div style="font-size:14px;font-weight:800;color:#fff" id="dev-current-name">hasan</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4)">Demo Mode</div>
+      </div>
+    </div>
+    <button onclick="closeDevMenu()" style="background:rgba(255,255,255,0.1);border:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
   <label>Creator name</label>
-  <input type="text" id="devNameInput" placeholder="Creator name" value="hasan" onkeydown="if(event.key==='Enter'){event.preventDefault();applyDevName()}">
+  <input type="text" id="devNameInput" placeholder="Type a name..." value="hasan" onkeydown="if(event.key==='Enter'){event.preventDefault();applyDevName()}">
   <div class="dev-menu-btns">
-    <button class="primary" onclick="applyDevName()">Set</button>
+    <button class="primary" onclick="applyDevName()">Set Name</button>
     <button class="sec" onclick="randomizeName()">Random</button>
-    <button class="sec" onclick="regenerateNumbers()">Regen</button>
+    <button class="sec" onclick="regenerateNumbers()">Regen Numbers</button>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -150,7 +160,7 @@ html{scrollbar-width:none}
   <div style="background:linear-gradient(180deg,#E8734E 0%,#F5A623 100%);padding:calc(16px + env(safe-area-inset-top)) 20px 52px;position:relative">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
       <div style="display:flex;align-items:center;gap:10px">
-        <div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;overflow:hidden">
+        <div onclick="openDevMenu()" style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer">
           <img id="header-avatar" src="https://i.pravatar.cc/76?img=11" style="width:38px;height:38px;object-fit:cover" alt="avatar">
         </div>
         <div>
@@ -954,11 +964,34 @@ function withdrawProcess(){
 }
 
 /* Dev */
-function toggleDevMenu(){var m=document.getElementById('devMenu');m.classList.toggle('open')}
-document.addEventListener('click',function(e){var m=document.getElementById('devMenu'),d=document.getElementById('devDot');if(m.classList.contains('open')&&!m.contains(e.target)&&e.target!==d&&!d.contains(e.target)){m.classList.remove('open')}});
-function applyDevName(){var n=document.getElementById('devNameInput').value.trim();if(n){_creatorName=n;document.getElementById('creator-name').textContent=_creatorName;showToast('Name set to: '+_creatorName)}}
+function _updateAvatar(){
+  var s=0;for(var i=0;i<_creatorName.length;i++)s+=_creatorName.charCodeAt(i);
+  var url='https://i.pravatar.cc/76?img='+(s%70+1);
+  document.getElementById('header-avatar').src=url;
+  document.getElementById('dev-avatar-preview').src=url;
+}
+function openDevMenu(){
+  document.getElementById('devNameInput').value=_creatorName;
+  document.getElementById('dev-current-name').textContent=_creatorName;
+  document.getElementById('dev-avatar-preview').src=document.getElementById('header-avatar').src;
+  document.getElementById('devOverlay').classList.add('open');
+  document.getElementById('devMenu').classList.add('open');
+  setTimeout(function(){document.getElementById('devNameInput').focus()},150);
+}
+function closeDevMenu(){
+  document.getElementById('devMenu').classList.remove('open');
+  document.getElementById('devOverlay').classList.remove('open');
+}
+function applyDevName(){
+  var n=document.getElementById('devNameInput').value.trim();
+  if(n){_creatorName=n;render();_updateAvatar();document.getElementById('dev-current-name').textContent=_creatorName;closeDevMenu();showToast('Name set to: '+_creatorName)}
+}
 var _rn=['hasan','alex','marcus','jay','omar','kai','rishi','zain','noah','tyler','liam','amir','samir','dan','mike','chris','james','will','tom','sam'];
-function randomizeName(){var n=_rn[Math.floor(Math.random()*_rn.length)];document.getElementById('devNameInput').value=n;_creatorName=n;document.getElementById('creator-name').textContent=_creatorName;showToast('Name: '+_creatorName)}
+function randomizeName(){
+  var n=_rn[Math.floor(Math.random()*_rn.length)];
+  document.getElementById('devNameInput').value=n;_creatorName=n;render();_updateAvatar();
+  document.getElementById('dev-current-name').textContent=_creatorName;
+}
 function regenerateNumbers(){_forceRegenSeed=Math.floor(Math.random()*100000);render();showToast('Numbers regenerated')}
 
 
