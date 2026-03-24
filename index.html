@@ -49,12 +49,17 @@ html{scrollbar-width:none}
 .page.active{display:block}
 
 /* Bottom nav */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,0.06);display:flex;justify-content:space-around;align-items:center;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:100}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 12px;border-radius:10px;cursor:pointer;transition:all 0.2s;-webkit-user-select:none;user-select:none;position:relative}
-.nav-item svg{width:20px;height:20px;stroke-width:1.8}
-.nav-item span{font-size:9px;font-weight:600;color:#999}
-.nav-item.active svg{stroke:#E8734E}
-.nav-item.active span{color:#E8734E;font-weight:700}
+.bottom-nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:28px;display:flex;align-items:center;padding:6px 8px;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.08),0 0 0 1px rgba(0,0,0,0.04);gap:2px;width:auto;max-width:320px}
+.nav-item{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;cursor:pointer;transition:all 0.2s;-webkit-user-select:none;user-select:none;position:relative;flex-shrink:0}
+.nav-item svg{width:22px;height:22px;stroke-width:1.8;transition:all 0.2s}
+.nav-item span{display:none}
+.nav-item.active{background:rgba(0,0,0,0.06)}
+.nav-item.active svg{stroke:#1a1a1a;fill:none}
+.nav-item:not(.active) svg{stroke:#aaa;fill:none}
+.nav-center{width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,0.03);border:2px solid rgba(0,0,0,0.06);margin:-4px 2px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;-webkit-user-select:none;user-select:none;flex-shrink:0}
+.nav-center svg{width:26px;height:26px;stroke-width:1.8;stroke:#aaa;fill:none;transition:all 0.2s}
+.nav-center.active{background:rgba(232,115,78,0.08);border-color:rgba(232,115,78,0.2)}
+.nav-center.active svg{stroke:#E8734E}
 
 .card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.04);margin:0 16px 12px}
 
@@ -134,7 +139,7 @@ html{scrollbar-width:none}
 @media(min-width:480px){
   .card{margin:0 auto 12px;max-width:440px}
   .page{max-width:480px;margin:0 auto}
-  .bottom-nav{max-width:480px;left:50%;transform:translateX(-50%);border-radius:16px 16px 0 0}
+  .bottom-nav{max-width:320px}
   .sub-card{margin-left:auto;margin-right:auto;max-width:440px}
   .filter-row{max-width:480px;margin:0 auto;padding:0 20px 12px}
 }
@@ -818,23 +823,18 @@ html{scrollbar-width:none}
 <div class="bottom-nav">
   <div class="nav-item active" onclick="switchPage('home')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    <span>Home</span>
   </div>
   <div class="nav-item" onclick="switchPage('clips')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
-    <span>My Clips</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M10 8l6 4-6 4V8z"/></svg>
   </div>
-  <div class="nav-item" onclick="switchPage('discover')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <span>Discover</span>
+  <div class="nav-center" onclick="switchPage('discover')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
   </div>
   <div class="nav-item" onclick="switchPage('earnings')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-    <span>Wallet</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
   </div>
   <div class="nav-item" onclick="switchPage('analytics')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-    <span>Analytics</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M8 21V13h3v8"/><path d="M13 21V9h3v12"/></svg>
   </div>
 </div>
 
@@ -1063,9 +1063,10 @@ function render(){
 var _pages=['home','clips','discover','earnings','analytics'];
 function switchPage(page){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
-  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active')});
+  document.querySelectorAll('.bottom-nav .nav-item, .bottom-nav .nav-center').forEach(function(n){n.classList.remove('active')});
   document.getElementById('page-'+page).classList.add('active');
-  document.querySelectorAll('.nav-item')[_pages.indexOf(page)].classList.add('active');
+  var navEls=document.querySelectorAll('.bottom-nav .nav-item, .bottom-nav .nav-center');
+  navEls[_pages.indexOf(page)].classList.add('active');
   window.scrollTo(0,0);
 }
 function switchPeriod(btn){btn.parentElement.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active')}
