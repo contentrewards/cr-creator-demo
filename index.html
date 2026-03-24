@@ -1000,6 +1000,42 @@ function switchPage(page){
 function switchPeriod(btn){btn.parentElement.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active')}
 function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2500)}
 
+/* Video player */
+var _currentVideoSub=null;
+function openVideo(idx){
+  var s=_realSubs[idx];
+  if(!s) return;
+  _currentVideoSub=s;
+  var el=document.getElementById('videoEl');
+  var panel=document.getElementById('videoPlayer');
+  document.getElementById('videoTitle').textContent=s.t;
+  document.getElementById('videoViews').textContent=s.v?fmtViews(s.v)+' views':'';
+  document.getElementById('videoLikes').textContent=s.l?fmtViews(s.l)+' likes':'';
+  document.getElementById('videoEarned').textContent=s.pay?fmtMoney(s.pay)+' earned':'';
+  document.getElementById('videoCamp').textContent=s.camp+' - '+(platNames[s.p]||s.p);
+  if(s.vid){
+    el.src=s.vid;
+    el.style.display='';
+    panel.style.display='flex';
+    el.play().catch(function(){});
+  } else if(s.u&&s.u!=='#'){
+    window.open(s.u,'_blank');
+    return;
+  }
+}
+function closeVideo(){
+  var el=document.getElementById('videoEl');
+  el.pause();
+  el.src='';
+  document.getElementById('videoPlayer').style.display='none';
+  _currentVideoSub=null;
+}
+function openVideoLink(){
+  if(_currentVideoSub&&_currentVideoSub.u&&_currentVideoSub.u!=='#'){
+    window.open(_currentVideoSub.u,'_blank');
+  }
+}
+
 /* Notifications */
 var _notifs=[
   {icon:'check',color:'#16a34a',bg:'rgba(22,163,74,0.1)',title:'Clip approved',desc:'Your clip "Him looking at the beads" was approved. $100.00 earned.',time:'2h ago',unread:true},
