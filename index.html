@@ -307,13 +307,13 @@ html{scrollbar-width:none}
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <div style="font-size:14px;font-weight:800;color:#1a1a1a">Earnings</div>
       <div class="period-toggle">
-        <button class="period-btn" onclick="switchPeriod(this)">7D</button>
-        <button class="period-btn active" onclick="switchPeriod(this)">30D</button>
-        <button class="period-btn" onclick="switchPeriod(this)">90D</button>
+        <button class="period-btn" onclick="switchEarningsPeriod(this,7)">7D</button>
+        <button class="period-btn active" onclick="switchEarningsPeriod(this,30)">30D</button>
+        <button class="period-btn" onclick="switchEarningsPeriod(this,90)">90D</button>
       </div>
     </div>
     <div class="mini-chart" id="earnings-chart"></div>
-    <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:#bbb;font-weight:600"><span>Feb 23</span><span>Mar 24</span></div>
+    <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:#bbb;font-weight:600"><span id="chart-date-start">Feb 23</span><span id="chart-date-end">Mar 24</span></div>
   </div>
 
   <div class="card fade-up">
@@ -949,7 +949,15 @@ function generateData(){
   d.avgViewsPerClip=Math.round(d.totalViews/d.clipsApproved);
   d.avgEarningsPerClip=Math.round(d.totalEarnings/d.clipsApproved);
   d.engagementRate=(vary(8.4,5,rng)).toFixed(1);
-  d.chartBars=[];for(var i=0;i<30;i++){d.chartBars.push(Math.round(vary(400+(i/30)*300,30,rng)))}
+  d.chartData={};
+  [7,30,90].forEach(function(days){
+    var bars=[];var r2=seededRandom(getHourlySeed()+days);
+    var baseMin=days===7?500:days===30?300:150;
+    var baseMax=days===7?800:days===30?700:900;
+    for(var i=0;i<days;i++){var progress=i/days;bars.push(Math.max(50,Math.round(vary(baseMin+(baseMax-baseMin)*progress,40,r2))))}
+    d.chartData[days]=bars;
+  });
+  d.chartBars=d.chartData[30];
   return d;
 }
 
@@ -1011,6 +1019,7 @@ function filterClips(btn,filter){
 
 function render(){
   var d=generateData();
+  _lastData=d;
   document.getElementById('creator-name').textContent=_creatorName;
   var avatarSeed=0;for(var ci=0;ci<_creatorName.length;ci++)avatarSeed+=_creatorName.charCodeAt(ci);
   document.getElementById('header-avatar').src='https://i.pravatar.cc/76?img='+(avatarSeed%70+1);
@@ -1042,8 +1051,15 @@ function render(){
   document.getElementById('clips-review-count').textContent=_realSubs.filter(function(s){return s.s==='in_review'}).length;
   document.getElementById('clips-total-earned').textContent=fmtMoney(d.totalEarnings);
 
-  var maxBar=Math.max.apply(null,d.chartBars);
-  document.getElementById('earnings-chart').innerHTML=d.chartBars.map(function(v){return'<div class="bar" style="height:'+Math.max(8,(v/maxBar)*100)+'%"></div>'}).join('');
+  var activePeriod=document.querySelector('#page-home .period-btn.active');
+  var days=activePeriod?parseInt(activePeriod.textContent):30;
+  var bars=d.chartData[days]||d.chartBars;
+  var maxBar=Math.max.apply(null,bars);
+  document.getElementById('earnings-chart').innerHTML=bars.map(function(v){return'<div class="bar" style="height:'+Math.max(8,(v/maxBar)*100)+'%"></div>'}).join('');
+  var end=new Date();var start=new Date(end.getTime()-days*86400000);
+  var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('chart-date-start').textContent=mo[start.getMonth()]+' '+start.getDate();
+  document.getElementById('chart-date-end').textContent=mo[end.getMonth()]+' '+end.getDate();
 
   var campsHtml=d.campaigns.map(function(c){return'<div class="campaign-row"><img src="'+c.logo+'" style="width:40px;height:40px;border-radius:10px;object-fit:cover;flex-shrink:0" alt="" onerror="this.style.background=\'#eee\';this.alt=\''+c.brand.charAt(0)+'\'"><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:#1a1a1a">'+c.name+'</div><div style="font-size:11px;color:#999">'+c.clips+' clips - '+c.cpm+' CPM - '+fmtViews(c.views)+' views</div></div><div style="font-size:14px;font-weight:800;color:#1a1a1a">'+fmtMoney(c.earned)+'</div></div>'}).join('');
   document.getElementById('campaigns-list').innerHTML=campsHtml;
@@ -1079,6 +1095,19 @@ function switchPage(page){
   window.scrollTo(0,0);
 }
 function switchPeriod(btn){btn.parentElement.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active')}
+var _lastData=null;
+function switchEarningsPeriod(btn,days){
+  switchPeriod(btn);
+  if(!_lastData||!_lastData.chartData)return;
+  var bars=_lastData.chartData[days]||_lastData.chartData[30];
+  var maxBar=Math.max.apply(null,bars);
+  document.getElementById('earnings-chart').innerHTML=bars.map(function(v){return'<div class="bar" style="height:'+Math.max(8,(v/maxBar)*100)+'%"></div>'}).join('');
+  var end=new Date();
+  var start=new Date(end.getTime()-days*86400000);
+  var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('chart-date-start').textContent=mo[start.getMonth()]+' '+start.getDate();
+  document.getElementById('chart-date-end').textContent=mo[end.getMonth()]+' '+end.getDate();
+}
 function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2500)}
 
 /* Video player */
