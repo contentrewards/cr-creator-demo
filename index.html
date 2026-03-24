@@ -681,55 +681,55 @@ var platSvgs = {
 
 function generateData(){
   var rng=seededRandom(getHourlySeed());var d={};
-  d.totalEarnings=Math.round(vary(127849,3,rng));
-  d.availableBalance=Math.round(vary(14291,5,rng)*100)/100;
-  d.pendingAmount=Math.round(vary(3842,8,rng)*100)/100;
-  d.thisMonthEarnings=Math.round(vary(18492,4,rng)*100)/100;
-  d.totalViews=Math.round(vary(48200000,3,rng));
-  d.approvalRate=Math.min(99,Math.max(91,Math.round(vary(96,2,rng))));
-  d.clipsSubmitted=Math.round(vary(312,3,rng));
+  d.totalEarnings=Math.round(vary(127849,40,rng));
+  d.availableBalance=Math.round(vary(14291,50,rng)*100)/100;
+  d.pendingAmount=Math.round(vary(3842,60,rng)*100)/100;
+  d.thisMonthEarnings=Math.round(vary(18492,45,rng)*100)/100;
+  d.totalViews=Math.round(vary(48200000,40,rng));
+  d.approvalRate=Math.min(99,Math.max(80,Math.round(vary(93,8,rng))));
+  d.clipsSubmitted=Math.round(vary(312,35,rng));
   d.clipsApproved=Math.round(d.clipsSubmitted*(d.approvalRate/100));
-  d.trustScore=Math.min(99,Math.max(90,Math.round(vary(94,2,rng))));
-  d.earningsChange=Math.round(vary(23,15,rng));
-  d.viewsChange=Math.round(vary(12,20,rng));
+  d.trustScore=Math.min(99,Math.max(82,Math.round(vary(93,8,rng))));
+  d.earningsChange=Math.round(vary(23,60,rng));
+  d.viewsChange=Math.round(vary(12,70,rng));
   d.campaigns=[
-    {name:'Cantina - TikTok Clips',brand:'Cantina',clips:Math.round(vary(68,8,rng)),cpm:'$3.50',earned:Math.round(vary(34200,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/bf6f7701-b4b9-4551-89ee-677f3bbd26f6/thumbnail_url/1771609165105.png',views:Math.round(vary(9800000,5,rng))},
-    {name:'Flooz Clipping',brand:'Flooz',clips:Math.round(vary(54,8,rng)),cpm:'$4.20',earned:Math.round(vary(28600,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/337a5087-537a-42aa-b7d8-91a64ff36986/thumbnail_url/1769077668302.png',views:Math.round(vary(6800000,5,rng))},
-    {name:'Flip.gg [Street Interviews]',brand:'Flip.gg',clips:Math.round(vary(42,8,rng)),cpm:'$2.80',earned:Math.round(vary(19400,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/7072f038-17c7-4be9-9849-f2399d0d77b2/thumbnail_url/1770743490376.jpg',views:Math.round(vary(6900000,5,rng))},
-    {name:'NOBS Toothpaste [STREET INTERVIEWS]',brand:'NOBS',clips:Math.round(vary(48,8,rng)),cpm:'$3.00',earned:Math.round(vary(21800,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/64554043-7c4d-4aa2-a8dd-1316afc24c9c/thumbnail_url/1770465594714.jpeg',views:Math.round(vary(7300000,5,rng))},
-    {name:'Plutus.gg [Logo Clipping]',brand:'Plutus',clips:Math.round(vary(36,8,rng)),cpm:'$3.80',earned:Math.round(vary(14200,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/e3ebd7c3-c64d-472b-8624-71fc1281cd21/thumbnail_url/1770744497658.png',views:Math.round(vary(3700000,5,rng))},
-    {name:'Atricent [GENERAL LOGO]',brand:'Atricent',clips:Math.round(vary(29,8,rng)),cpm:'$2.50',earned:Math.round(vary(9600,5,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/704e87b7-c6c2-463c-aa1e-061fe14b4a25/thumbnail_url/1770385160927.jpeg',views:Math.round(vary(3800000,5,rng))}
+    {name:'Cantina - TikTok Clips',brand:'Cantina',clips:Math.round(vary(68,40,rng)),cpm:'$3.50',earned:Math.round(vary(34200,40,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/bf6f7701-b4b9-4551-89ee-677f3bbd26f6/thumbnail_url/1771609165105.png',views:Math.round(vary(9800000,40,rng))},
+    {name:'Flooz Clipping',brand:'Flooz',clips:Math.round(vary(54,40,rng)),cpm:'$4.20',earned:Math.round(vary(28600,40,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/337a5087-537a-42aa-b7d8-91a64ff36986/thumbnail_url/1769077668302.png',views:Math.round(vary(6800000,40,rng))},
+    {name:'Flip.gg [Street Interviews]',brand:'Flip.gg',clips:Math.round(vary(42,40,rng)),cpm:'$2.80',earned:Math.round(vary(19400,40,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/7072f038-17c7-4be9-9849-f2399d0d77b2/thumbnail_url/1770743490376.jpg',views:Math.round(vary(6900000,40,rng))},
+    {name:'NOBS Toothpaste [STREET INTERVIEWS]',brand:'NOBS',clips:Math.round(vary(48,40,rng)),cpm:'$3.00',earned:Math.round(vary(21800,40,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/64554043-7c4d-4aa2-a8dd-1316afc24c9c/thumbnail_url/1770465594714.jpeg',views:Math.round(vary(7300000,40,rng))},
+    {name:'Plutus.gg [Logo Clipping]',brand:'Plutus',clips:Math.round(vary(36,40,rng)),cpm:'$3.80',earned:Math.round(vary(14200,40,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/e3ebd7c3-c64d-472b-8624-71fc1281cd21/thumbnail_url/1770744497658.png',views:Math.round(vary(3700000,40,rng))},
+    {name:'Atricent [GENERAL LOGO]',brand:'Atricent',clips:Math.round(vary(29,40,rng)),cpm:'$2.50',earned:Math.round(vary(9600,40,rng)),logo:'https://cdn.contentrewards.com/supabase_assets/campaigns/704e87b7-c6c2-463c-aa1e-061fe14b4a25/thumbnail_url/1770385160927.jpeg',views:Math.round(vary(3800000,40,rng))}
   ];
   var months=['Oct','Nov','Dec','Jan','Feb','Mar'];
   var monthAmts=[8200,11400,14800,16200,19100,d.thisMonthEarnings];
-  d.monthlyBreakdown=months.map(function(m,i){return{month:m,amount:Math.round(vary(monthAmts[i],i===5?0:5,rng))}});
+  d.monthlyBreakdown=months.map(function(m,i){return{month:m,amount:Math.round(vary(monthAmts[i],i===5?0:35,rng))}});
   d.payouts=[
-    {method:'PayPal',date:'Mar 22, 2026',amount:vary(4250,3,rng),status:'processing'},
-    {method:'PayPal',date:'Mar 15, 2026',amount:vary(3180,3,rng),status:'completed'},
-    {method:'PayPal',date:'Mar 8, 2026',amount:vary(2940,3,rng),status:'completed'},
-    {method:'PayPal',date:'Mar 1, 2026',amount:vary(3510,3,rng),status:'completed'},
-    {method:'PayPal',date:'Feb 22, 2026',amount:vary(2860,3,rng),status:'completed'},
-    {method:'PayPal',date:'Feb 15, 2026',amount:vary(3220,3,rng),status:'completed'}
+    {method:'PayPal',date:'Mar 22, 2026',amount:vary(4250,40,rng),status:'processing'},
+    {method:'PayPal',date:'Mar 15, 2026',amount:vary(3180,40,rng),status:'completed'},
+    {method:'PayPal',date:'Mar 8, 2026',amount:vary(2940,40,rng),status:'completed'},
+    {method:'PayPal',date:'Mar 1, 2026',amount:vary(3510,40,rng),status:'completed'},
+    {method:'PayPal',date:'Feb 22, 2026',amount:vary(2860,40,rng),status:'completed'},
+    {method:'PayPal',date:'Feb 15, 2026',amount:vary(3220,40,rng),status:'completed'}
   ];
   d.activity=[
     {icon:'check',color:'#16a34a',bg:'rgba(22,163,74,0.1)',title:'Clip approved',desc:'Street Interview #47 - Cantina',time:'2h ago',tab:'clips'},
-    {icon:'dollar',color:'#E8734E',bg:'rgba(232,115,78,0.1)',title:'Payout received',desc:fmtMoneyDec(vary(3180,3,rng))+' via PayPal',time:'5h ago',tab:'earnings'},
-    {icon:'eye',color:'#7c3aed',bg:'rgba(124,58,237,0.1)',title:'Viral clip!',desc:'1.2M views on Flooz Clipping',time:'8h ago',tab:'clips'},
-    {icon:'check',color:'#16a34a',bg:'rgba(22,163,74,0.1)',title:'3 clips approved',desc:'Flip.gg Superbowl UGC',time:'12h ago',tab:'clips'},
-    {icon:'star',color:'#ca8a04',bg:'rgba(202,138,4,0.1)',title:'Trust score updated',desc:d.trustScore+' (+2 from last week)',time:'1d ago',tab:'analytics'},
+    {icon:'dollar',color:'#E8734E',bg:'rgba(232,115,78,0.1)',title:'Payout received',desc:fmtMoneyDec(vary(3180,40,rng))+' via PayPal',time:'5h ago',tab:'earnings'},
+    {icon:'eye',color:'#7c3aed',bg:'rgba(124,58,237,0.1)',title:'Viral clip!',desc:fmtViews(Math.round(vary(1200000,50,rng)))+' views on Flooz Clipping',time:'8h ago',tab:'clips'},
+    {icon:'check',color:'#16a34a',bg:'rgba(22,163,74,0.1)',title:Math.round(vary(3,40,rng))+' clips approved',desc:'Flip.gg Superbowl UGC',time:'12h ago',tab:'clips'},
+    {icon:'star',color:'#ca8a04',bg:'rgba(202,138,4,0.1)',title:'Trust score updated',desc:d.trustScore+' (+'+Math.round(vary(2,60,rng))+' from last week)',time:'1d ago',tab:'analytics'},
     {icon:'upload',color:'#3b82f6',bg:'rgba(59,130,246,0.1)',title:'Clip submitted',desc:'Betway Street Interview #12',time:'1d ago',tab:'clips'},
-    {icon:'dollar',color:'#E8734E',bg:'rgba(232,115,78,0.1)',title:'Payout received',desc:fmtMoneyDec(vary(2940,3,rng))+' via PayPal',time:'2d ago',tab:'earnings'}
+    {icon:'dollar',color:'#E8734E',bg:'rgba(232,115,78,0.1)',title:'Payout received',desc:fmtMoneyDec(vary(2940,40,rng))+' via PayPal',time:'2d ago',tab:'earnings'}
   ];
   d.topClips=_realSubs.filter(function(s){return s.s==='approved'}).slice(0,5).map(function(s){return{title:s.t,views:s.v,earned:s.pay,platform:platNames[s.p]||s.p}});
   d.platforms=[
-    {name:'TikTok',views:vary(32100000,3,rng),earnings:vary(78400,4,rng),pct:67,color:'#1a1a1a'},
-    {name:'YouTube',views:vary(9800000,3,rng),earnings:vary(28900,4,rng),pct:20,color:'#ef4444'},
-    {name:'Instagram',views:vary(6300000,3,rng),earnings:vary(20549,4,rng),pct:13,color:'#e040a0'}
+    {name:'TikTok',views:vary(32100000,40,rng),earnings:vary(78400,40,rng),pct:Math.round(vary(67,15,rng)),color:'#1a1a1a'},
+    {name:'YouTube',views:vary(9800000,40,rng),earnings:vary(28900,40,rng),pct:Math.round(vary(20,25,rng)),color:'#ef4444'},
+    {name:'Instagram',views:vary(6300000,40,rng),earnings:vary(20549,40,rng),pct:Math.round(vary(13,30,rng)),color:'#e040a0'}
   ];
   d.avgViewsPerClip=Math.round(d.totalViews/d.clipsApproved);
   d.avgEarningsPerClip=Math.round(d.totalEarnings/d.clipsApproved);
-  d.engagementRate=(vary(8.4,5,rng)).toFixed(1);
-  d.chartBars=[];for(var i=0;i<30;i++){d.chartBars.push(Math.round(vary(400+(i/30)*300,30,rng)))}
+  d.engagementRate=(vary(8.4,35,rng)).toFixed(1);
+  d.chartBars=[];for(var i=0;i<30;i++){d.chartBars.push(Math.round(vary(400+(i/30)*300,50,rng)))}
   return d;
 }
 
