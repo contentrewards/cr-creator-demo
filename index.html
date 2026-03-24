@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#E8734E">
+<title>Content Rewards</title>
+<link rel="icon" type="image/png" href="/images/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{font-family:'Nunito',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f3f0;color:#1a1a1a;overflow-x:hidden;-webkit-font-smoothing:antialiased;min-height:100vh;min-height:100dvh}
+body{padding-top:env(safe-area-inset-top)}
+::-webkit-scrollbar{display:none}
+html{scrollbar-width:none}
+
+/* Dev banner */
+.dev-banner{position:fixed;top:0;left:0;right:0;z-index:500;background:#1a1a1a;color:#fff;padding:8px 12px;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;transition:transform 0.3s ease;flex-wrap:wrap}
+.dev-banner.hidden{transform:translateY(-100%)}
+.dev-banner input{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:4px 8px;border-radius:6px;font-size:11px;font-family:inherit;font-weight:600;width:100px;outline:none}
+.dev-banner input:focus{border-color:#E8734E}
+.dev-banner button{background:#E8734E;color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.dev-banner button:active{opacity:0.8}
+.dev-banner .sec{background:#333}
+.dev-banner .close-btn{background:none;color:rgba(255,255,255,0.5);font-size:18px;padding:0 4px;margin-left:auto;line-height:1}
+.dev-toggle{position:fixed;top:8px;right:8px;z-index:499;width:28px;height:28px;border-radius:6px;background:rgba(0,0,0,0.06);border:none;cursor:pointer;display:none;align-items:center;justify-content:center}
+.dev-toggle svg{width:14px;height:14px;stroke:#999;stroke-width:2;fill:none}
+.dev-toggle.visible{display:flex}
+
+/* Pages */
+.page{display:none;min-height:100vh;min-height:100dvh;padding-bottom:90px}
+.page.active{display:block}
+
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,0.06);display:flex;justify-content:space-around;align-items:center;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:100}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 12px;border-radius:10px;cursor:pointer;transition:all 0.2s;-webkit-user-select:none;user-select:none;position:relative}
+.nav-item svg{width:20px;height:20px;stroke-width:1.8}
+.nav-item span{font-size:9px;font-weight:600;color:#999}
+.nav-item.active svg{stroke:#E8734E}
+.nav-item.active span{color:#E8734E;font-weight:700}
+
+.card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.04);margin:0 16px 12px}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.pulse{animation:pulse 2s ease-in-out infinite}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp 0.4s ease-out both}
+.fade-up:nth-child(2){animation-delay:0.05s}
+.fade-up:nth-child(3){animation-delay:0.1s}
+.fade-up:nth-child(4){animation-delay:0.15s}
+.fade-up:nth-child(5){animation-delay:0.2s}
+.fade-up:nth-child(6){animation-delay:0.25s}
+
+.mini-chart{display:flex;align-items:flex-end;gap:3px;height:40px}
+.mini-chart .bar{flex:1;border-radius:3px;background:#E8734E;min-height:4px;transition:height 0.6s ease-out}
+
+.activity-item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(0,0,0,0.04)}
+.activity-item:last-child{border-bottom:none}
+.activity-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+.earnings-bar-group{display:flex;flex-direction:column;gap:8px}
+.earnings-bar-row{display:flex;align-items:center;gap:10px}
+.earnings-bar-label{font-size:11px;color:#999;width:32px;text-align:right;flex-shrink:0}
+.earnings-bar-track{flex:1;height:8px;border-radius:4px;background:#f0edea;overflow:hidden}
+.earnings-bar-fill{height:100%;border-radius:4px;transition:width 1s ease-out}
+.earnings-bar-val{font-size:12px;font-weight:700;color:#1a1a1a;width:60px;flex-shrink:0}
+
+.period-toggle{display:inline-flex;background:#f0edea;border-radius:10px;padding:3px;gap:2px}
+.period-btn{padding:6px 14px;border-radius:8px;font-size:11px;font-weight:700;color:#999;cursor:pointer;transition:all 0.2s;border:none;background:none;font-family:inherit}
+.period-btn.active{background:#fff;color:#1a1a1a;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+
+.btn-primary{background:#E8734E;color:#fff;border:none;border-radius:12px;padding:14px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;transition:opacity 0.15s}
+.btn-primary:active{opacity:0.9;transform:scale(0.99)}
+
+.campaign-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(0,0,0,0.04)}
+.campaign-row:last-child{border-bottom:none}
+.campaign-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;font-weight:800;color:#fff}
+
+.payout-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.04)}
+.payout-item:last-child{border-bottom:none}
+.status-completed{color:#16a34a}
+.status-processing{color:#E8734E}
+
+.notif-badge{position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:50%;background:#ef4444;border:2px solid #fff}
+
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-100px);background:#1a1a1a;color:#fff;padding:12px 24px;border-radius:12px;font-size:13px;font-weight:600;z-index:200;transition:transform 0.3s ease;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* Submission cards */
+.sub-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);margin-bottom:12px}
+.sub-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;background:#eee;display:block}
+.sub-body{padding:14px 16px}
+.sub-title{font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub-meta{display:flex;gap:12px;font-size:11px;color:#999;font-weight:600;margin-bottom:8px;flex-wrap:wrap}
+.sub-stats{display:flex;gap:8px}
+.sub-stat{flex:1;text-align:center;padding:8px 4px;background:#faf8f6;border-radius:8px}
+.sub-stat-val{font-size:14px;font-weight:800;color:#1a1a1a}
+.sub-stat-lbl{font-size:9px;color:#999;margin-top:1px}
+.sub-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700}
+.sub-badge.approved{background:rgba(22,163,74,0.08);color:#16a34a}
+.sub-badge.pending{background:rgba(232,115,78,0.08);color:#E8734E}
+.sub-badge.paid{background:rgba(22,163,74,0.08);color:#16a34a}
+.sub-badge.unpaid{background:rgba(202,138,4,0.08);color:#ca8a04}
+
+/* Filter pills */
+.filter-row{display:flex;gap:6px;overflow-x:auto;padding:0 16px 12px;-webkit-overflow-scrolling:touch}
+.filter-pill{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;color:#999;background:#fff;border:1px solid rgba(0,0,0,0.06);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.15s;font-family:inherit}
+.filter-pill.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+
+/* Platform icon */
+.plat-icon{width:18px;height:18px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+
+@media(min-width:480px){
+  .card{margin:0 auto 12px;max-width:440px}
+  .page{max-width:480px;margin:0 auto}
+  .bottom-nav{max-width:480px;left:50%;transform:translateX(-50%);border-radius:16px 16px 0 0}
+  .sub-card{margin-left:auto;margin-right:auto;max-width:440px}
+  .filter-row{max-width:480px;margin:0 auto;padding:0 20px 12px}
+}
+</style>
+</head>
+<body>
+
+<!-- Dev banner -->
+<div class="dev-banner" id="devBanner">
+  <span style="font-size:10px;color:rgba(255,255,255,0.4)">DEV</span>
+  <input type="text" id="devNameInput" placeholder="Creator name" value="hasan" onkeydown="if(event.key==='Enter'){event.preventDefault();applyDevName()}">
+  <button onclick="applyDevName()">Set</button>
+  <button class="sec" onclick="randomizeName()">Random</button>
+  <button class="sec" onclick="regenerateNumbers()">Regen</button>
+  <button class="close-btn" onclick="toggleDev()">&times;</button>
+</div>
+<button class="dev-toggle" id="devToggle" onclick="toggleDev()">
+  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+</button>
+<div class="toast" id="toast"></div>
+
+<!-- ═══ PAGE: HOME ═══ -->
+<div class="page active" id="page-home">
+  <div style="background:linear-gradient(180deg,#E8734E 0%,#F5A623 100%);padding:calc(16px + env(safe-area-inset-top)) 20px 52px;position:relative">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;overflow:hidden">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)" stroke="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <div style="font-size:14px;font-weight:800;color:#fff" id="creator-name">hasan</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.7)">Content Creator</div>
+        </div>
+      </div>
+      <div style="position:relative;cursor:pointer" onclick="showToast('No new notifications')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div class="notif-badge"></div>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-size:11px;color:rgba(255,255,255,0.7);font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Total Earnings</div>
+      <div style="font-size:42px;font-weight:900;color:#fff;letter-spacing:-1.5px;margin-top:4px;line-height:1" id="total-earnings">$127,849</div>
+      <div style="display:inline-flex;align-items:center;gap:4px;margin-top:8px;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);padding:4px 12px;border-radius:8px">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+        <span style="font-size:12px;font-weight:700;color:#4ade80" id="earnings-change">+23% this month</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card fade-up" style="margin-top:-28px;position:relative;z-index:2">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div>
+        <div style="font-size:11px;color:#999;font-weight:600">Available balance</div>
+        <div style="font-size:28px;font-weight:900;color:#1a1a1a;letter-spacing:-0.5px" id="available-balance">$14,291.44</div>
+      </div>
+      <button class="btn-primary" style="width:auto;padding:10px 20px;font-size:13px" onclick="showToast('Withdrawal initiated')">Withdraw</button>
+    </div>
+    <div style="display:flex;gap:16px;padding-top:14px;border-top:1px solid #f0edea">
+      <div><span style="font-size:11px;color:#999">Pending</span> <strong style="color:#E8734E;margin-left:4px;font-size:13px" id="pending-amount">$3,842.10</strong></div>
+      <div><span style="font-size:11px;color:#999">This month</span> <strong style="color:#16a34a;margin-left:4px;font-size:13px" id="this-month-amount">$18,492.30</strong></div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px;margin-bottom:12px" class="fade-up">
+    <div style="background:#fff;border-radius:16px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8734E" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span style="font-size:11px;color:#999;font-weight:600">Total Views</span>
+      </div>
+      <div style="font-size:24px;font-weight:900;color:#1a1a1a" id="total-views">48.2M</div>
+      <div style="font-size:11px;color:#16a34a;font-weight:700;margin-top:2px" id="views-change">+12% vs last month</div>
+    </div>
+    <div style="background:#fff;border-radius:16px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <span style="font-size:11px;color:#999;font-weight:600">Approval Rate</span>
+      </div>
+      <div style="font-size:24px;font-weight:900;color:#1a1a1a" id="approval-rate">96%</div>
+      <div style="font-size:11px;color:#16a34a;font-weight:700;margin-top:2px">Excellent</div>
+    </div>
+    <div style="background:#fff;border-radius:16px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+        <span style="font-size:11px;color:#999;font-weight:600">Clips Submitted</span>
+      </div>
+      <div style="font-size:24px;font-weight:900;color:#1a1a1a" id="clips-submitted">312</div>
+      <div style="font-size:11px;color:#999;font-weight:600;margin-top:2px" id="clips-approved">298 approved</div>
+    </div>
+    <div style="background:#fff;border-radius:16px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span style="font-size:11px;color:#999;font-weight:600">Trust Score</span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:6px">
+        <span style="font-size:24px;font-weight:900;color:#1a1a1a" id="trust-score">94</span>
+        <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:rgba(34,197,94,0.1);color:#22c55e">Elite</span>
+      </div>
+      <div style="font-size:11px;color:#16a34a;font-weight:700;margin-top:2px">Top 5% of creators</div>
+    </div>
+  </div>
+
+  <div class="card fade-up">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-size:14px;font-weight:800;color:#1a1a1a">Earnings</div>
+      <div class="period-toggle">
+        <button class="period-btn" onclick="switchPeriod(this)">7D</button>
+        <button class="period-btn active" onclick="switchPeriod(this)">30D</button>
+        <button class="period-btn" onclick="switchPeriod(this)">90D</button>
+      </div>
+    </div>
+    <div class="mini-chart" id="earnings-chart"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:#bbb;font-weight:600"><span>Feb 23</span><span>Mar 24</span></div>
+  </div>
+
+  <div class="card fade-up">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <div style="font-size:14px;font-weight:800;color:#1a1a1a">Active Campaigns</div>
+      <div style="font-size:11px;color:#E8734E;font-weight:700" id="campaign-count">6 active</div>
+    </div>
+    <div id="campaigns-list"></div>
+  </div>
+
+  <div class="card fade-up">
+    <div style="font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:4px">Recent Activity</div>
+    <div id="activity-list"></div>
+  </div>
+
+  <div style="text-align:center;padding:16px;margin-bottom:20px">
+    <div style="display:inline-flex;align-items:center;gap:6px;font-size:10px;color:#999;font-weight:600">
+      <div class="pulse" style="width:6px;height:6px;border-radius:50%;background:#16a34a"></div>
+      <span id="last-updated">Updated just now</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE: MY CLIPS ═══ -->
+<div class="page" id="page-clips">
+  <div style="padding:calc(16px + env(safe-area-inset-top)) 20px 16px;background:#fff;border-bottom:1px solid rgba(0,0,0,0.04)">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-0.3px">My Clips</div>
+        <div style="font-size:12px;color:#999;margin-top:2px" id="clips-count">312 submissions</div>
+      </div>
+      <button class="btn-primary" style="width:auto;padding:8px 16px;font-size:12px" onclick="showToast('Opening submission form...')">Submit Clip</button>
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div style="display:flex;gap:8px;padding:12px 16px" class="fade-up">
+    <div style="flex:1;background:#fff;border-radius:12px;padding:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
+      <div style="font-size:20px;font-weight:900;color:#16a34a" id="clips-approved-count">298</div>
+      <div style="font-size:10px;color:#999;margin-top:2px">approved</div>
+    </div>
+    <div style="flex:1;background:#fff;border-radius:12px;padding:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
+      <div style="font-size:20px;font-weight:900;color:#E8734E" id="clips-review-count">8</div>
+      <div style="font-size:10px;color:#999;margin-top:2px">in review</div>
+    </div>
+    <div style="flex:1;background:#fff;border-radius:12px;padding:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
+      <div style="font-size:20px;font-weight:900;color:#1a1a1a" id="clips-total-earned">$127K</div>
+      <div style="font-size:10px;color:#999;margin-top:2px">earned</div>
+    </div>
+  </div>
+
+  <!-- Filter -->
+  <div class="filter-row" id="clips-filters">
+    <button class="filter-pill active" onclick="filterClips(this,'all')">All</button>
+    <button class="filter-pill" onclick="filterClips(this,'approved')">Approved</button>
+    <button class="filter-pill" onclick="filterClips(this,'in_review')">In Review</button>
+    <button class="filter-pill" onclick="filterClips(this,'tiktok')">TikTok</button>
+    <button class="filter-pill" onclick="filterClips(this,'instagram')">Instagram</button>
+    <button class="filter-pill" onclick="filterClips(this,'youtube')">YouTube</button>
+  </div>
+
+  <!-- Clips list -->
+  <div style="padding:0 16px" id="clips-list"></div>
+
+  <div style="text-align:center;padding:20px;margin-bottom:20px">
+    <div style="display:inline-flex;align-items:center;gap:6px;font-size:10px;color:#999;font-weight:600">
+      <div class="pulse" style="width:6px;height:6px;border-radius:50%;background:#16a34a"></div>
+      <span>Views update every 30 min</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE: WALLET ═══ -->
+<div class="page" id="page-earnings">
+  <div style="padding:calc(16px + env(safe-area-inset-top)) 20px 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,0.04)">
+    <div style="font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-0.3px">Wallet</div>
+  </div>
+  <div class="card fade-up" style="margin-top:12px">
+    <div style="font-size:11px;color:#999;font-weight:600;margin-bottom:6px">Available balance</div>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:36px;font-weight:900;color:#1a1a1a;letter-spacing:-1px;line-height:1" id="wallet-balance">$14,291.44</div>
+      <button class="btn-primary" style="width:auto;padding:12px 24px" onclick="showToast('Withdrawal initiated - arriving in 1-3 business days')">Withdraw</button>
+    </div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid #f0edea;display:flex;gap:24px;font-size:13px">
+      <div><span style="color:#999">Pending</span> <strong style="color:#E8734E" id="wallet-pending">$3,842.10</strong></div>
+      <div><span style="color:#999">Lifetime</span> <strong style="color:#1a1a1a" id="wallet-lifetime">$127,849</strong></div>
+    </div>
+  </div>
+  <div class="card fade-up">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-size:14px;font-weight:800;color:#1a1a1a">This month</div>
+      <div style="font-size:20px;font-weight:900;color:#1a1a1a" id="month-earnings">$18,492.30</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <div style="flex:1;text-align:center;padding:12px 8px;background:#faf8f6;border-radius:10px">
+        <div style="font-size:18px;font-weight:800;color:#1a1a1a" id="month-approval">96%</div>
+        <div style="font-size:10px;color:#999;margin-top:2px">approved</div>
+      </div>
+      <div style="flex:1;text-align:center;padding:12px 8px;background:#faf8f6;border-radius:10px">
+        <div style="font-size:18px;font-weight:800;color:#1a1a1a" id="month-views">12.4M</div>
+        <div style="font-size:10px;color:#999;margin-top:2px">views</div>
+      </div>
+      <div style="flex:1;text-align:center;padding:12px 8px;background:#faf8f6;border-radius:10px">
+        <div style="font-size:18px;font-weight:800;color:#1a1a1a" id="month-clips">47</div>
+        <div style="font-size:10px;color:#999;margin-top:2px">clips</div>
+      </div>
+      <div style="flex:1;text-align:center;padding:12px 8px;background:rgba(34,197,94,0.06);border-radius:10px">
+        <div style="font-size:18px;font-weight:800;color:#22c55e" id="month-trust">94</div>
+        <div style="font-size:10px;color:#999;margin-top:2px">trust score</div>
+      </div>
+    </div>
+  </div>
+  <div class="card fade-up">
+    <div style="font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:16px">Monthly Breakdown</div>
+    <div class="earnings-bar-group" id="monthly-bars"></div>
+  </div>
+  <div class="card fade-up">
+    <div style="font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:4px">By campaign</div>
+    <div id="wallet-campaigns"></div>
+  </div>
+  <div class="card fade-up">
+    <div style="font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:4px">Recent payouts</div>
+    <div id="recent-payouts"></div>
+  </div>
+  <div style="text-align:center;padding:16px;margin-bottom:20px">
+    <div style="display:inline-flex;align-items:center;gap:6px;font-size:10px;color:#999;font-weight:600">
+      <div class="pulse" style="width:6px;height:6px;border-radius:50%;background:#16a34a"></div><span>Live data</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE: ANALYTICS ═══ -->
+<div class="page" id="page-analytics">
+  <div style="padding:calc(16px + env(safe-area-inset-top)) 20px 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,0.04)">
+    <div style="font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-0.3px">Analytics</div>
+  </div>
+  <div class="card fade-up" style="margin-top:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-size:14px;font-weight:800;color:#1a1a1a">Performance</div>
+      <div class="period-toggle">
+        <button class="period-btn active" onclick="switchPeriod(this)">7D</button>
+        <button class="period-btn" onclick="switchPeriod(this)">30D</button>
+        <button class="period-btn" onclick="switchPeriod(this)">All</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="padding:14px;background:#faf8f6;border-radius:12px">
+        <div style="font-size:10px;color:#999;font-weight:600;margin-bottom:4px">Avg. Views/Clip</div>
+        <div style="font-size:22px;font-weight:900;color:#1a1a1a" id="avg-views">154.5K</div>
+      </div>
+      <div style="padding:14px;background:#faf8f6;border-radius:12px">
+        <div style="font-size:10px;color:#999;font-weight:600;margin-bottom:4px">Avg. Earnings/Clip</div>
+        <div style="font-size:22px;font-weight:900;color:#1a1a1a" id="avg-earnings">$409</div>
+      </div>
+      <div style="padding:14px;background:#faf8f6;border-radius:12px">
+        <div style="font-size:10px;color:#999;font-weight:600;margin-bottom:4px">Best Performing</div>
+        <div style="font-size:14px;font-weight:800;color:#1a1a1a">TikTok</div>
+        <div style="font-size:10px;color:#16a34a;font-weight:600" id="best-platform-views">32.1M views</div>
+      </div>
+      <div style="padding:14px;background:#faf8f6;border-radius:12px">
+        <div style="font-size:10px;color:#999;font-weight:600;margin-bottom:4px">Engagement Rate</div>
+        <div style="font-size:22px;font-weight:900;color:#1a1a1a" id="engagement-rate">8.4%</div>
+      </div>
+    </div>
+  </div>
+  <div class="card fade-up">
+    <div style="font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:12px">Top Clips This Month</div>
+    <div id="top-clips"></div>
+  </div>
+  <div class="card fade-up">
+    <div style="font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:16px">By Platform</div>
+    <div id="platform-breakdown"></div>
+  </div>
+  <div style="text-align:center;padding:16px;margin-bottom:20px">
+    <div style="display:inline-flex;align-items:center;gap:6px;font-size:10px;color:#999;font-weight:600">
+      <div class="pulse" style="width:6px;height:6px;border-radius:50%;background:#16a34a"></div><span>Live data</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BOTTOM NAV ═══ -->
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="switchPage('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Home</span>
+  </div>
+  <div class="nav-item" onclick="switchPage('clips')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+    <span>My Clips</span>
+  </div>
+  <div class="nav-item" onclick="switchPage('earnings')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+    <span>Wallet</span>
+  </div>
+  <div class="nav-item" onclick="switchPage('analytics')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <span>Analytics</span>
+  </div>
+</div>
+
+<script>
+/* ═══ REAL SUBMISSION DATA FROM NEON DB ═══ */
+var _realSubs = [
+  {t:"Him looking at the beads",u:"https://www.instagram.com/reel/DU3Lo_SEXgx/",p:"instagram",v:11287114,l:581262,c:3368,pay:100,thumb:"https://scontent-lhr6-1.cdninstagram.com/v/t51.71878-15/628868092_2155084671893966_6014805537051007887_n.jpg?stp=c0.249.640.640a_dst-jpg_e15_tt6&_nc_ht=scontent-lhr6-1.cdninstagram.com&_nc_cat=102&_nc_oc=Q6cZ2QGMCo5-eHz6mUQs2PLqmLdALg0Heu6iP7gaVHTgUJdmIKcBWThhuyUXXVnadgHgaSY&_nc_ohc=vzPtVK-UlasQ7kNvwGR5Woh&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfyZS2CMUPcbykNbH0DmuKOXTH7pULy_rRjzqe018FnaFQ&oe=69B8706B",d:"Feb 17",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
+  {t:"He didn't think the other side would have recorded",u:"https://www.instagram.com/reel/DUq2gVzEQaF/",p:"instagram",v:8169825,l:392123,c:680,pay:500,thumb:"https://scontent-bog2-1.cdninstagram.com/v/t51.71878-15/626297194_964997909188216_6105987717409551436_n.jpg?stp=c0.249.640.640a_dst-jpg_e15_tt6&_nc_ht=scontent-bog2-1.cdninstagram.com&_nc_cat=104&_nc_oc=Q6cZ2gFWRAvi6k4WnIE0iUNX-DT466rvGauC0AzIBHv2qbKU-OiPMM76h2AwQ6bMKdNRbI0&_nc_ohc=k8DIwt82QFAQ7kNvwHnBBQi&edm=APs17CUBAAAA&ccb=7-5&oh=00_Afz1yhoHuZOTi5sqSHJgtvsW4QLopcT_OQ-qptleJMRG8g&oe=69C54F38",d:"Feb 12",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true},
+  {t:"There's an app for THAT",u:"https://www.instagram.com/reel/DUp0VxQCMG1/",p:"instagram",v:4740181,l:327406,c:1640,pay:400.10,thumb:"https://scontent-nrt1-1.cdninstagram.com/v/t51.71878-15/629277467_902526745837539_6743353374588088161_n.jpg?stp=c0.248.640.640a_dst-jpg_e15_tt6&_nc_ht=scontent-nrt1-1.cdninstagram.com&_nc_cat=103&_nc_oc=Q6cZ2gEFvO8t1Q3OJL9k_1vt8gCodFkyuSutK_SWdCQNGbH9AqerKnu89u0PIwgzIMG24tg&_nc_ohc=rtaOxpp851AQ7kNvwHQY3mA&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfyQd_xqmxuNZ7k25cIc7tVsqgnO-p_a2HjIlSz1rHw03Q&oe=69C54310",d:"Feb 12",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true},
+  {t:"Legendary moments that made history",u:"https://www.instagram.com/reel/DUpthQIDLYO/",p:"instagram",v:4703165,l:155373,c:492,pay:459.90,thumb:"https://instagram.ftlc3-1.fna.fbcdn.net/v/t51.71878-15/629772325_1269485645119291_4150406968593615477_n.jpg?stp=c0.248.640.640a_dst-jpg_e15_tt6&_nc_ht=instagram.ftlc3-1.fna.fbcdn.net&_nc_cat=107&_nc_oc=Q6cZ2gHXcuIQWmzEnA4MvmU815Pelq-BmFSgRc5QkccJb2KPuo5QVeYsxLzq43CwHz-MqiU&_nc_ohc=IfBjzM2vi-wQ7kNvwFE6HM8&edm=APs17CUBAAAA&ccb=7-5&oh=00_Afy4im5abhmFT68d9ofNK6JQrPaMQ0ha5G6ZuD7SU8Ql_A&oe=69C5337A",d:"Feb 12",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true},
+  {t:"Brooklyn 3",u:"https://www.tiktok.com/t/ZP89EMhSD/",p:"tiktok",v:3393859,l:393111,c:635,pay:100,thumb:"https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oweI7n3KIsHIkjJC4TwGeHejj9ALDFzACSnTQ0~tplv-tiktokx-cropcenter-q:300:400:q72.heic?dr=8596&refresh_token=9f7e8b0c&x-expires=1771365600&x-signature=96anu1soBPOCf%2FX4SJabFok%2FKyQ%3D",d:"Feb 16",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
+  {t:"Who should start today between Joao Pedro and Liam Delap?",u:"https://x.com/CFC_dennoh/status/2013881824779366731",p:"x",v:3348855,l:4887,c:44,pay:100,thumb:"https://pbs.twimg.com/ext_tw_video_thumb/2013881651160342528/pu/img/aI8xT5M3n7KJhgG4.jpg",d:"Jan 21",camp:"PolyMarket Clipping",s:"approved",paid:true},
+  {t:"yonna's gonna be the biggest star",u:"https://vt.tiktok.com/ZSmSD4dGg/",p:"tiktok",v:3275895,l:322362,c:446,pay:100,thumb:"https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/ogPiaCAYBninBO6TWzEIIzlGAvzUrpstKyZVd~tplv-tiktokx-cropcenter-comet-q:300:400:q72.heic?dr=11006&refresh_token=51683a7f&x-expires=1771369200&x-signature=0qg6ilHAxa6%2BFNU4uRp8aigpZng%3D",d:"Feb 16",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
+  {t:"is that a cart for him in case he gets tired?",u:"https://www.instagram.com/reel/DU0EwWbDgzi/",p:"instagram",v:3090088,l:188331,c:204,pay:100,thumb:"https://scontent-bog2-1.cdninstagram.com/v/t51.71878-15/632356025_1230745015239734_5360927325792363255_n.jpg?stp=c0.249.640.640a_dst-jpg_e15_tt6&_nc_ht=scontent-bog2-1.cdninstagram.com&_nc_cat=102&_nc_oc=Q6cZ2QFxO24Xk-vzMilFUj7Pqlnh6x3zXVFc9_VMCW804Bcap7tFbyP4I77yilnFjKg7R-s&_nc_ohc=-ndimxtD5zcQ7kNvwEIrHL_&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfyetMr-pPXBhNCsXutgm46F0qs-QEm-lgrYq8umFbr2OQ&oe=69B7E463",d:"Feb 16",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
+  {t:"Glow up tips",u:"https://vm.tiktok.com/ZNRawKcx7/",p:"tiktok",v:2741720,l:152403,c:399,pay:500,thumb:"https://p16-common-sign.tiktokcdn-us.com/tos-no1a-i-photomode-no/8988fbbee9e347e98bcbd0a41546fd05~tplv-photomode-comet-cover:640:0:q72.heic?dr=12228&refresh_token=4521a9e2&x-expires=1773817200&x-signature=hlIQNXp9vE%2BxdXns2TVAssebeZ4%3D",d:"Mar 3",camp:"NOBS Toothpaste [LOOKSMAXXING]",s:"approved",paid:true},
+  {t:"Cooper Kupp IS greatness",u:"https://www.instagram.com/reel/DUumuW6EReq/",p:"instagram",v:2135972,l:81662,c:284,pay:95.58,thumb:"https://scontent-lhr6-1.cdninstagram.com/v/t51.82787-15/629827255_17875243479510686_1371421693403923266_n.jpg?stp=c0.187.480.480a_dst-jpg_e15_tt6&_nc_ht=scontent-lhr6-1.cdninstagram.com&_nc_cat=102&_nc_oc=Q6cZ2QGwlZqaDjRnIMrY1tB-p4hY7TqYaml32eTcPe_-KvmG8C3RU6RCLDKa6K5TP8Tt0BE&_nc_ohc=G1Fj-eXqXOwQ7kNvwHlGKLe&edm=APs17CUBAAAA&ccb=7-5&oh=00_Afy5qijuwt6VI6UjhHW7lJXzDebRoUlBZZZB_tIcVjbPxQ&oe=69B94684",d:"Feb 14",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true},
+  {t:"Yonna Jay Clip with correct viewer analytics",u:"https://www.tiktok.com/t/ZThCdr6wL/",p:"tiktok",v:1947995,l:232285,c:550,pay:100,thumb:"https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/ow6eSFDIREDzRIVPiTEIN8BArDMgzkK3kpfRh6~tplv-tiktokx-cropcenter-q:300:400:q72.heic?dr=8596&refresh_token=3301ed82&x-expires=1771372800&x-signature=i99M0D2nh916rRc%2F7fTQcJOz1Ss%3D",d:"Feb 16",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
+  {t:"cellular device",u:"https://vt.tiktok.com/ZSm8osCKp/",p:"tiktok",v:1548123,l:144479,c:105,pay:84.86,thumb:"https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o0wdwlEYQEqYXpeBADpEMDEBjQz8Ud8fgAaFiR~tplv-tiktokx-cropcenter-comet-q:300:400:q72.heic?dr=11006&refresh_token=adce367f&x-expires=1770868800&x-signature=r7kp8pK0SxaE2ealU%2FTDmxbL1qo%3D",d:"Feb 11",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
+  {t:"St james",u:"https://www.instagram.com/reel/DWMwix1ibum/",p:"instagram",v:1536328,l:70411,c:520,pay:109.98,thumb:"https://scontent-lga3-2.cdninstagram.com/v/t51.82787-15/655934022_17935493421197916_6757703920971547352_n.jpg?stp=c0.472.1215.1215a_dst-jpg_e35_s640x640_sh0.08_tt6&_nc_ht=scontent-lga3-2.cdninstagram.com&_nc_cat=100&_nc_oc=Q6cZ2gEoDwYpQrCLXp1ENZUxl1VRFz2YjcHe7li4otKl-uhiQHgmVtFDxD0sc3deCuzjZLo&_nc_ohc=l7FHIEuR0hEQ7kNvwEzb-9o&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfyCo4d0Nv1la4zJ1KkXhauswT2WAtI_p6fzqjJeCJQ-Rw&oe=69C625C6",d:"Mar 22",camp:"Content Rewards [Logo Clipping]",s:"approved",paid:false},
+  {t:"yonna with a young fan",u:"https://vt.tiktok.com/ZSmrMEUno/",p:"tiktok",v:1422481,l:210731,c:62,pay:98.45,thumb:"https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oU8Qe3W0QMIIomIC2hfM8Dej9BAXFhdAaQtTQH~tplv-tiktokx-cropcenter-comet-q:300:400:q72.heic?dr=11006&refresh_token=158e9f0a&x-expires=1771189200&x-signature=6fczHviRuIPQh9N8HEGakV%2FZfww%3D",d:"Feb 14",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
+  {t:"from unc to stepdad",u:"https://www.tiktok.com/@juztheteap/video/7606195533950094612",p:"tiktok",v:1317731,l:194391,c:361,pay:100,thumb:"https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oI5lEXOERUifvKaBogCqBIujIA3pf2DyJIqBFB~tplv-tiktokx-cropcenter-comet-q:300:400:q72.heic?dr=11006&refresh_token=b2db84c1&x-expires=1771041600&x-signature=V7obZTATF9PkK%2BkksYaAtl1JWpY%3D",d:"Feb 13",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
+  {t:"this is how i meet",u:"https://www.instagram.com/reel/DWLcwcNigof/",p:"instagram",v:1208241,l:23358,c:154,pay:120.34,thumb:"https://scontent-muc2-1.cdninstagram.com/v/t51.82787-15/655245125_17888828802449871_963404786349541524_n.jpg?stp=c0.472.1215.1215a_dst-jpg_e35_s640x640_sh0.08_tt6&_nc_ht=scontent-muc2-1.cdninstagram.com&_nc_cat=103&_nc_oc=Q6cZ2gGSMMKqfXhJGS7-rWCLgQWZYHbj9TABrfYSYp7HRdqd51cTf93aq7B1RhQJuToGZ4U&_nc_ohc=yhJP7_w6Q8sQ7kNvwHzIbT5&edm=APs17CUBAAAA&ccb=7-5&oh=00_Afx13jKf_FC8DRafxXZq1uIgYiduCIy6LhfOJ2ZRBD_3fA&oe=69C58C9D",d:"Mar 22",camp:"Content Rewards [Logo Clipping]",s:"approved",paid:false},
+  {t:"yonna singing strange",u:"https://www.tiktok.com/@juztheteap/video/7606252717715246357",p:"tiktok",v:1144454,l:168046,c:218,pay:86.77,thumb:"https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/ok1RBWfDUQpmRvpEvrwOsjYtdBSAfEZMFEzrQg~tplv-tiktokx-cropcenter-comet-q:300:400:q72.heic?dr=11006&refresh_token=fcc47fa2&x-expires=1771052400&x-signature=w7XVKr11a7fYkco9vRjJY8tAjlo%3D",d:"Feb 13",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:true},
+  {t:"Bali and DDG wholesome moment",u:"https://www.tiktok.com/t/ZThx199L5/",p:"tiktok",v:997696,l:131630,c:230,pay:54.29,thumb:"https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/o8jCILH8BwxeaeIBRTI9AHkQW7III2BeGCEGIA~tplv-tiktokx-cropcenter-q:300:400:q72.heic?dr=8596&refresh_token=3dd75348&x-expires=1771135200&x-signature=f6hVAn%2FZWedLamK929fE3yJqJwI%3D",d:"Feb 14",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true},
+  {t:"Queen naija face",u:"https://www.tiktok.com/t/ZTham4ejL/",p:"tiktok",v:875081,l:63076,c:282,pay:73.67,thumb:"https://p19-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/o8Uf3CSBpBQwBUViipoTyAIcEDvJfiFgQRINK4~tplv-tiktokx-cropcenter-q:300:400:q72.heic?dr=8596&refresh_token=bd11d686&x-expires=1770688800&x-signature=HP4YVAhPZiy8yfa9H%2B%2B9bED14nI%3D",d:"Feb 9",camp:"Atricent [GENERAL LOGO]",s:"approved",paid:false},
+  {t:"Head to plutus.gg, create games with AI in minutes",u:"https://www.tiktok.com/@burrowfootball/video/7606009251332508958",p:"tiktok",v:838623,l:17967,c:70,pay:59.81,thumb:"https://p16-common-sign.tiktokcdn-us.com/tos-useast8-p-0068-tx2/oMCFaEUGmF8NgAwLIsgffAIPRQsbeNlAfGQlMp~tplv-tiktokx-cropcenter-q:300:400:q72.heic?dr=8596&refresh_token=922d30fe&x-expires=1770998400&x-signature=eCNR7KDhLC1rCSGXQqic8mlQsDk%3D",d:"Feb 12",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true}
+];
+
+/* Add a few "in review" items to make it feel alive */
+_realSubs.push(
+  {t:"Street interview - London Bridge pt.2",u:"#",p:"tiktok",v:0,l:0,c:0,pay:0,thumb:"https://p16-common-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/oweI7n3KIsHIkjJC4TwGeHejj9ALDFzACSnTQ0~tplv-tiktokx-cropcenter-q:300:400:q72.heic?dr=8596&refresh_token=9f7e8b0c&x-expires=1771365600&x-signature=96anu1soBPOCf%2FX4SJabFok%2FKyQ%3D",d:"Mar 24",camp:"Cantina [TikTok Clips]",s:"in_review",paid:false},
+  {t:"NOBS reaction compilation",u:"#",p:"instagram",v:0,l:0,c:0,pay:0,thumb:"https://scontent-bog2-1.cdninstagram.com/v/t51.71878-15/632356025_1230745015239734_5360927325792363255_n.jpg?stp=c0.249.640.640a_dst-jpg_e15_tt6&_nc_ht=scontent-bog2-1.cdninstagram.com&_nc_cat=102&_nc_oc=Q6cZ2QFxO24Xk-vzMilFUj7Pqlnh6x3zXVFc9_VMCW804Bcap7tFbyP4I77yilnFjKg7R-s&_nc_ohc=-ndimxtD5zcQ7kNvwEIrHL_&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfyetMr-pPXBhNCsXutgm46F0qs-QEm-lgrYq8umFbr2OQ&oe=69B7E463",d:"Mar 24",camp:"NOBS Toothpaste [STREET]",s:"in_review",paid:false},
+  {t:"Flooz Warzone highlights montage",u:"#",p:"tiktok",v:0,l:0,c:0,pay:0,thumb:"https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/ok1RBWfDUQpmRvpEvrwOsjYtdBSAfEZMFEzrQg~tplv-tiktokx-cropcenter-comet-q:300:400:q72.heic?dr=11006&refresh_token=fcc47fa2&x-expires=1771052400&x-signature=w7XVKr11a7fYkco9vRjJY8tAjlo%3D",d:"Mar 23",camp:"Flooz Clipping",s:"in_review",paid:false}
+);
+
+/* ═══ DATA ENGINE ═══ */
+var _creatorName = 'hasan';
+var _forceRegenSeed = 0;
+
+function getHourlySeed(){var n=new Date();return n.getFullYear()*1000000+(n.getMonth()+1)*10000+n.getDate()*100+n.getHours()+_forceRegenSeed}
+function seededRandom(seed){var s=seed;return function(){s=(s*16807+0)%2147483647;return(s-1)/2147483646}}
+function vary(base,pct,rng){return base+(rng()-0.5)*2*base*(pct/100)}
+function fmtMoney(n){return n>=1000?'$'+Math.round(n).toLocaleString('en-US'):'$'+n.toFixed(2)}
+function fmtMoneyDec(n){return'$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function fmtViews(n){return n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?(n/1000).toFixed(1)+'K':Math.round(n).toString()}
+
+var platColors = {tiktok:'#1a1a1a',instagram:'#E1306C',youtube:'#FF0000',x:'#1DA1F2'};
+var platNames = {tiktok:'TikTok',instagram:'Instagram',youtube:'YouTube',x:'X (Twitter)'};
+
+function generateData(){
+  var rng=seededRandom(getHourlySeed());var d={};
+  d.totalEarnings=Math.round(vary(127849,3,rng));
+  d.availableBalance=Math.round(vary(14291,5,rng)*100)/100;
+  d.pendingAmount=Math.round(vary(3842,8,rng)*100)/100;
+  d.thisMonthEarnings=Math.round(vary(18492,4,rng)*100)/100;
+  d.totalViews=Math.round(vary(48200000,3,rng));
+  d.approvalRate=Math.min(99,Math.max(91,Math.round(vary(96,2,rng))));
+  d.clipsSubmitted=Math.round(vary(312,3,rng));
+  d.clipsApproved=Math.round(d.clipsSubmitted*(d.approvalRate/100));
+  d.trustScore=Math.min(99,Math.max(90,Math.round(vary(94,2,rng))));
+  d.earningsChange=Math.round(vary(23,15,rng));
+  d.viewsChange=Math.round(vary(12,20,rng));
+  d.campaigns=[
+    {name:'Cantina - TikTok Clips',brand:'Cantina',clips:Math.round(vary(68,8,rng)),cpm:'$3.50',earned:Math.round(vary(34200,5,rng)),color:'#1a1a2e',views:Math.round(vary(9800000,5,rng))},
+    {name:'Flooz Clipping',brand:'Flooz',clips:Math.round(vary(54,8,rng)),cpm:'$4.20',earned:Math.round(vary(28600,5,rng)),color:'#2d1b00',views:Math.round(vary(6800000,5,rng))},
+    {name:'Flip.gg - Superbowl UGC',brand:'Flip.gg',clips:Math.round(vary(42,8,rng)),cpm:'$2.80',earned:Math.round(vary(19400,5,rng)),color:'#001a33',views:Math.round(vary(6900000,5,rng))},
+    {name:'Cantina - YouTube Shorts',brand:'Cantina',clips:Math.round(vary(48,8,rng)),cpm:'$3.00',earned:Math.round(vary(21800,5,rng)),color:'#0d1a0d',views:Math.round(vary(7300000,5,rng))},
+    {name:'Betway - Street Interviews',brand:'Betway',clips:Math.round(vary(36,8,rng)),cpm:'$3.80',earned:Math.round(vary(14200,5,rng)),color:'#1a0033',views:Math.round(vary(3700000,5,rng))},
+    {name:'Atricent Hub',brand:'Atricent',clips:Math.round(vary(29,8,rng)),cpm:'$2.50',earned:Math.round(vary(9600,5,rng)),color:'#330d00',views:Math.round(vary(3800000,5,rng))}
+  ];
+  var months=['Oct','Nov','Dec','Jan','Feb','Mar'];
+  var monthAmts=[8200,11400,14800,16200,19100,d.thisMonthEarnings];
+  d.monthlyBreakdown=months.map(function(m,i){return{month:m,amount:Math.round(vary(monthAmts[i],i===5?0:5,rng))}});
+  d.payouts=[
+    {method:'PayPal',date:'Mar 22, 2026',amount:vary(4250,3,rng),status:'processing'},
+    {method:'PayPal',date:'Mar 15, 2026',amount:vary(3180,3,rng),status:'completed'},
+    {method:'PayPal',date:'Mar 8, 2026',amount:vary(2940,3,rng),status:'completed'},
+    {method:'PayPal',date:'Mar 1, 2026',amount:vary(3510,3,rng),status:'completed'},
+    {method:'PayPal',date:'Feb 22, 2026',amount:vary(2860,3,rng),status:'completed'},
+    {method:'PayPal',date:'Feb 15, 2026',amount:vary(3220,3,rng),status:'completed'}
+  ];
+  d.activity=[
+    {icon:'check',color:'#16a34a',bg:'rgba(22,163,74,0.1)',title:'Clip approved',desc:'Street Interview #47 - Cantina',time:'2h ago'},
+    {icon:'dollar',color:'#E8734E',bg:'rgba(232,115,78,0.1)',title:'Payout received',desc:fmtMoneyDec(vary(3180,3,rng))+' via PayPal',time:'5h ago'},
+    {icon:'eye',color:'#7c3aed',bg:'rgba(124,58,237,0.1)',title:'Viral clip!',desc:'1.2M views on Flooz Clipping',time:'8h ago'},
+    {icon:'check',color:'#16a34a',bg:'rgba(22,163,74,0.1)',title:'3 clips approved',desc:'Flip.gg Superbowl UGC',time:'12h ago'},
+    {icon:'star',color:'#ca8a04',bg:'rgba(202,138,4,0.1)',title:'Trust score updated',desc:d.trustScore+' (+2 from last week)',time:'1d ago'},
+    {icon:'upload',color:'#3b82f6',bg:'rgba(59,130,246,0.1)',title:'Clip submitted',desc:'Betway Street Interview #12',time:'1d ago'},
+    {icon:'dollar',color:'#E8734E',bg:'rgba(232,115,78,0.1)',title:'Payout received',desc:fmtMoneyDec(vary(2940,3,rng))+' via PayPal',time:'2d ago'}
+  ];
+  d.topClips=_realSubs.filter(function(s){return s.s==='approved'}).slice(0,5).map(function(s){return{title:s.t,views:s.v,earned:s.pay,platform:platNames[s.p]||s.p}});
+  d.platforms=[
+    {name:'TikTok',views:vary(32100000,3,rng),earnings:vary(78400,4,rng),pct:67,color:'#1a1a1a'},
+    {name:'YouTube',views:vary(9800000,3,rng),earnings:vary(28900,4,rng),pct:20,color:'#ef4444'},
+    {name:'Instagram',views:vary(6300000,3,rng),earnings:vary(20549,4,rng),pct:13,color:'#e040a0'}
+  ];
+  d.avgViewsPerClip=Math.round(d.totalViews/d.clipsApproved);
+  d.avgEarningsPerClip=Math.round(d.totalEarnings/d.clipsApproved);
+  d.engagementRate=(vary(8.4,5,rng)).toFixed(1);
+  d.chartBars=[];for(var i=0;i<30;i++){d.chartBars.push(Math.round(vary(400+(i/30)*300,30,rng)))}
+  return d;
+}
+
+/* ═══ RENDER ═══ */
+var iconSvgs={
+  check:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>',
+  dollar:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+  eye:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  star:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  upload:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>'
+};
+
+function renderClips(filter){
+  var subs=_realSubs;
+  if(filter&&filter!=='all'){
+    if(filter==='approved'||filter==='in_review') subs=subs.filter(function(s){return s.s===filter});
+    else subs=subs.filter(function(s){return s.p===filter});
+  }
+  // Sort: in_review first, then by views desc
+  subs.sort(function(a,b){if(a.s==='in_review'&&b.s!=='in_review')return-1;if(b.s==='in_review'&&a.s!=='in_review')return 1;return b.v-a.v});
+
+  var html=subs.map(function(s){
+    var isReview=s.s==='in_review';
+    var statusBadge=isReview?'<span class="sub-badge pending">In Review</span>':'<span class="sub-badge approved">Approved</span>';
+    var payBadge=isReview?'':'<span class="sub-badge '+(s.paid?'paid':'unpaid')+'">'+(s.paid?'Paid':'Pending payout')+'</span>';
+    var platIcon='<span class="plat-icon" style="background:'+(platColors[s.p]||'#999')+'"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>';
+
+    return '<div class="sub-card">' +
+      '<img class="sub-thumb" src="'+s.thumb+'" alt="" onerror="this.style.background=\'#e0ddd8\';this.style.minHeight=\'160px\'" loading="lazy">' +
+      '<div class="sub-body">' +
+        '<div class="sub-title">'+s.t+'</div>' +
+        '<div class="sub-meta">'+platIcon+' <span>'+(platNames[s.p]||s.p)+'</span> <span style="color:#ccc">|</span> <span>'+s.camp+'</span> <span style="color:#ccc">|</span> <span>'+s.d+'</span></div>' +
+        (isReview?
+          '<div style="display:flex;gap:6px;align-items:center">'+statusBadge+'<span style="font-size:11px;color:#999">Reviewing your clip...</span></div>'
+        :
+          '<div class="sub-stats">' +
+            '<div class="sub-stat"><div class="sub-stat-val">'+fmtViews(s.v)+'</div><div class="sub-stat-lbl">views</div></div>' +
+            '<div class="sub-stat"><div class="sub-stat-val">'+fmtViews(s.l)+'</div><div class="sub-stat-lbl">likes</div></div>' +
+            '<div class="sub-stat"><div class="sub-stat-val">'+fmtViews(s.c)+'</div><div class="sub-stat-lbl">comments</div></div>' +
+            '<div class="sub-stat"><div class="sub-stat-val" style="color:#16a34a">'+fmtMoney(s.pay)+'</div><div class="sub-stat-lbl">earned</div></div>' +
+          '</div>' +
+          '<div style="display:flex;gap:6px;margin-top:10px">'+statusBadge+payBadge+'</div>'
+        ) +
+      '</div></div>';
+  }).join('');
+  document.getElementById('clips-list').innerHTML=html;
+}
+
+function filterClips(btn,filter){
+  btn.parentElement.querySelectorAll('.filter-pill').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  renderClips(filter);
+}
+
+function render(){
+  var d=generateData();
+  document.getElementById('creator-name').textContent=_creatorName;
+  document.getElementById('total-earnings').textContent=fmtMoney(d.totalEarnings);
+  document.getElementById('available-balance').textContent=fmtMoneyDec(d.availableBalance);
+  document.getElementById('pending-amount').textContent=fmtMoneyDec(d.pendingAmount);
+  document.getElementById('this-month-amount').textContent=fmtMoneyDec(d.thisMonthEarnings);
+  document.getElementById('total-views').textContent=fmtViews(d.totalViews);
+  document.getElementById('approval-rate').textContent=d.approvalRate+'%';
+  document.getElementById('clips-submitted').textContent=d.clipsSubmitted;
+  document.getElementById('clips-approved').textContent=d.clipsApproved+' approved';
+  document.getElementById('trust-score').textContent=d.trustScore;
+  document.getElementById('earnings-change').textContent='+'+d.earningsChange+'% this month';
+  document.getElementById('views-change').textContent='+'+d.viewsChange+'% vs last month';
+  document.getElementById('wallet-balance').textContent=fmtMoneyDec(d.availableBalance);
+  document.getElementById('wallet-pending').textContent=fmtMoneyDec(d.pendingAmount);
+  document.getElementById('wallet-lifetime').textContent=fmtMoney(d.totalEarnings);
+  document.getElementById('month-earnings').textContent=fmtMoneyDec(d.thisMonthEarnings);
+  document.getElementById('month-approval').textContent=d.approvalRate+'%';
+  document.getElementById('month-views').textContent=fmtViews(d.totalViews/4);
+  document.getElementById('month-clips').textContent=Math.round(d.clipsSubmitted/7);
+  document.getElementById('month-trust').textContent=d.trustScore;
+  document.getElementById('avg-views').textContent=fmtViews(d.avgViewsPerClip);
+  document.getElementById('avg-earnings').textContent=fmtMoney(d.avgEarningsPerClip);
+  document.getElementById('engagement-rate').textContent=d.engagementRate+'%';
+  document.getElementById('best-platform-views').textContent=fmtViews(d.platforms[0].views)+' views';
+  document.getElementById('clips-count').textContent=d.clipsSubmitted+' submissions';
+  document.getElementById('clips-approved-count').textContent=d.clipsApproved;
+  document.getElementById('clips-review-count').textContent=_realSubs.filter(function(s){return s.s==='in_review'}).length;
+  document.getElementById('clips-total-earned').textContent=fmtMoney(d.totalEarnings);
+
+  var maxBar=Math.max.apply(null,d.chartBars);
+  document.getElementById('earnings-chart').innerHTML=d.chartBars.map(function(v){return'<div class="bar" style="height:'+Math.max(8,(v/maxBar)*100)+'%"></div>'}).join('');
+
+  var campsHtml=d.campaigns.map(function(c){return'<div class="campaign-row"><div class="campaign-icon" style="background:'+c.color+'">'+c.brand.charAt(0)+'</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:#1a1a1a">'+c.name+'</div><div style="font-size:11px;color:#999">'+c.clips+' clips - '+c.cpm+' CPM - '+fmtViews(c.views)+' views</div></div><div style="font-size:14px;font-weight:800;color:#1a1a1a">'+fmtMoney(c.earned)+'</div></div>'}).join('');
+  document.getElementById('campaigns-list').innerHTML=campsHtml;
+  document.getElementById('campaign-count').textContent=d.campaigns.length+' active';
+  document.getElementById('wallet-campaigns').innerHTML=campsHtml;
+
+  document.getElementById('activity-list').innerHTML=d.activity.map(function(a){return'<div class="activity-item"><div class="activity-dot" style="background:'+a.bg+';color:'+a.color+'">'+iconSvgs[a.icon]+'</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:#1a1a1a">'+a.title+'</div><div style="font-size:11px;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+a.desc+'</div></div><div style="font-size:10px;color:#bbb;font-weight:600;flex-shrink:0">'+a.time+'</div></div>'}).join('');
+
+  var maxMonth=Math.max.apply(null,d.monthlyBreakdown.map(function(m){return m.amount}));
+  document.getElementById('monthly-bars').innerHTML=d.monthlyBreakdown.map(function(m){return'<div class="earnings-bar-row"><div class="earnings-bar-label">'+m.month+'</div><div class="earnings-bar-track"><div class="earnings-bar-fill" style="width:'+(m.amount/maxMonth*100).toFixed(0)+'%;background:'+(m.month==='Mar'?'#E8734E':'#d4c9be')+'"></div></div><div class="earnings-bar-val">'+fmtMoney(m.amount)+'</div></div>'}).join('');
+
+  document.getElementById('recent-payouts').innerHTML=d.payouts.map(function(p){var cls=p.status==='completed'?'status-completed':'status-processing';return'<div class="payout-item"><div><div style="font-size:13px;font-weight:600;color:#1a1a1a">'+p.method+' withdrawal</div><div style="font-size:11px;color:#999">'+p.date+'</div></div><div style="text-align:right"><div style="font-size:14px;font-weight:700" class="'+cls+'">'+fmtMoneyDec(p.amount)+'</div><div style="font-size:10px;text-transform:capitalize" class="'+cls+'">'+p.status+'</div></div></div>'}).join('');
+
+  document.getElementById('top-clips').innerHTML=d.topClips.map(function(c,i){return'<div class="activity-item"><div style="width:28px;height:28px;border-radius:8px;background:#f0edea;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#999;flex-shrink:0">'+(i+1)+'</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+c.title+'</div><div style="font-size:11px;color:#999">'+fmtViews(c.views)+' views - '+c.platform+'</div></div><div style="font-size:13px;font-weight:800;color:#16a34a;flex-shrink:0">'+fmtMoney(c.earned)+'</div></div>'}).join('');
+
+  document.getElementById('platform-breakdown').innerHTML=d.platforms.map(function(p){return'<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:2px;background:'+p.color+'"></div><span style="font-size:13px;font-weight:700;color:#1a1a1a">'+p.name+'</span></div><span style="font-size:13px;font-weight:800;color:#1a1a1a">'+fmtMoney(p.earnings)+'</span></div><div style="height:6px;border-radius:3px;background:#f0edea;overflow:hidden"><div style="height:100%;width:'+p.pct+'%;border-radius:3px;background:'+p.color+'"></div></div><div style="font-size:10px;color:#999;margin-top:4px">'+fmtViews(p.views)+' views</div></div>'}).join('');
+
+  var now=new Date();
+  document.getElementById('last-updated').textContent='Updated at '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+
+  renderClips('all');
+}
+
+/* ═══ NAV ═══ */
+var _pages=['home','clips','earnings','analytics'];
+function switchPage(page){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active')});
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-item')[_pages.indexOf(page)].classList.add('active');
+  window.scrollTo(0,0);
+}
+function switchPeriod(btn){btn.parentElement.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active')}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2500)}
+
+/* Dev */
+function toggleDev(){var b=document.getElementById('devBanner'),t=document.getElementById('devToggle');if(b.classList.contains('hidden')){b.classList.remove('hidden');t.classList.remove('visible')}else{b.classList.add('hidden');t.classList.add('visible')}}
+function applyDevName(){var n=document.getElementById('devNameInput').value.trim();if(n){_creatorName=n;document.getElementById('creator-name').textContent=_creatorName;showToast('Name set to: '+_creatorName)}}
+var _rn=['hasan','alex','marcus','jay','omar','kai','rishi','zain','noah','tyler','liam','amir','samir','dan','mike','chris','james','will','tom','sam'];
+function randomizeName(){var n=_rn[Math.floor(Math.random()*_rn.length)];document.getElementById('devNameInput').value=n;_creatorName=n;document.getElementById('creator-name').textContent=_creatorName;showToast('Name: '+_creatorName)}
+function regenerateNumbers(){_forceRegenSeed=Math.floor(Math.random()*100000);render();showToast('Numbers regenerated')}
+
+var _tc=0,_tt=null;
+document.addEventListener('click',function(){_tc++;clearTimeout(_tt);_tt=setTimeout(function(){_tc=0},400);if(_tc>=3){_tc=0;toggleDev()}});
+
+/* ═══ INIT ═══ */
+render();
+setInterval(render,3600000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)render()});
+</script>
+</body>
+</html>
