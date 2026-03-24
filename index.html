@@ -516,12 +516,38 @@ html{scrollbar-width:none}
           <button onclick="setWithdrawAmt('max')" style="flex:1;padding:6px;border:1px solid #eee;border-radius:8px;font-size:10px;font-weight:700;color:#E8734E;background:rgba(232,115,78,0.06);cursor:pointer;font-family:inherit">Max</button>
         </div>
       </div>
-      <div style="margin-bottom:20px">
-        <label style="font-size:11px;font-weight:700;color:#666;display:block;margin-bottom:6px">Withdraw to</label>
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:#faf8f6;border-radius:12px;border:1.5px solid #e0ddd8;cursor:pointer" onclick="togglePaymentMethod()">
-          <div id="pmIcon" style="width:32px;height:32px;border-radius:8px;background:#003087;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:11px;font-weight:800">PP</span></div>
-          <div style="flex:1"><div style="font-size:13px;font-weight:600;color:#1a1a1a" id="pmName">PayPal</div><div style="font-size:11px;color:#999" id="pmDetail">h***@gmail.com</div></div>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      <div style="margin-bottom:16px">
+        <label style="font-size:13px;font-weight:600;color:#1a1a1a;display:block;margin-bottom:10px">Send payout to</label>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <button id="linkBankBtn" onclick="switchPayoutMode('bank')" style="flex:1;padding:12px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;border:none;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.15s">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            Link your bank
+          </button>
+          <button id="manualBtn" onclick="switchPayoutMode('manual')" style="flex:1;padding:12px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;border:none;background:#f0edea;color:#1a1a1a;transition:all 0.15s">Enter details manually</button>
+        </div>
+        <!-- Bank linked state -->
+        <div id="payoutBank" style="display:none">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:#faf8f6;border-radius:12px;border:1.5px solid #e0ddd8;cursor:pointer" onclick="togglePaymentMethod()">
+            <div id="pmIcon" style="width:32px;height:32px;border-radius:8px;background:#003087;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:11px;font-weight:800">PP</span></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600;color:#1a1a1a" id="pmName">PayPal</div><div style="font-size:11px;color:#999" id="pmDetail">h***@gmail.com</div></div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div style="font-size:10px;color:#999;margin-top:6px;text-align:center">Tap to change payment method</div>
+        </div>
+        <!-- Manual entry state -->
+        <div id="payoutManual" style="display:none">
+          <div style="margin-bottom:10px">
+            <label style="font-size:11px;font-weight:700;color:#666;display:block;margin-bottom:4px">Account holder name</label>
+            <input type="text" placeholder="Full legal name" value="" style="width:100%;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:13px;font-weight:600;color:#1a1a1a;font-family:inherit;outline:none;box-sizing:border-box" onfocus="this.style.borderColor='#E8734E'" onblur="this.style.borderColor='#e0ddd8'">
+          </div>
+          <div style="margin-bottom:10px">
+            <label style="font-size:11px;font-weight:700;color:#666;display:block;margin-bottom:4px">IBAN / Account number</label>
+            <input type="text" placeholder="GB29 NWBK 6016 1331 9268 19" value="" style="width:100%;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:13px;font-weight:600;color:#1a1a1a;font-family:inherit;outline:none;box-sizing:border-box" onfocus="this.style.borderColor='#E8734E'" onblur="this.style.borderColor='#e0ddd8'">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;color:#666;display:block;margin-bottom:4px">Sort code / Routing number</label>
+            <input type="text" placeholder="60-16-13" value="" style="width:100%;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:13px;font-weight:600;color:#1a1a1a;font-family:inherit;outline:none;box-sizing:border-box" onfocus="this.style.borderColor='#E8734E'" onblur="this.style.borderColor='#e0ddd8'">
+          </div>
         </div>
       </div>
       <div style="padding:12px 14px;background:rgba(22,163,74,0.04);border-radius:10px;margin-bottom:16px;display:flex;align-items:center;gap:8px">
