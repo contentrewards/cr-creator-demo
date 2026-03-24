@@ -636,6 +636,32 @@ html{scrollbar-width:none}
 .disc-filter-apply.has-results{background:#1a1a1a;color:#fff}
 .disc-filter-apply.no-results{background:rgba(232,115,78,0.1);color:#E8734E}
 .disc-filter-clear{width:100%;padding:16px;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;border:1.5px solid #e0ddd8;background:#fff;color:#1a1a1a}
+
+/* Campaign detail */
+.camp-detail{position:fixed;inset:0;z-index:9000;background:#f5f3f0;overflow-y:auto;display:none;-webkit-overflow-scrolling:touch}
+.camp-detail.open{display:block}
+.camp-detail-header{position:relative}
+.camp-detail-banner{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.camp-detail-back{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2}
+.camp-detail-body{padding:0 20px 120px;margin-top:-24px;position:relative}
+.camp-detail-brand-card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:16px}
+.camp-detail-brand-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.camp-detail-brand-logo{width:48px;height:48px;border-radius:14px;object-fit:cover;border:2px solid #f0edea}
+.camp-detail-title{font-size:16px;font-weight:700;color:#1a1a1a;line-height:1.4;margin-bottom:12px}
+.camp-detail-desc{font-size:14px;color:#666;line-height:1.6;margin-bottom:16px}
+.camp-detail-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.camp-detail-stat{background:#faf8f6;border-radius:14px;padding:14px;text-align:center}
+.camp-detail-stat-val{font-size:18px;font-weight:800;color:#1a1a1a}
+.camp-detail-stat-lbl{font-size:11px;font-weight:600;color:#999;margin-top:2px}
+.camp-detail-section{background:#fff;border-radius:20px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:16px}
+.camp-detail-section-title{font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:12px}
+.camp-detail-req{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.04)}
+.camp-detail-req:last-child{border-bottom:none}
+.camp-detail-req-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.camp-detail-req-text{font-size:13px;color:#666;line-height:1.4}
+.camp-detail-req-text strong{color:#1a1a1a}
+.camp-detail-cta{position:fixed;bottom:0;left:0;right:0;padding:16px 20px calc(16px + env(safe-area-inset-bottom));background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,0.06);z-index:9001;display:none}
+.camp-detail-cta.open{display:block}
 </style>
 
 <!-- ═══ PAGE: DISCOVER ═══ -->
@@ -826,6 +852,77 @@ html{scrollbar-width:none}
       <button onclick="closeWithdraw()" style="width:100%;padding:14px;background:#1a1a1a;color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Done</button>
     </div>
   </div>
+</div>
+
+<!-- ═══ CAMPAIGN DETAIL ═══ -->
+<div class="camp-detail" id="campDetail">
+  <div class="camp-detail-header">
+    <button class="camp-detail-back" onclick="closeCampaignDetail()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <img class="camp-detail-banner" id="campDetailBanner" src="" alt="">
+  </div>
+  <div class="camp-detail-body">
+    <div class="camp-detail-brand-card">
+      <div class="camp-detail-brand-row">
+        <img class="camp-detail-brand-logo" id="campDetailLogo" src="" alt="">
+        <div>
+          <div style="font-size:18px;font-weight:800;color:#1a1a1a" id="campDetailBrand">Brand</div>
+          <div style="font-size:12px;color:#999;font-weight:600" id="campDetailCat">Category</div>
+        </div>
+      </div>
+      <div class="camp-detail-title" id="campDetailTitle">Campaign Title</div>
+      <div class="camp-detail-desc" id="campDetailDesc">Description</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px" id="campDetailPlats"></div>
+      <div class="camp-detail-stats">
+        <div class="camp-detail-stat"><div class="camp-detail-stat-val" id="campDetailCpm">$1</div><div class="camp-detail-stat-lbl">per 1k views</div></div>
+        <div class="camp-detail-stat"><div class="camp-detail-stat-val" id="campDetailBudget">$10K</div><div class="camp-detail-stat-lbl">total budget</div></div>
+        <div class="camp-detail-stat"><div class="camp-detail-stat-val" id="campDetailCreators">78</div><div class="camp-detail-stat-lbl">creators</div></div>
+        <div class="camp-detail-stat"><div class="camp-detail-stat-val" id="campDetailViews">110M</div><div class="camp-detail-stat-lbl">total views</div></div>
+        <div class="camp-detail-stat"><div class="camp-detail-stat-val" style="color:#16a34a" id="campDetailPaid">$59K</div><div class="camp-detail-stat-lbl">paid out</div></div>
+        <div class="camp-detail-stat"><div class="camp-detail-stat-val" id="campDetailRemaining">$10K</div><div class="camp-detail-stat-lbl">remaining</div></div>
+      </div>
+    </div>
+    <div class="camp-detail-section">
+      <div class="camp-detail-section-title">Requirements</div>
+      <div class="camp-detail-req">
+        <div class="camp-detail-req-icon" style="background:rgba(232,115,78,0.1)">&#x1F3AC;</div>
+        <div class="camp-detail-req-text"><strong>Original content only</strong><br>No AI-generated, synthetic voiceovers, or reused clips</div>
+      </div>
+      <div class="camp-detail-req">
+        <div class="camp-detail-req-icon" style="background:rgba(22,163,74,0.1)">&#x2705;</div>
+        <div class="camp-detail-req-text"><strong>Follow brand guidelines</strong><br>All editing rules and asset requirements must be followed</div>
+      </div>
+      <div class="camp-detail-req">
+        <div class="camp-detail-req-icon" style="background:rgba(59,130,246,0.1)">&#x1F30D;</div>
+        <div class="camp-detail-req-text" id="campDetailPlatReq"><strong>Post on supported platforms</strong><br>Tier 1 traffic only</div>
+      </div>
+      <div class="camp-detail-req">
+        <div class="camp-detail-req-icon" style="background:rgba(124,58,237,0.1)">&#x1F4CA;</div>
+        <div class="camp-detail-req-text"><strong>Minimum 1,000 views</strong><br>Clips under 1k views will not be eligible for payout</div>
+      </div>
+    </div>
+    <div class="camp-detail-section">
+      <div class="camp-detail-section-title">How it works</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:flex-start;gap:12px">
+          <div style="width:28px;height:28px;border-radius:50%;background:#E8734E;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0">1</div>
+          <div><div style="font-size:13px;font-weight:700;color:#1a1a1a">Create your content</div><div style="font-size:12px;color:#999;margin-top:2px">Follow the campaign guidelines and create engaging clips</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px">
+          <div style="width:28px;height:28px;border-radius:50%;background:#E8734E;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0">2</div>
+          <div><div style="font-size:13px;font-weight:700;color:#1a1a1a">Post and submit</div><div style="font-size:12px;color:#999;margin-top:2px">Post on the required platforms, then submit the link here</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px">
+          <div style="width:28px;height:28px;border-radius:50%;background:#E8734E;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0">3</div>
+          <div><div style="font-size:13px;font-weight:700;color:#1a1a1a">Get paid</div><div style="font-size:12px;color:#999;margin-top:2px">Earn based on your views. Payouts processed weekly.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="camp-detail-cta" id="campDetailCta">
+  <button onclick="showToast('Application submitted!')" style="width:100%;padding:16px;background:#E8734E;color:#fff;border:none;border-radius:16px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;transition:transform 0.1s" onmousedown="this.style.transform='scale(0.98)'" onmouseup="this.style.transform=''">Apply to Campaign</button>
 </div>
 
 <!-- ═══ BOTTOM NAV ═══ -->
@@ -1414,7 +1511,7 @@ function renderDiscover(){
   }
   if(_discView==='card'){
     container.innerHTML=camps.map(function(c){
-      return '<div class="disc-card" onclick="showToast(\'Opening '+c.brand+' campaign...\')">'+
+      return '<div class="disc-card" onclick="openCampaignDetail(\''+c.id+'\')">'+
         '<img class="disc-card-img" src="'+c.thumb+'" alt="" onerror="this.style.background=\'#e0ddd8\';this.style.minHeight=\'180px\'" loading="lazy">'+
         '<div class="disc-card-body">'+
           '<div class="disc-brand-row"><img class="disc-brand-logo" src="'+c.brandLogo+'" alt="" onerror="this.style.background=\'#e0ddd8\'"><span class="disc-brand-name">'+c.brand+'</span></div>'+
@@ -1429,7 +1526,7 @@ function renderDiscover(){
     }).join('');
   } else {
     container.innerHTML=camps.map(function(c){
-      return '<div class="disc-list-item" onclick="showToast(\'Opening '+c.brand+' campaign...\')">'+
+      return '<div class="disc-list-item" onclick="openCampaignDetail(\''+c.id+'\')">'+
         '<img class="disc-list-logo" src="'+c.brandLogo+'" alt="" onerror="this.style.background=\'#e0ddd8\'">'+
         '<div class="disc-list-info">'+
           '<div class="disc-list-title">'+c.desc+'</div>'+
@@ -1520,6 +1617,41 @@ function clearDiscoverFilters(){
   updateDiscFilterCount();
   closeDiscoverFilters();
   renderDiscover();
+}
+
+/* Campaign detail */
+function openCampaignDetail(id){
+  var c=null;
+  for(var i=0;i<_discoverCampaigns.length;i++){if(_discoverCampaigns[i].id===id){c=_discoverCampaigns[i];break}}
+  if(!c)return;
+  document.getElementById('campDetailBanner').src=c.thumb;
+  document.getElementById('campDetailLogo').src=c.brandLogo;
+  document.getElementById('campDetailBrand').textContent=c.brand;
+  document.getElementById('campDetailCat').textContent=c.cat;
+  document.getElementById('campDetailTitle').textContent=c.title;
+  document.getElementById('campDetailDesc').textContent=c.desc;
+  document.getElementById('campDetailCpm').textContent='$'+c.cpm.toFixed(2);
+  document.getElementById('campDetailBudget').textContent=fmtMoney(c.budget);
+  document.getElementById('campDetailCreators').textContent=c.creators.toLocaleString();
+  document.getElementById('campDetailViews').textContent=fmtViews(c.views);
+  document.getElementById('campDetailPaid').textContent=fmtMoney(c.paid);
+  document.getElementById('campDetailRemaining').textContent=fmtMoney(Math.max(0,c.budget-c.paid));
+  // Platform icons
+  var platHtml=c.plats.map(function(p){
+    return '<span style="display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:10px;background:'+(platColors[p]||'#999')+';font-size:11px;font-weight:700;color:#fff">'+(platSvgs[p]||'')+' '+(platNames[p]||p)+'</span>';
+  }).join('');
+  document.getElementById('campDetailPlats').innerHTML=platHtml;
+  // Platform requirement text
+  var platList=c.plats.map(function(p){return platNames[p]||p}).join(', ');
+  document.getElementById('campDetailPlatReq').innerHTML='<strong>Post on '+platList+'</strong><br>Tier 1 traffic only';
+  document.getElementById('campDetail').classList.add('open');
+  document.getElementById('campDetailCta').classList.add('open');
+  document.getElementById('campDetail').scrollTop=0;
+}
+
+function closeCampaignDetail(){
+  document.getElementById('campDetail').classList.remove('open');
+  document.getElementById('campDetailCta').classList.remove('open');
 }
 
 /* ═══ LINKED ACCOUNTS ═══ */
