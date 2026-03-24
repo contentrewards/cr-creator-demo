@@ -1469,6 +1469,99 @@ function openVideoLink(){
   }
 }
 
+/* Messages */
+var _msgConvos=[
+{id:'vir',name:'Virality',sub:'84 members - 12 online',color:'#E8734E',init:'V',unread:7,msgs:[
+{user:'@justhitsongz',color:'#6366f1',init:'J',time:'10:42 AM',text:'Hey, when do payouts hit for last week? I had 3 approved clips for Cantina'},
+{user:'Admin',color:'#E8734E',init:'A',team:true,time:'10:45 AM',text:'Payouts for last week process this Friday. You should see them in your PayPal by end of day.'},
+{user:'@thevidosm',color:'#10b981',init:'V',time:'11:03 AM',text:'Just submitted my Atricent clip - 39.5M views in 6 hours'},
+{user:'@mubeez02',color:'#ec4899',init:'S',time:'11:15 AM',text:'Quick question - for NOBS clips, do we use #NOBSToothpaste or #NOBSPartner?'},
+{user:'Admin',color:'#E8734E',init:'A',team:true,time:'11:18 AM',text:'Use #NOBSPartner as the primary one. #NOBSToothpaste is optional if you have room.'},
+{user:'@clipitandreverseit',color:'#f59e0b',init:'C',time:'11:32 AM',text:'My Brooklyn 3 clip just hit 3.3M views! Biggest one yet'},
+{user:'Admin',color:'#E8734E',init:'A',team:true,time:'11:35 AM',text:'Amazing work! That clip is trending. Keep the momentum going this week.'}
+]},
+{id:'flooz',name:'Flooz Clipping',sub:'156 members',color:'#2d1b00',init:'F',unread:0,msgs:[
+{user:'Brand Manager',color:'#2d1b00',init:'F',team:true,time:'9:20 AM',text:'New campaign brief posted for Season 3. Check the pinned message for details.'},
+{user:'@swaeay',color:'#8b5cf6',init:'S',time:'9:45 AM',text:'Are Warzone clips still eligible or just multiplayer?'},
+{user:'Brand Manager',color:'#2d1b00',init:'F',team:true,time:'9:48 AM',text:'Both are eligible! Warzone, multiplayer, and zombies content all qualify.'},
+{user:'@dronazen',color:'#14b8a6',init:'D',time:'10:12 AM',text:'My latest montage just got approved - $59.81 earned. Love this campaign'}
+]},
+{id:'cantina',name:'Cantina Creators',sub:'42 members',color:'#dc2626',init:'C',unread:3,msgs:[
+{user:'Cantina (Brand)',color:'#dc2626',init:'C',team:true,time:'2h ago',text:'Great work on the last batch! We approved 6 submissions. Payouts process Friday.'},
+{user:'@thevidosm',color:'#10b981',init:'V',time:'1h ago',text:'Nice! Just uploaded my new edit. When do the next content guidelines drop?'},
+{user:'You',color:'#E8734E',init:'Y',self:true,time:'45m ago',text:'Thanks for the fast approvals! My street interview hit 201K views already.'},
+{user:'Cantina (Brand)',color:'#dc2626',init:'C',team:true,time:'30m ago',text:'Love seeing those numbers! Keep the quality up and we will keep approving fast.'}
+]},
+{id:'nobs',name:'NOBS Toothpaste',sub:'28 members',color:'#16a34a',init:'N',unread:0,msgs:[
+{user:'NOBS Team',color:'#16a34a',init:'N',team:true,time:'Yesterday',text:'New campaign: STREET INTERVIEWS now live! Same CPM rates. Check the brief.'},
+{user:'@nilaymishra',color:'#f43f5e',init:'N',time:'Yesterday',text:'Just dropped my first looksmaxxing clip. Fingers crossed!'},
+{user:'NOBS Team',color:'#16a34a',init:'N',team:true,time:'Yesterday',text:'Approved! Great angle on the content. Keep them coming.'}
+]},
+{id:'support',name:'Support',sub:'Typically replies in 2h',color:'#7c3aed',init:'S',unread:0,msgs:[
+{user:'You',color:'#E8734E',init:'Y',self:true,time:'2d ago',text:'Hey, my payout from March 8 still shows as processing. Can you check?'},
+{user:'Support',color:'#7c3aed',init:'S',team:true,time:'2d ago',text:'Hi! Let me look into that for you. Can you confirm the reference number?'},
+{user:'You',color:'#E8734E',init:'Y',self:true,time:'2d ago',text:'CR-28491'},
+{user:'Support',color:'#7c3aed',init:'S',team:true,time:'2d ago',text:'Found it - processed and should arrive in your PayPal within 24 hours. Apologies for the delay!'},
+{user:'You',color:'#E8734E',init:'Y',self:true,time:'1d ago',text:'Got it, thanks!'}
+]}
+];
+function openMessages(){
+  renderConvoList();
+  document.getElementById('msgConvoList').style.display='';
+  document.getElementById('msgChatView').style.display='none';
+  document.getElementById('messagesPanel').style.display='block';
+}
+function closeMessages(){document.getElementById('messagesPanel').style.display='none'}
+function renderConvoList(){
+  var h=_msgConvos.map(function(c){
+    var lm=c.msgs[c.msgs.length-1];
+    return '<div onclick="openConvo(\''+c.id+'\')" style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;cursor:pointer;margin-bottom:2px;transition:background 0.15s" ontouchstart="this.style.background=\'rgba(0,0,0,0.03)\'" ontouchend="this.style.background=\'\'">' +
+    '<div style="width:40px;height:40px;border-radius:50%;background:'+c.color+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#fff">'+c.init+'</div>' +
+    '<div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:'+(c.unread?'700':'600')+';color:#1a1a1a">'+c.name+'</span><span style="font-size:10px;color:#999">'+lm.time+'</span></div>' +
+    '<div style="font-size:12px;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px">'+(lm.self?'You: ':'')+lm.text+'</div></div>' +
+    (c.unread?'<div style="width:18px;height:18px;border-radius:50%;background:#E8734E;font-size:10px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+c.unread+'</div>':'') +
+    '</div>';
+  }).join('');
+  document.getElementById('msgConvoList').innerHTML=h;
+}
+var _currentConvo=null;
+function openConvo(id){
+  var c=_msgConvos.find(function(x){return x.id===id});
+  if(!c)return;_currentConvo=c;
+  document.getElementById('msgChatAvatar').style.background=c.color;
+  document.getElementById('msgChatAvatar').textContent=c.init;
+  document.getElementById('msgChatName').textContent=c.name;
+  document.getElementById('msgChatSub').textContent=c.sub;
+  document.getElementById('msgInput').placeholder='Message '+c.name+'...';
+  renderChat(c);
+  document.getElementById('msgConvoList').style.display='none';
+  document.getElementById('msgChatView').style.display='flex';
+  var el=document.getElementById('msgChatMessages');
+  setTimeout(function(){el.scrollTop=el.scrollHeight},50);
+}
+function renderChat(c){
+  var h='<div style="text-align:center;padding:8px 0;margin-bottom:8px"><span style="font-size:10px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:0.5px">Today</span></div>';
+  c.msgs.forEach(function(m){
+    if(m.self){
+      h+='<div style="display:flex;gap:8px;margin-bottom:12px;flex-direction:row-reverse"><div style="width:28px;height:28px;border-radius:50%;background:#E8734E;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff">Y</div><div style="text-align:right"><div style="font-size:10px;color:#bbb;margin-bottom:3px">You - '+m.time+'</div><div style="padding:10px 14px;border-radius:12px 12px 4px 12px;background:rgba(232,115,78,0.1);font-size:13px;line-height:1.5;color:#1a1a1a;text-align:left;display:inline-block;max-width:240px">'+m.text+'</div></div></div>';
+    } else {
+      h+='<div style="display:flex;gap:8px;margin-bottom:12px"><div style="width:28px;height:28px;border-radius:50%;background:'+m.color+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff">'+m.init+'</div><div><div style="display:flex;align-items:baseline;gap:6px;margin-bottom:3px"><span style="font-size:11px;font-weight:700;color:#1a1a1a">'+m.user+'</span>'+(m.team?'<span style="font-size:8px;padding:1px 5px;background:rgba(232,115,78,0.1);color:#E8734E;border-radius:3px;font-weight:700">TEAM</span>':'')+'<span style="font-size:10px;color:#bbb">'+m.time+'</span></div><div style="padding:10px 14px;border-radius:12px 12px 12px 4px;background:#f5f3f0;font-size:13px;line-height:1.5;color:#444;max-width:240px">'+m.text+'</div></div></div>';
+    }
+  });
+  document.getElementById('msgChatMessages').innerHTML=h;
+}
+function msgBack(){document.getElementById('msgChatView').style.display='none';document.getElementById('msgConvoList').style.display='';_currentConvo=null}
+function sendMockMsg(){
+  var input=document.getElementById('msgInput');var text=input.value.trim();
+  if(!text||!_currentConvo)return;
+  _currentConvo.msgs.push({user:'You',color:'#E8734E',init:'Y',self:true,time:'Just now',text:text});
+  renderChat(_currentConvo);input.value='';
+  var el=document.getElementById('msgChatMessages');setTimeout(function(){el.scrollTop=el.scrollHeight},50);
+  setTimeout(function(){
+    if(_currentConvo){_currentConvo.msgs.push({user:'Admin',color:_currentConvo.color,init:_currentConvo.init,team:true,time:'Just now',text:'Thanks for the message! We will get back to you shortly.'});renderChat(_currentConvo);var el=document.getElementById('msgChatMessages');setTimeout(function(){el.scrollTop=el.scrollHeight},50)}
+  },2000);
+}
+
 /* Notifications */
 var _notifs=[
   {icon:'check',color:'#16a34a',bg:'rgba(22,163,74,0.1)',title:'Clip approved',desc:'Your clip "Him looking at the beads" was approved. $100.00 earned.',time:'2h ago',unread:true},
