@@ -416,6 +416,70 @@ html{scrollbar-width:none}
   </div>
 </div>
 
+<!-- ═══ NOTIFICATIONS PANEL ═══ -->
+<div id="notifPanel" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px)" onclick="if(event.target===this)closeNotifications()">
+  <div style="position:absolute;top:0;right:0;width:100%;max-width:380px;height:100%;background:#fff;box-shadow:-8px 0 32px rgba(0,0,0,0.1);overflow-y:auto;animation:notifSlide 0.2s ease-out">
+    <div style="padding:20px 20px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,0,0,0.06)">
+      <div style="font-size:18px;font-weight:800;color:#1a1a1a">Notifications</div>
+      <button onclick="closeNotifications()" style="background:none;border:none;cursor:pointer;padding:4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div style="padding:8px 12px" id="notifList"></div>
+  </div>
+</div>
+
+<!-- ═══ SUBMIT CLIP MODAL ═══ -->
+<div id="submitModal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);align-items:center;justify-content:center" onclick="if(event.target===this)closeSubmit()">
+  <div style="background:#fff;border-radius:24px;width:380px;max-width:90vw;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div id="submitStep1">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <div style="font-size:18px;font-weight:800;color:#1a1a1a">Submit a Clip</div>
+        <button onclick="closeSubmit()" style="background:none;border:none;cursor:pointer;padding:4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:11px;font-weight:700;color:#666;display:block;margin-bottom:6px">Campaign</label>
+        <select id="submitCampaign" style="width:100%;padding:12px 14px;border:1.5px solid #e0ddd8;border-radius:12px;font-size:13px;font-weight:600;color:#1a1a1a;font-family:inherit;outline:none;background:#fff;box-sizing:border-box;-webkit-appearance:none;appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23999%22 stroke-width=%222.5%22><polyline points=%226 9 12 15 18 9%22/></svg>');background-repeat:no-repeat;background-position:right 14px center" onfocus="this.style.borderColor='#E8734E'" onblur="this.style.borderColor='#e0ddd8'">
+          <option>Cantina - TikTok Clips</option>
+          <option>Flooz Clipping</option>
+          <option>Flip.gg [Street Interviews]</option>
+          <option>NOBS Toothpaste [STREET INTERVIEWS]</option>
+          <option>Plutus.gg [Logo Clipping]</option>
+          <option>Atricent [GENERAL LOGO]</option>
+        </select>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:11px;font-weight:700;color:#666;display:block;margin-bottom:6px">Video URL</label>
+        <input id="submitUrl" type="url" placeholder="https://www.tiktok.com/..." style="width:100%;padding:12px 14px;border:1.5px solid #e0ddd8;border-radius:12px;font-size:13px;font-weight:600;color:#1a1a1a;font-family:inherit;outline:none;box-sizing:border-box" onfocus="this.style.borderColor='#E8734E'" onblur="this.style.borderColor='#e0ddd8'">
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:11px;font-weight:700;color:#666;display:block;margin-bottom:6px">Title (optional)</label>
+        <input id="submitTitle" type="text" placeholder="Give your clip a title" style="width:100%;padding:12px 14px;border:1.5px solid #e0ddd8;border-radius:12px;font-size:13px;font-weight:600;color:#1a1a1a;font-family:inherit;outline:none;box-sizing:border-box" onfocus="this.style.borderColor='#E8734E'" onblur="this.style.borderColor='#e0ddd8'">
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="font-size:11px;font-weight:700;color:#666;display:block;margin-bottom:6px">Platform</label>
+        <div style="display:flex;gap:6px" id="platPicker">
+          <button onclick="pickPlatform(this)" style="flex:1;padding:8px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;border:1.5px solid #1a1a1a;background:rgba(0,0,0,0.04);color:#1a1a1a">TikTok</button>
+          <button onclick="pickPlatform(this)" style="flex:1;padding:8px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;border:1.5px solid #eee;background:#fff;color:#999">Instagram</button>
+          <button onclick="pickPlatform(this)" style="flex:1;padding:8px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;border:1.5px solid #eee;background:#fff;color:#999">YouTube</button>
+          <button onclick="pickPlatform(this)" style="flex:1;padding:8px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;border:1.5px solid #eee;background:#fff;color:#999">X</button>
+        </div>
+      </div>
+      <button onclick="submitClipGo()" id="submitBtn" style="width:100%;padding:14px;background:#E8734E;color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.15s;font-family:inherit">Submit Clip</button>
+    </div>
+    <div id="submitSuccess" style="display:none;text-align:center">
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(22,163,74,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div style="font-size:20px;font-weight:800;color:#1a1a1a;margin-bottom:4px">Clip Submitted!</div>
+      <div style="font-size:13px;color:#999;margin-bottom:20px">Your clip is now in review. We'll notify you when it's approved.</div>
+      <button onclick="closeSubmit()" style="width:100%;padding:14px;background:#1a1a1a;color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Done</button>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes notifSlide{from{transform:translateX(100%)}to{transform:translateX(0)}}
+</style>
+
 <!-- ═══ WITHDRAW MODAL ═══ -->
 <div id="withdrawModal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);align-items:center;justify-content:center" onclick="if(event.target===this)closeWithdraw()">
   <div style="background:#fff;border-radius:24px;width:380px;max-width:90vw;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,0.2);position:relative" id="withdrawContent">
@@ -745,6 +809,75 @@ function switchPage(page){
 }
 function switchPeriod(btn){btn.parentElement.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active')}
 function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2500)}
+
+/* Notifications */
+var _notifs=[
+  {icon:'check',color:'#16a34a',bg:'rgba(22,163,74,0.1)',title:'Clip approved',desc:'Your clip "Him looking at the beads" was approved. $100.00 earned.',time:'2h ago',unread:true},
+  {icon:'dollar',color:'#E8734E',bg:'rgba(232,115,78,0.1)',title:'Payout processed',desc:'$4,250.00 sent to your PayPal. Arrives in 1-3 business days.',time:'5h ago',unread:true},
+  {icon:'eye',color:'#7c3aed',bg:'rgba(124,58,237,0.1)',title:'Your clip went viral!',desc:'"Brooklyn 3" just hit 3.3M views on TikTok.',time:'8h ago',unread:true},
+  {icon:'check',color:'#16a34a',bg:'rgba(22,163,74,0.1)',title:'3 clips approved',desc:'Flip.gg Street Interviews batch approved. $595.48 earned.',time:'12h ago',unread:false},
+  {icon:'star',color:'#ca8a04',bg:'rgba(202,138,4,0.1)',title:'Trust score updated',desc:'Your trust score increased to 94. You are in the top 5% of creators.',time:'1d ago',unread:false},
+  {icon:'upload',color:'#3b82f6',bg:'rgba(59,130,246,0.1)',title:'Clip submitted',desc:'"Street interview - London Bridge pt.2" is now in review.',time:'1d ago',unread:false},
+  {icon:'dollar',color:'#E8734E',bg:'rgba(232,115,78,0.1)',title:'Payout processed',desc:'$2,940.00 sent to your PayPal.',time:'2d ago',unread:false},
+  {icon:'check',color:'#16a34a',bg:'rgba(22,163,74,0.1)',title:'Campaign joined',desc:'You were accepted into NOBS Toothpaste [STREET INTERVIEWS].',time:'3d ago',unread:false},
+  {icon:'eye',color:'#7c3aed',bg:'rgba(124,58,237,0.1)',title:'Milestone reached',desc:'You have earned over $125,000 lifetime on Content Rewards!',time:'5d ago',unread:false}
+];
+
+function openNotifications(){
+  var html=_notifs.map(function(n){
+    return '<div class="notif-item" style="'+(n.unread?'background:rgba(232,115,78,0.03)':'')+'">' +
+      '<div style="width:36px;height:36px;border-radius:50%;background:'+n.bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;color:'+n.color+'">'+iconSvgs[n.icon]+'</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
+          '<div style="font-size:13px;font-weight:700;color:#1a1a1a">'+n.title+'</div>' +
+          (n.unread?'<div style="width:6px;height:6px;border-radius:50%;background:#E8734E;flex-shrink:0"></div>':'') +
+        '</div>' +
+        '<div style="font-size:12px;color:#666;margin-top:2px;line-height:1.4">'+n.desc+'</div>' +
+        '<div style="font-size:10px;color:#bbb;margin-top:4px;font-weight:600">'+n.time+'</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  document.getElementById('notifList').innerHTML=html;
+  document.getElementById('notifPanel').style.display='block';
+}
+
+function closeNotifications(){
+  document.getElementById('notifPanel').style.display='none';
+}
+
+/* Submit clip */
+function openSubmitClip(){
+  document.getElementById('submitStep1').style.display='';
+  document.getElementById('submitSuccess').style.display='none';
+  document.getElementById('submitUrl').value='';
+  document.getElementById('submitTitle').value='';
+  document.getElementById('submitModal').style.display='flex';
+}
+
+function closeSubmit(){
+  document.getElementById('submitModal').style.display='none';
+}
+
+function pickPlatform(btn){
+  document.getElementById('platPicker').querySelectorAll('button').forEach(function(b){
+    b.style.borderColor='#eee';b.style.background='#fff';b.style.color='#999';
+  });
+  btn.style.borderColor='#1a1a1a';btn.style.background='rgba(0,0,0,0.04)';btn.style.color='#1a1a1a';
+}
+
+function submitClipGo(){
+  var btn=document.getElementById('submitBtn');
+  btn.textContent='Submitting...';
+  btn.style.opacity='0.6';
+  btn.style.pointerEvents='none';
+  setTimeout(function(){
+    document.getElementById('submitStep1').style.display='none';
+    document.getElementById('submitSuccess').style.display='';
+    btn.textContent='Submit Clip';
+    btn.style.opacity='';
+    btn.style.pointerEvents='';
+  },1200);
+}
 
 /* Withdraw flow */
 var _pmIndex=0;
