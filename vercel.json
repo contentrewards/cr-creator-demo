@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/creator/:path*", "destination": "/index.html" },
+    { "source": "/:path*", "destination": "/index.html" }
+  ],
+  "redirects": [
+    { "source": "/creator/submissions", "destination": "/creator/clips", "permanent": true }
+  ]
+}

@@ -1608,7 +1608,13 @@ function render(){
 
 /* ═══ NAV ═══ */
 var _pages=['home','clips','discover','earnings','analytics'];
-function switchPage(page){
+function _pageFromPath(){
+  var p=window.location.pathname.replace(/\/+$/,'').split('/').pop()||'home';
+  if(p==='creator'||p==='')p='home';
+  if(p==='submissions')p='clips';
+  return _pages.indexOf(p)!==-1?p:'home';
+}
+function switchPage(page,skipPush){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
   document.querySelectorAll('.bottom-nav .nav-item, .bottom-nav .nav-center').forEach(function(n){n.classList.remove('active')});
   document.getElementById('page-'+page).classList.add('active');
@@ -1616,7 +1622,12 @@ function switchPage(page){
   navEls[_pages.indexOf(page)].classList.add('active');
   window.scrollTo(0,0);
   if(page==='discover')renderDiscover();
+  if(!skipPush){
+    var url=page==='home'?'/creator/':'/creator/'+page;
+    history.pushState({page:page},'',(window.location.pathname.indexOf('/creator')===0?url:window.location.pathname));
+  }
 }
+window.addEventListener('popstate',function(){switchPage(_pageFromPath(),true)});
 function switchPeriod(btn){btn.parentElement.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active')}
 var _lastData=null;
 function switchEarningsPeriod(btn,days){
@@ -2722,6 +2733,8 @@ render();
 renderRewardsCard();
 renderAccounts();
 renderDiscover();
+var _initPage=_pageFromPath();
+if(_initPage!=='home')switchPage(_initPage,true);
 setInterval(render,3600000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden){render();renderDiscover()}});
 </script>
