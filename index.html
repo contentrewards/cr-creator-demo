@@ -2199,47 +2199,34 @@ function setThemeMode(mode){
   }
 })()
 
-/* Dark mode inline style fixer - runs after render to override JS-generated inline styles */
-var _dmColorMap={
-  '#fff':'#1c1c1e','#ffffff':'#1c1c1e','rgb(255, 255, 255)':'#1c1c1e','white':'#1c1c1e',
-  '#f5f3f0':'#111','rgb(245, 243, 240)':'#111',
-  '#faf8f6':'#252525','rgb(250, 248, 246)':'#252525',
-  '#f0edea':'#252525','rgb(240, 237, 234)':'#252525',
-  '#e0ddd8':'#333','rgb(224, 221, 216)':'#333'
-};
-var _dmTextMap={
-  '#1a1a1a':'#e8e8e8','rgb(26, 26, 26)':'#e8e8e8',
-  '#999':'#888','#999999':'#888','rgb(153, 153, 153)':'#888',
-  '#666':'#aaa','#666666':'#aaa','rgb(102, 102, 102)':'#aaa',
-  '#bbb':'#666','#bbbbbb':'#666',
-  '#ccc':'#555','#cccccc':'#555'
-};
+/* Dark mode inline style fixer - uses getComputedStyle for reliable color matching */
+var _dmBgMap=[
+  ['rgb(255, 255, 255)','#1c1c1e'],['rgb(245, 243, 240)','#111'],
+  ['rgb(250, 248, 246)','#252525'],['rgb(240, 237, 234)','#252525'],
+  ['rgb(224, 221, 216)','#333']
+];
+var _dmTxtMap=[
+  ['rgb(26, 26, 26)','#e8e8e8'],['rgb(153, 153, 153)','#888'],
+  ['rgb(102, 102, 102)','#aaa'],['rgb(187, 187, 187)','#666'],
+  ['rgb(204, 204, 204)','#555'],['rgb(68, 68, 68)','#bbb'],
+  ['rgb(170, 170, 170)','#777']
+];
 function _applyDarkInline(){
   if(!document.body.classList.contains('dark-mode'))return;
-  document.querySelectorAll('.page [style], .rewards-overlay [style], .oauth-overlay [style], #messagesPanel [style], #notifPanel [style], #submitModal [style], #withdrawModal [style], .camp-detail [style]').forEach(function(el){
-    var s=el.style;
-    var bg=s.background||s.backgroundColor;
-    if(bg){
-      var bgL=bg.toLowerCase().replace(/\s/g,'');
-      for(var k in _dmColorMap){if(bgL===k.toLowerCase().replace(/\s/g,'')||bgL.indexOf(k.replace(/\s/g,''))===0){
-        s.background?s.background=_dmColorMap[k]:s.backgroundColor=_dmColorMap[k];break;
-      }}
-    }
-    var c=s.color;
-    if(c){
-      var cL=c.toLowerCase().replace(/\s/g,'');
-      for(var k2 in _dmTextMap){if(cL===k2.toLowerCase().replace(/\s/g,'')){
-        s.color=_dmTextMap[k2];break;
-      }}
-    }
-    /* Borders */
-    if(s.borderTop&&s.borderTop.indexOf('#f0edea')!==-1)s.borderTopColor='rgba(255,255,255,0.08)';
-    if(s.borderBottom&&(s.borderBottom.indexOf('rgba(0,0,0')!==-1||s.borderBottom.indexOf('rgba(0, 0, 0')!==-1))s.borderBottomColor='rgba(255,255,255,0.06)';
-    if(s.borderTop&&(s.borderTop.indexOf('rgba(0,0,0')!==-1||s.borderTop.indexOf('rgba(0, 0, 0')!==-1))s.borderTopColor='rgba(255,255,255,0.06)';
-    if(s.borderColor&&s.borderColor.indexOf('#e0ddd8')!==-1)s.borderColor='rgba(255,255,255,0.1)';
-    if(s.borderColor&&s.borderColor.indexOf('#eee')!==-1)s.borderColor='rgba(255,255,255,0.08)';
-    if(s.border&&s.border.indexOf('#e0ddd8')!==-1)s.borderColor='rgba(255,255,255,0.1)';
-    if(s.border&&s.border.indexOf('#eee')!==-1)s.borderColor='rgba(255,255,255,0.08)';
+  document.querySelectorAll('.page [style], .rewards-overlay [style], .oauth-overlay [style], #messagesPanel [style], #notifPanel [style], #submitModal [style], #withdrawModal [style], .camp-detail [style], #shareCardModal [style]').forEach(function(el){
+    var cs=getComputedStyle(el);
+    var bg=cs.backgroundColor;
+    if(bg){for(var i=0;i<_dmBgMap.length;i++){if(bg===_dmBgMap[i][0]){el.style.setProperty('background-color',_dmBgMap[i][1],'important');break}}}
+    var c=cs.color;
+    if(c){for(var j=0;j<_dmTxtMap.length;j++){if(c===_dmTxtMap[j][0]){el.style.setProperty('color',_dmTxtMap[j][1],'important');break}}}
+    var bt=cs.borderTopColor;
+    if(bt==='rgb(240, 237, 234)'||bt==='rgb(238, 238, 238)')el.style.borderTopColor='rgba(255,255,255,0.08)';
+    if(bt&&bt.indexOf('rgba(0, 0, 0')===0&&bt!=='rgba(0, 0, 0, 0)')el.style.borderTopColor='rgba(255,255,255,0.06)';
+    var bb=cs.borderBottomColor;
+    if(bb==='rgb(240, 237, 234)'||bb==='rgb(238, 238, 238)')el.style.borderBottomColor='rgba(255,255,255,0.08)';
+    if(bb&&bb.indexOf('rgba(0, 0, 0')===0&&bb!=='rgba(0, 0, 0, 0)')el.style.borderBottomColor='rgba(255,255,255,0.06)';
+    var bl=cs.borderLeftColor;
+    if(bl==='rgb(224, 221, 216)'||bl==='rgb(238, 238, 238)')el.style.borderColor='rgba(255,255,255,0.1)';
   });
 }
 
