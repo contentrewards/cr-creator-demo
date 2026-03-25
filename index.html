@@ -319,10 +319,14 @@ body.dark-mode #page-analytics .card > div > div{color:#e8e8e8}
 /* Wallet stat cells */
 body.dark-mode #page-earnings .card > div > div{color:#e8e8e8}
 
-/* Messages panel & notifications */
-body.dark-mode #messagesPanel > div{background:#1c1c1e !important}
+/* Messages page & notifications */
+body.dark-mode #page-messages{background:#111 !important}
+body.dark-mode #page-messages #msgListView > div:first-child{background:#1c1c1e !important}
+body.dark-mode #page-messages #msgChatView{background:#1c1c1e !important}
+body.dark-mode #page-messages #msgChatMessages{background:#111 !important}
 body.dark-mode #notifPanel > div{background:#1c1c1e !important}
 body.dark-mode #msgInput{background:#252525 !important;border-color:rgba(255,255,255,0.08) !important;color:#e8e8e8 !important}
+body.dark-mode #msgSearchInput{background:#252525 !important;border-color:rgba(255,255,255,0.08) !important;color:#e8e8e8 !important}
 
 /* Modals (submit, withdraw, share) */
 body.dark-mode #submitModal > div{background:#1c1c1e !important}
@@ -814,35 +818,65 @@ body.dark-mode{color-scheme:dark}
   </div>
 </div>
 
-<!-- ═══ MESSAGES PANEL ═══ -->
-<div id="messagesPanel" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px)" onclick="if(event.target===this)closeMessages()">
-  <div style="position:absolute;top:0;right:0;width:100%;max-width:420px;height:100%;background:#fff;box-shadow:-8px 0 32px rgba(0,0,0,0.1);display:flex;flex-direction:column;animation:notifSlide 0.2s ease-out">
-    <!-- Header -->
-    <div style="padding:16px 20px 12px;border-bottom:1px solid rgba(0,0,0,0.06);flex-shrink:0">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div style="font-size:18px;font-weight:800;color:#1a1a1a">Messages</div>
-        <button onclick="closeMessages()" style="background:none;border:none;cursor:pointer;padding:4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+<!-- ═══ PAGE: MESSAGES ═══ -->
+<div class="page" id="page-messages" style="display:none;background:#f5f3f0">
+  <!-- Conversation List View -->
+  <div id="msgListView" style="display:flex;flex-direction:column;min-height:100vh;min-height:100dvh">
+    <div style="padding:calc(16px + env(safe-area-inset-top)) 20px 0;background:#fff">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <img src="https://cdn.contentrewards.com/admin/cr-logo-gradient.png" style="width:24px;height:24px;object-fit:contain" alt="CR">
+          <span style="font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-0.3px">Messages</span>
+        </div>
+        <button onclick="msgCompose()" style="width:36px;height:36px;border-radius:50%;background:#f5f3f0;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
       </div>
-      <div style="display:flex;gap:0;border-bottom:1px solid rgba(0,0,0,0.06)">
-        <div style="padding:8px 14px;font-size:12px;font-weight:700;color:#1a1a1a;border-bottom:2px solid #1a1a1a;cursor:pointer">All</div>
-        <div style="padding:8px 14px;font-size:12px;font-weight:600;color:#999;cursor:pointer">Campaigns</div>
-        <div style="padding:8px 14px;font-size:12px;font-weight:600;color:#999;cursor:pointer">DMs</div>
+      <!-- Search -->
+      <div style="position:relative;margin-bottom:14px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2" stroke-linecap="round" style="position:absolute;left:12px;top:50%;transform:translateY(-50%)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="msgSearchInput" placeholder="Search messages..." oninput="filterMessages(this.value)" style="width:100%;padding:10px 14px 10px 36px;border:1.5px solid #e8e4df;border-radius:12px;font-size:13px;font-family:inherit;font-weight:500;outline:none;background:#faf8f6;color:#1a1a1a;box-sizing:border-box" onfocus="this.style.borderColor='#E8734E'" onblur="this.style.borderColor='#e8e4df'">
+      </div>
+      <!-- Filter tabs -->
+      <div style="display:flex;gap:6px;padding-bottom:14px" id="msgFilterTabs">
+        <button class="msg-filter-btn active" onclick="filterMsgTab(this,'all')" style="padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;border:1.5px solid #1a1a1a;background:#1a1a1a;color:#fff;cursor:pointer;font-family:inherit;transition:all 0.15s">All</button>
+        <button class="msg-filter-btn" onclick="filterMsgTab(this,'campaign')" style="padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;border:1.5px solid #e8e4df;background:#fff;color:#666;cursor:pointer;font-family:inherit;transition:all 0.15s">Campaigns</button>
+        <button class="msg-filter-btn" onclick="filterMsgTab(this,'support')" style="padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;border:1.5px solid #e8e4df;background:#fff;color:#666;cursor:pointer;font-family:inherit;transition:all 0.15s">Support</button>
       </div>
     </div>
     <!-- Conversation list -->
-    <div id="msgConvoList" style="flex:1;overflow-y:auto;padding:8px"></div>
-    <!-- Chat view (hidden by default) -->
-    <div id="msgChatView" style="display:none;flex:1;flex-direction:column;overflow:hidden">
-      <div id="msgChatHeader" style="padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;gap:10px;flex-shrink:0">
-        <button onclick="msgBack()" style="background:none;border:none;cursor:pointer;padding:2px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-        <div id="msgChatAvatar" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0"></div>
-        <div><div id="msgChatName" style="font-size:14px;font-weight:700;color:#1a1a1a"></div><div id="msgChatSub" style="font-size:11px;color:#999"></div></div>
+    <div id="msgConvoList" style="flex:1;overflow-y:auto;padding:4px 12px 100px"></div>
+  </div>
+
+  <!-- Chat View (hidden by default) -->
+  <div id="msgChatView" style="display:none;flex-direction:column;height:100vh;height:100dvh;background:#fff">
+    <!-- Chat header -->
+    <div style="padding:calc(12px + env(safe-area-inset-top)) 16px 12px;border-bottom:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;gap:12px;flex-shrink:0;background:#fff">
+      <button onclick="msgBack()" style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div id="msgChatAvatar" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0"></div>
+      <div style="flex:1;min-width:0">
+        <div id="msgChatName" style="font-size:15px;font-weight:700;color:#1a1a1a"></div>
+        <div id="msgChatSub" style="font-size:11px;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
       </div>
-      <div id="msgChatMessages" style="flex:1;overflow-y:auto;padding:16px"></div>
-      <div style="padding:10px 16px 14px;border-top:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;gap:8px;flex-shrink:0">
-        <input type="text" id="msgInput" placeholder="Message..." style="flex:1;padding:10px 14px;border:1px solid rgba(0,0,0,0.08);border-radius:20px;font-size:13px;font-family:inherit;outline:none;background:#f5f3f0" onfocus="this.style.borderColor='#E8734E'" onblur="this.style.borderColor='rgba(0,0,0,0.08)'" onkeydown="if(event.key==='Enter'){event.preventDefault();sendMockMsg()}">
-        <button onclick="sendMockMsg()" style="width:34px;height:34px;border-radius:50%;border:none;background:#E8734E;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </button>
       </div>
+    </div>
+    <!-- Messages area -->
+    <div id="msgChatMessages" style="flex:1;overflow-y:auto;padding:16px 16px 8px;background:#faf8f6"></div>
+    <!-- Input -->
+    <div style="padding:8px 12px calc(8px + env(safe-area-inset-bottom));border-top:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;gap:8px;flex-shrink:0;background:#fff">
+      <button style="width:36px;height:36px;border-radius:50%;border:none;background:#f5f3f0;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <input type="text" id="msgInput" placeholder="Message..." style="flex:1;padding:10px 16px;border:1.5px solid #e8e4df;border-radius:22px;font-size:13px;font-family:inherit;font-weight:500;outline:none;background:#faf8f6;color:#1a1a1a" onfocus="this.style.borderColor='#E8734E'" onblur="this.style.borderColor='#e8e4df'" onkeydown="if(event.key==='Enter'){event.preventDefault();sendMockMsg()}">
+      <button onclick="sendMockMsg()" style="width:36px;height:36px;border-radius:50%;border:none;background:#E8734E;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.1s" onmousedown="this.style.transform='scale(0.92)'" onmouseup="this.style.transform='scale(1)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
     </div>
   </div>
 </div>
@@ -1345,8 +1379,8 @@ body.dark-mode{color-scheme:dark}
   <div class="nav-item" onclick="switchPage('earnings')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>
   </div>
-  <div class="nav-item" onclick="switchPage('analytics')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M8 21V13h3v8"/><path d="M13 21V9h3v12"/></svg>
+  <div class="nav-item" onclick="switchPage('messages')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
   </div>
 </div>
 </div></div><!-- /phone-frame -->
@@ -1607,11 +1641,12 @@ function render(){
 }
 
 /* ═══ NAV ═══ */
-var _pages=['home','clips','discover','earnings','analytics'];
+var _pages=['home','clips','discover','earnings','messages'];
 function _pageFromPath(){
   var p=window.location.pathname.replace(/\/+$/,'').split('/').pop()||'home';
   if(p==='creator'||p==='')p='home';
   if(p==='submissions')p='clips';
+  if(p==='analytics')p='home';
   return _pages.indexOf(p)!==-1?p:'home';
 }
 function switchPage(page,skipPush){
@@ -1622,6 +1657,7 @@ function switchPage(page,skipPush){
   navEls[_pages.indexOf(page)].classList.add('active');
   window.scrollTo(0,0);
   if(page==='discover')renderDiscover();
+  if(page==='messages'){renderConvoList();document.getElementById('msgListView').style.display='flex';document.getElementById('msgChatView').style.display='none';_currentConvo=null}
   if(!skipPush){
     var url=page==='home'?'/creator/':'/creator/'+page;
     history.pushState({page:page},'',(window.location.pathname.indexOf('/creator')===0?url:window.location.pathname));
@@ -1724,7 +1760,7 @@ function openVideoLink(){
 
 /* Messages */
 var _msgConvos=[
-{id:'vir',name:'Virality',sub:'84 members - 12 online',color:'#E8734E',init:'V',unread:7,msgs:[
+{id:'vir',name:'Virality',sub:'84 members - 12 online',color:'#E8734E',init:'V',type:'campaign',unread:7,msgs:[
 {user:'@justhitsongz',color:'#6366f1',init:'J',time:'10:42 AM',text:'Hey, when do payouts hit for last week? I had 3 approved clips for Cantina'},
 {user:'Admin',color:'#E8734E',init:'A',team:true,time:'10:45 AM',text:'Payouts for last week process this Friday. You should see them in your PayPal by end of day.'},
 {user:'@thevidosm',color:'#10b981',init:'V',time:'11:03 AM',text:'Just submitted my Atricent clip - 39.5M views in 6 hours'},
@@ -1733,24 +1769,24 @@ var _msgConvos=[
 {user:'@clipitandreverseit',color:'#f59e0b',init:'C',time:'11:32 AM',text:'My Brooklyn 3 clip just hit 3.3M views! Biggest one yet'},
 {user:'Admin',color:'#E8734E',init:'A',team:true,time:'11:35 AM',text:'Amazing work! That clip is trending. Keep the momentum going this week.'}
 ]},
-{id:'flooz',name:'Flooz Clipping',sub:'156 members',color:'#2d1b00',init:'F',unread:0,msgs:[
+{id:'flooz',name:'Flooz Clipping',sub:'156 members',color:'#2d1b00',init:'F',type:'campaign',unread:0,msgs:[
 {user:'Brand Manager',color:'#2d1b00',init:'F',team:true,time:'9:20 AM',text:'New campaign brief posted for Season 3. Check the pinned message for details.'},
 {user:'@swaeay',color:'#8b5cf6',init:'S',time:'9:45 AM',text:'Are Warzone clips still eligible or just multiplayer?'},
 {user:'Brand Manager',color:'#2d1b00',init:'F',team:true,time:'9:48 AM',text:'Both are eligible! Warzone, multiplayer, and zombies content all qualify.'},
 {user:'@dronazen',color:'#14b8a6',init:'D',time:'10:12 AM',text:'My latest montage just got approved - $59.81 earned. Love this campaign'}
 ]},
-{id:'cantina',name:'Cantina Creators',sub:'42 members',color:'#dc2626',init:'C',unread:3,msgs:[
+{id:'cantina',name:'Cantina Creators',sub:'42 members',color:'#dc2626',init:'C',type:'campaign',unread:3,msgs:[
 {user:'Cantina (Brand)',color:'#dc2626',init:'C',team:true,time:'2h ago',text:'Great work on the last batch! We approved 6 submissions. Payouts process Friday.'},
 {user:'@thevidosm',color:'#10b981',init:'V',time:'1h ago',text:'Nice! Just uploaded my new edit. When do the next content guidelines drop?'},
 {user:'You',color:'#E8734E',init:'Y',self:true,time:'45m ago',text:'Thanks for the fast approvals! My street interview hit 201K views already.'},
 {user:'Cantina (Brand)',color:'#dc2626',init:'C',team:true,time:'30m ago',text:'Love seeing those numbers! Keep the quality up and we will keep approving fast.'}
 ]},
-{id:'nobs',name:'NOBS Toothpaste',sub:'28 members',color:'#16a34a',init:'N',unread:0,msgs:[
+{id:'nobs',name:'NOBS Toothpaste',sub:'28 members',color:'#16a34a',init:'N',type:'campaign',unread:0,msgs:[
 {user:'NOBS Team',color:'#16a34a',init:'N',team:true,time:'Yesterday',text:'New campaign: STREET INTERVIEWS now live! Same CPM rates. Check the brief.'},
 {user:'@nilaymishra',color:'#f43f5e',init:'N',time:'Yesterday',text:'Just dropped my first looksmaxxing clip. Fingers crossed!'},
 {user:'NOBS Team',color:'#16a34a',init:'N',team:true,time:'Yesterday',text:'Approved! Great angle on the content. Keep them coming.'}
 ]},
-{id:'support',name:'Support',sub:'Typically replies in 2h',color:'#7c3aed',init:'S',unread:0,msgs:[
+{id:'support',name:'Support',sub:'Typically replies in 2h',color:'#7c3aed',init:'S',type:'support',unread:0,msgs:[
 {user:'You',color:'#E8734E',init:'Y',self:true,time:'2d ago',text:'Hey, my payout from March 8 still shows as processing. Can you check?'},
 {user:'Support',color:'#7c3aed',init:'S',team:true,time:'2d ago',text:'Hi! Let me look into that for you. Can you confirm the reference number?'},
 {user:'You',color:'#E8734E',init:'Y',self:true,time:'2d ago',text:'CR-28491'},
@@ -1759,53 +1795,103 @@ var _msgConvos=[
 ]}
 ];
 function openMessages(){
-  renderConvoList();
-  document.getElementById('msgConvoList').style.display='';
-  document.getElementById('msgChatView').style.display='none';
-  document.getElementById('messagesPanel').style.display='block';
+  switchPage('messages');
 }
-function closeMessages(){document.getElementById('messagesPanel').style.display='none'}
+function closeMessages(){switchPage('home')}
+var _msgFilter='all';
+function filterMsgTab(btn,filter){
+  _msgFilter=filter;
+  document.querySelectorAll('#msgFilterTabs button').forEach(function(b){
+    b.style.background='#fff';b.style.color='#666';b.style.borderColor='#e8e4df';
+  });
+  btn.style.background='#1a1a1a';btn.style.color='#fff';btn.style.borderColor='#1a1a1a';
+  renderConvoList();
+}
+function filterMessages(q){
+  _msgSearchQuery=q.toLowerCase();renderConvoList();
+}
+var _msgSearchQuery='';
 function renderConvoList(){
-  var h=_msgConvos.map(function(c){
+  var filtered=_msgConvos.filter(function(c){
+    if(_msgFilter==='campaign'&&c.type!=='campaign')return false;
+    if(_msgFilter==='support'&&c.type!=='support')return false;
+    if(_msgSearchQuery&&c.name.toLowerCase().indexOf(_msgSearchQuery)===-1)return false;
+    return true;
+  });
+  var h=filtered.map(function(c){
     var lm=c.msgs[c.msgs.length-1];
-    return '<div onclick="openConvo(\''+c.id+'\')" style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;cursor:pointer;margin-bottom:2px;transition:background 0.15s" ontouchstart="this.style.background=\'rgba(0,0,0,0.03)\'" ontouchend="this.style.background=\'\'">' +
-    '<div style="width:40px;height:40px;border-radius:50%;background:'+c.color+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700;color:#fff">'+c.init+'</div>' +
-    '<div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:'+(c.unread?'700':'600')+';color:#1a1a1a">'+c.name+'</span><span style="font-size:10px;color:#999">'+lm.time+'</span></div>' +
-    '<div style="font-size:12px;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px">'+(lm.self?'You: ':'')+lm.text+'</div></div>' +
-    (c.unread?'<div style="width:18px;height:18px;border-radius:50%;background:#E8734E;font-size:10px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+c.unread+'</div>':'') +
+    var preview=(lm.self?'You: ':'')+lm.text;
+    if(preview.length>45)preview=preview.substring(0,45)+'...';
+    var isOnline=c.id==='vir'||c.id==='cantina';
+    return '<div onclick="openConvo(\''+c.id+'\')" style="display:flex;align-items:center;gap:12px;padding:14px 12px;background:#fff;border-radius:14px;cursor:pointer;margin-bottom:6px;box-shadow:0 1px 3px rgba(0,0,0,0.04);transition:transform 0.1s" ontouchstart="this.style.transform=\'scale(0.98)\'" ontouchend="this.style.transform=\'scale(1)\'">' +
+    '<div style="position:relative;flex-shrink:0">' +
+      '<div style="width:44px;height:44px;border-radius:50%;background:'+c.color+';display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff">'+c.init+'</div>' +
+      (isOnline?'<div style="position:absolute;bottom:1px;right:1px;width:10px;height:10px;border-radius:50%;background:#16a34a;border:2px solid #fff"></div>':'') +
+    '</div>' +
+    '<div style="flex:1;min-width:0">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">' +
+        '<span style="font-size:14px;font-weight:'+(c.unread?'800':'600')+';color:#1a1a1a">'+c.name+'</span>' +
+        '<span style="font-size:11px;color:'+(c.unread?'#E8734E':'#bbb')+';font-weight:'+(c.unread?'700':'500')+'">'+lm.time+'</span>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
+        '<div style="font-size:12px;color:'+(c.unread?'#666':'#999')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:'+(c.unread?'600':'400')+'">'+preview+'</div>' +
+        (c.unread?'<div style="min-width:20px;height:20px;border-radius:10px;background:#E8734E;font-size:10px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0 6px">'+c.unread+'</div>':'') +
+      '</div>' +
+    '</div>' +
     '</div>';
   }).join('');
+  if(!filtered.length){
+    h='<div style="text-align:center;padding:40px 20px;color:#999;font-size:13px">No conversations found</div>';
+  }
   document.getElementById('msgConvoList').innerHTML=h;
   if(typeof _applyDarkInline==='function')_applyDarkInline();
 }
+function msgCompose(){showToast('Coming soon')}
 var _currentConvo=null;
 function openConvo(id){
   var c=_msgConvos.find(function(x){return x.id===id});
   if(!c)return;_currentConvo=c;
+  c.unread=0;
   document.getElementById('msgChatAvatar').style.background=c.color;
   document.getElementById('msgChatAvatar').textContent=c.init;
   document.getElementById('msgChatName').textContent=c.name;
   document.getElementById('msgChatSub').textContent=c.sub;
   document.getElementById('msgInput').placeholder='Message '+c.name+'...';
   renderChat(c);
-  document.getElementById('msgConvoList').style.display='none';
+  document.getElementById('msgListView').style.display='none';
   document.getElementById('msgChatView').style.display='flex';
+  document.querySelector('.bottom-nav').style.display='none';
   var el=document.getElementById('msgChatMessages');
   setTimeout(function(){el.scrollTop=el.scrollHeight},50);
 }
 function renderChat(c){
-  var h='<div style="text-align:center;padding:8px 0;margin-bottom:8px"><span style="font-size:10px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:0.5px">Today</span></div>';
+  var h='<div style="text-align:center;padding:8px 0;margin-bottom:12px"><span style="font-size:10px;font-weight:700;color:#ccc;text-transform:uppercase;letter-spacing:0.8px;background:#f0edea;padding:4px 12px;border-radius:8px">Today</span></div>';
   c.msgs.forEach(function(m){
     if(m.self){
-      h+='<div style="display:flex;gap:8px;margin-bottom:12px;flex-direction:row-reverse"><div style="width:28px;height:28px;border-radius:50%;background:#E8734E;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff">Y</div><div style="text-align:right"><div style="font-size:10px;color:#bbb;margin-bottom:3px">You - '+m.time+'</div><div style="padding:10px 14px;border-radius:12px 12px 4px 12px;background:rgba(232,115,78,0.1);font-size:13px;line-height:1.5;color:#1a1a1a;text-align:left;display:inline-block;max-width:240px">'+m.text+'</div></div></div>';
+      h+='<div style="display:flex;justify-content:flex-end;margin-bottom:10px;padding-left:48px">' +
+        '<div>' +
+          '<div style="padding:10px 14px;border-radius:16px 16px 4px 16px;background:#E8734E;font-size:13px;line-height:1.5;color:#fff;max-width:260px">'+m.text+'</div>' +
+          '<div style="font-size:10px;color:#bbb;margin-top:3px;text-align:right;font-weight:500">'+m.time+'</div>' +
+        '</div>' +
+      '</div>';
     } else {
-      h+='<div style="display:flex;gap:8px;margin-bottom:12px"><div style="width:28px;height:28px;border-radius:50%;background:'+m.color+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff">'+m.init+'</div><div><div style="display:flex;align-items:baseline;gap:6px;margin-bottom:3px"><span style="font-size:11px;font-weight:700;color:#1a1a1a">'+m.user+'</span>'+(m.team?'<span style="font-size:8px;padding:1px 5px;background:rgba(232,115,78,0.1);color:#E8734E;border-radius:3px;font-weight:700">TEAM</span>':'')+'<span style="font-size:10px;color:#bbb">'+m.time+'</span></div><div style="padding:10px 14px;border-radius:12px 12px 12px 4px;background:#f5f3f0;font-size:13px;line-height:1.5;color:#444;max-width:240px">'+m.text+'</div></div></div>';
+      h+='<div style="display:flex;gap:8px;margin-bottom:10px;padding-right:48px">' +
+        '<div style="width:30px;height:30px;border-radius:50%;background:'+m.color+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;margin-top:2px">'+m.init+'</div>' +
+        '<div>' +
+          '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">' +
+            '<span style="font-size:11px;font-weight:700;color:#1a1a1a">'+m.user+'</span>' +
+            (m.team?'<span style="font-size:8px;padding:2px 6px;background:rgba(232,115,78,0.1);color:#E8734E;border-radius:4px;font-weight:800;letter-spacing:0.3px">TEAM</span>':'') +
+          '</div>' +
+          '<div style="padding:10px 14px;border-radius:4px 16px 16px 16px;background:#fff;font-size:13px;line-height:1.5;color:#333;max-width:260px;box-shadow:0 1px 2px rgba(0,0,0,0.04)">'+m.text+'</div>' +
+          '<div style="font-size:10px;color:#bbb;margin-top:3px;font-weight:500">'+m.time+'</div>' +
+        '</div>' +
+      '</div>';
     }
   });
   document.getElementById('msgChatMessages').innerHTML=h;
   if(typeof _applyDarkInline==='function')_applyDarkInline();
 }
-function msgBack(){document.getElementById('msgChatView').style.display='none';document.getElementById('msgConvoList').style.display='';_currentConvo=null}
+function msgBack(){document.getElementById('msgChatView').style.display='none';document.getElementById('msgListView').style.display='flex';document.querySelector('.bottom-nav').style.display='flex';_currentConvo=null;renderConvoList()}
 function sendMockMsg(){
   var input=document.getElementById('msgInput');var text=input.value.trim();
   if(!text||!_currentConvo)return;
@@ -2241,7 +2327,7 @@ var _dmTxtMap=[
 ];
 function _applyDarkInline(){
   if(!document.body.classList.contains('dark-mode'))return;
-  document.querySelectorAll('.page [style], .rewards-overlay [style], .oauth-overlay [style], #messagesPanel [style], #notifPanel [style], #submitModal [style], #withdrawModal [style], .camp-detail [style], #shareCardModal [style]').forEach(function(el){
+  document.querySelectorAll('.page [style], .rewards-overlay [style], .oauth-overlay [style], #page-messages [style], #notifPanel [style], #submitModal [style], #withdrawModal [style], .camp-detail [style], #shareCardModal [style]').forEach(function(el){
     var cs=getComputedStyle(el);
     var bg=cs.backgroundColor;
     if(bg){for(var i=0;i<_dmBgMap.length;i++){if(bg===_dmBgMap[i][0]){el.style.setProperty('background-color',_dmBgMap[i][1],'important');break}}}
