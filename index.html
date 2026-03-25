@@ -1435,8 +1435,8 @@ body.dark-mode{color-scheme:dark}
   <div class="nav-item" onclick="switchPage('clips')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M10 8l6 4-6 4V8z"/></svg>
   </div>
-  <div class="nav-center" onclick="switchPage('discover')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 22 12 12 22 2 12" stroke-width="1.8" stroke-linejoin="round"/><polygon points="12 7 17 12 12 17 7 12" stroke-width="1.8" stroke-linejoin="round"/></svg>
+  <div class="nav-center" onclick="switchPage('analytics')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 17V13"/><path d="M12 17V9"/><path d="M16 17V11"/></svg>
   </div>
   <div class="nav-item" onclick="switchPage('earnings')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>
@@ -1736,12 +1736,12 @@ function render(){
 }
 
 /* ═══ NAV ═══ */
-var _pages=['home','clips','discover','earnings','messages'];
+var _pages=['home','clips','analytics','earnings','messages'];
 function _pageFromPath(){
   var p=window.location.pathname.replace(/\/+$/,'').split('/').pop()||'home';
   if(p==='creator'||p==='')p='home';
   if(p==='submissions')p='clips';
-  if(p==='analytics')p='home';
+  if(p==='discover')p='home';
   return _pages.indexOf(p)!==-1?p:'home';
 }
 function switchPage(page,skipPush){
