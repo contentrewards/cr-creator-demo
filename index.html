@@ -78,6 +78,15 @@ html{scrollbar-width:none}
 .nav-center.active svg{stroke:#E8734E}
 .nav-center:not(.active):active{background:rgba(255,255,255,0.06)}
 
+/* Help FAQ */
+.help-faq{border-bottom:1px solid rgba(0,0,0,0.05);overflow:hidden}
+.help-faq-q{display:flex;align-items:center;justify-content:space-between;padding:14px 0;cursor:pointer;gap:12px}
+.help-faq-q span{font-size:13px;font-weight:700;color:#1a1a1a}
+.help-faq-q svg{flex-shrink:0;transition:transform 0.2s}
+.help-faq-a{font-size:12px;color:#666;line-height:1.6;padding:0 0 14px;display:none}
+.help-faq.open .help-faq-a{display:block}
+.help-faq.open .help-faq-q svg{transform:rotate(180deg)}
+
 .card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.04);margin:0 16px 12px}
 
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
@@ -372,6 +381,9 @@ body.dark-mode #page-messages{background:#111 !important}
 body.dark-mode #page-messages #msgListView > div:first-child{background:#1c1c1e !important}
 body.dark-mode #page-messages #msgChatView{background:#1c1c1e !important}
 body.dark-mode #page-messages #msgChatMessages{background:#111 !important}
+body.dark-mode #helpPanel > div{background:#1c1c1e !important}
+body.dark-mode .help-faq-q span{color:#e8e8e8 !important}
+body.dark-mode .help-faq-a{color:#999 !important}
 body.dark-mode #notifPanel > div{background:#1c1c1e !important}
 body.dark-mode #msgInput{background:#252525 !important;border-color:rgba(255,255,255,0.08) !important;color:#e8e8e8 !important}
 body.dark-mode #msgSearchInput{background:#252525 !important;border-color:rgba(255,255,255,0.08) !important;color:#e8e8e8 !important}
@@ -551,6 +563,9 @@ body.dark-mode{color-scheme:dark}
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:10px">
+        <div style="cursor:pointer;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:center" onclick="openHelp()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="#1a1a1a"/></svg>
+        </div>
         <div style="position:relative;cursor:pointer;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:center" onclick="openMessages()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           <div style="position:absolute;top:0;right:0;background:#E8734E;color:#fff;font-size:7px;font-weight:800;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff">7</div>
@@ -939,6 +954,135 @@ body.dark-mode{color-scheme:dark}
       <button onclick="sendMockMsg()" style="width:36px;height:36px;border-radius:50%;border:none;background:#E8734E;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.1s" onmousedown="this.style.transform='scale(0.92)'" onmouseup="this.style.transform='scale(1)'">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HELP PANEL ═══ -->
+<div id="helpPanel" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px)" onclick="if(event.target===this)closeHelp()">
+  <div style="position:absolute;top:0;right:0;width:100%;max-width:420px;height:100%;background:#fff;box-shadow:-8px 0 32px rgba(0,0,0,0.1);overflow-y:auto;animation:notifSlide 0.2s ease-out">
+    <div style="padding:20px 20px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,0,0,0.06)">
+      <div style="font-size:18px;font-weight:800;color:#1a1a1a">Help Center</div>
+      <button onclick="closeHelp()" style="background:none;border:none;cursor:pointer;padding:4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+
+    <!-- Quick actions -->
+    <div style="padding:16px 20px 8px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+        <div onclick="openMessages();closeHelp()" style="background:#faf8f6;border-radius:14px;padding:16px;cursor:pointer;transition:transform 0.1s" ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform='scale(1)'">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(232,115,78,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:10px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8734E" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:#1a1a1a">Contact Support</div>
+          <div style="font-size:11px;color:#999;margin-top:2px">Typically replies in 2h</div>
+        </div>
+        <div onclick="switchPage('discover');closeHelp()" style="background:#faf8f6;border-radius:14px;padding:16px;cursor:pointer;transition:transform 0.1s" ontouchstart="this.style.transform='scale(0.97)'" ontouchend="this.style.transform='scale(1)'">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(22,163,74,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:10px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:#1a1a1a">Discover</div>
+          <div style="font-size:11px;color:#999;margin-top:2px">Browse campaigns</div>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div style="font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Frequently Asked Questions</div>
+    </div>
+
+    <div style="padding:0 20px 20px" id="helpFaqList">
+      <div class="help-faq" onclick="toggleFaq(this)">
+        <div class="help-faq-q">
+          <span>How do I get paid?</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="help-faq-a">Payouts are processed every Friday. Once your clips are approved, earnings move to your available balance. Hit "Withdraw" on the Wallet page to send funds to your PayPal. Minimum withdrawal is $10.</div>
+      </div>
+      <div class="help-faq" onclick="toggleFaq(this)">
+        <div class="help-faq-q">
+          <span>How are earnings calculated?</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="help-faq-a">Each campaign has a CPM rate (cost per 1,000 views). Your earnings = (views / 1,000) x CPM rate. Some campaigns also offer flat bonuses for viral clips. A 7% creator fee is deducted from your earnings.</div>
+      </div>
+      <div class="help-faq" onclick="toggleFaq(this)">
+        <div class="help-faq-q">
+          <span>How do I submit a clip?</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="help-faq-a">Go to the Clips tab and tap "Submit Clip". Select the campaign, paste your video URL (TikTok, Instagram, YouTube, or X), and submit. Our team reviews clips within 24-48 hours. You will get a notification when it is approved.</div>
+      </div>
+      <div class="help-faq" onclick="toggleFaq(this)">
+        <div class="help-faq-q">
+          <span>What is Trust Score?</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="help-faq-a">Your Trust Score (0-100) reflects your reliability as a creator. It goes up when clips are approved and you follow campaign guidelines. Higher scores unlock priority access to new campaigns and faster payouts.</div>
+      </div>
+      <div class="help-faq" onclick="toggleFaq(this)">
+        <div class="help-faq-q">
+          <span>How do I join a campaign?</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="help-faq-a">Browse available campaigns on the Discover page (accessible from Help > Discover). Tap "Join Campaign" and you will be accepted based on your Trust Score and creator profile. Most campaigns accept creators instantly.</div>
+      </div>
+      <div class="help-faq" onclick="toggleFaq(this)">
+        <div class="help-faq-q">
+          <span>Why was my clip rejected?</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="help-faq-a">Common reasons: the video did not include the required brand mention or hashtag, it was shorter than the minimum length, or it violated campaign guidelines. Check the campaign requirements and resubmit a corrected version.</div>
+      </div>
+      <div class="help-faq" onclick="toggleFaq(this)">
+        <div class="help-faq-q">
+          <span>Can I submit to multiple campaigns?</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="help-faq-a">Yes! You can join and submit clips to as many campaigns as you want. Each clip can only be submitted to one campaign, but you can create different clips for different campaigns using the same content style.</div>
+      </div>
+      <div class="help-faq" onclick="toggleFaq(this)">
+        <div class="help-faq-q">
+          <span>What platforms are supported?</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="help-faq-a">We support TikTok, Instagram Reels, YouTube Shorts, and X (Twitter). Submit any public video URL from these platforms. Views are tracked automatically once your clip is approved.</div>
+      </div>
+    </div>
+
+    <!-- Footer links -->
+    <div style="padding:0 20px 24px;display:flex;flex-direction:column;gap:0">
+      <div style="font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Resources</div>
+      <a style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid rgba(0,0,0,0.04);text-decoration:none;cursor:pointer" onclick="showToast('Opening Creator Guide...')">
+        <div style="display:flex;align-items:center;gap:10px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span style="font-size:13px;font-weight:600;color:#1a1a1a">Creator Guide</span>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid rgba(0,0,0,0.04);text-decoration:none;cursor:pointer" onclick="showToast('Opening Community...')">
+        <div style="display:flex;align-items:center;gap:10px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span style="font-size:13px;font-weight:600;color:#1a1a1a">Creator Community</span>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid rgba(0,0,0,0.04);text-decoration:none;cursor:pointer" onclick="showToast('Opening Terms...')">
+        <div style="display:flex;align-items:center;gap:10px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span style="font-size:13px;font-weight:600;color:#1a1a1a">Terms of Service</span>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid rgba(0,0,0,0.04);border-bottom:1px solid rgba(0,0,0,0.04);text-decoration:none;cursor:pointer" onclick="showToast('Opening Privacy Policy...')">
+        <div style="display:flex;align-items:center;gap:10px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span style="font-size:13px;font-weight:600;color:#1a1a1a">Privacy Policy</span>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+
+    <div style="text-align:center;padding:0 20px 32px">
+      <div style="font-size:11px;color:#ccc;font-weight:600">Content Rewards v2.1.0</div>
     </div>
   </div>
 </div>
@@ -2059,6 +2203,11 @@ function closeNotifications(){
   document.getElementById('notifPanel').style.display='none';
 }
 
+/* Help panel */
+function openHelp(){document.getElementById('helpPanel').style.display='block';if(typeof _applyDarkInline==='function')_applyDarkInline()}
+function closeHelp(){document.getElementById('helpPanel').style.display='none'}
+function toggleFaq(el){el.classList.toggle('open')}
+
 /* Submit clip - with OAuth video picker */
 var _recentVideos={
   tiktok:[
@@ -2447,7 +2596,7 @@ var _dmTxtMap=[
 ];
 function _applyDarkInline(){
   if(!document.body.classList.contains('dark-mode'))return;
-  document.querySelectorAll('.page [style], .rewards-overlay [style], .oauth-overlay [style], #page-messages [style], #notifPanel [style], #submitModal [style], #withdrawModal [style], .camp-detail [style], #shareCardModal [style]').forEach(function(el){
+  document.querySelectorAll('.page [style], .rewards-overlay [style], .oauth-overlay [style], #page-messages [style], #helpPanel [style], #notifPanel [style], #submitModal [style], #withdrawModal [style], .camp-detail [style], #shareCardModal [style]').forEach(function(el){
     var cs=getComputedStyle(el);
     var bg=cs.backgroundColor;
     if(bg){for(var i=0;i<_dmBgMap.length;i++){if(bg===_dmBgMap[i][0]){el.style.setProperty('background-color',_dmBgMap[i][1],'important');break}}}
