@@ -739,6 +739,7 @@ body.dark-mode{color-scheme:dark}
 <!-- ═══ PAGE: MY CLIPS ═══ -->
 <div class="page" id="page-clips">
   <div style="padding:calc(16px + env(safe-area-inset-top)) 20px 16px;background:#fff;border-bottom:1px solid rgba(0,0,0,0.04)">
+    <button onclick="switchPage('home')" style="background:none;border:none;cursor:pointer;padding:0;margin-bottom:8px;display:flex;align-items:center;gap:4px;font-family:inherit;font-size:11px;font-weight:600;color:#999"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>Back</button>
     <div style="display:flex;justify-content:space-between;align-items:center">
       <div>
         <div style="display:flex;align-items:center;gap:8px"><img src="https://cdn.contentrewards.com/admin/cr-logo-gradient.png" style="width:24px;height:24px;object-fit:contain" alt="CR"><span style="font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-0.3px">My Clips</span></div>
@@ -789,6 +790,7 @@ body.dark-mode{color-scheme:dark}
 <!-- ═══ PAGE: WALLET ═══ -->
 <div class="page" id="page-earnings">
   <div style="padding:calc(16px + env(safe-area-inset-top)) 20px 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,0.04)">
+    <button onclick="switchPage('home')" style="background:none;border:none;cursor:pointer;padding:0;margin-bottom:8px;display:flex;align-items:center;gap:4px;font-family:inherit;font-size:11px;font-weight:600;color:#999"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>Back</button>
     <div style="display:flex;align-items:center;gap:8px"><img src="https://cdn.contentrewards.com/admin/cr-logo-gradient.png" style="width:24px;height:24px;object-fit:contain" alt="CR"><span style="font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-0.3px">Wallet</span></div>
   </div>
   <div class="card fade-up" style="margin-top:12px">
@@ -849,6 +851,7 @@ body.dark-mode{color-scheme:dark}
 <!-- ═══ PAGE: ANALYTICS ═══ -->
 <div class="page" id="page-analytics">
   <div style="padding:calc(16px + env(safe-area-inset-top)) 20px 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,0.04)">
+    <button onclick="switchPage('home')" style="background:none;border:none;cursor:pointer;padding:0;margin-bottom:8px;display:flex;align-items:center;gap:4px;font-family:inherit;font-size:11px;font-weight:600;color:#999"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>Back</button>
     <div style="display:flex;align-items:center;gap:8px"><img src="https://cdn.contentrewards.com/admin/cr-logo-gradient.png" style="width:24px;height:24px;object-fit:contain" alt="CR"><span style="font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-0.3px">Analytics</span></div>
   </div>
   <div class="card fade-up" style="margin-top:12px">
@@ -900,6 +903,7 @@ body.dark-mode{color-scheme:dark}
   <!-- Conversation List View -->
   <div id="msgListView" style="display:flex;flex-direction:column;min-height:100vh;min-height:100dvh">
     <div style="padding:calc(16px + env(safe-area-inset-top)) 20px 0;background:#fff">
+      <button onclick="switchPage('home')" style="background:none;border:none;cursor:pointer;padding:0;margin-bottom:8px;display:flex;align-items:center;gap:4px;font-family:inherit;font-size:11px;font-weight:600;color:#999"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>Back</button>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:8px">
           <img src="https://cdn.contentrewards.com/admin/cr-logo-gradient.png" style="width:24px;height:24px;object-fit:contain" alt="CR">
@@ -1264,7 +1268,8 @@ body.dark-mode{color-scheme:dark}
 <!-- ═══ PAGE: DISCOVER ═══ -->
 <div class="page" id="page-discover">
   <div style="padding:calc(16px + env(safe-area-inset-top)) 20px 12px;background:#fff;border-bottom:1px solid rgba(0,0,0,0.04)">
-    <div style="font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-0.3px;margin-bottom:14px">discover</div>
+    <button onclick="switchPage('home')" style="background:none;border:none;cursor:pointer;padding:0;margin-bottom:8px;display:flex;align-items:center;gap:4px;font-family:inherit;font-size:11px;font-weight:600;color:#999"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>Back</button>
+    <div style="font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-0.3px;margin-bottom:14px">Discover</div>
     <input class="discover-search" type="text" placeholder="Search" id="discoverSearch" oninput="renderDiscover()">
   </div>
   <div class="discover-controls">
@@ -1567,9 +1572,12 @@ body.dark-mode .sc-share-section{border-top-color:rgba(255,255,255,0.08)}
 <div id="shareCardModal" style="display:none;position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)" onclick="if(event.target===this)closeShareCard()">
   <div id="shareCardSheet" class="sc-sheet" style="position:absolute;bottom:0;left:0;right:0;max-height:92vh;border-radius:20px 20px 0 0;overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);padding-bottom:env(safe-area-inset-bottom)">
     <div style="display:flex;justify-content:center;padding:10px 0 4px"><div class="sc-handle" style="width:36px;height:4px;border-radius:2px"></div></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 20px 14px">
-      <div><div class="sc-title" style="font-size:16px;font-weight:800">Share Card</div><div class="sc-sub" style="font-size:11px;font-weight:600">Create a shareable earnings card for socials</div></div>
-      <button onclick="closeShareCard()" class="sc-close" style="border:none;cursor:pointer;padding:8px;border-radius:50%"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div style="padding:4px 20px 14px">
+      <button onclick="closeShareCard()" style="background:none;border:none;cursor:pointer;padding:0;margin-bottom:8px;display:flex;align-items:center;gap:4px;font-family:inherit;font-size:11px;font-weight:600" class="sc-sub"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>Back</button>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div><div class="sc-title" style="font-size:16px;font-weight:800">Share Card</div><div class="sc-sub" style="font-size:11px;font-weight:600">Create a shareable earnings card for socials</div></div>
+        <button onclick="closeShareCard()" class="sc-close" style="border:none;cursor:pointer;padding:8px;border-radius:50%"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
     </div>
     <div style="padding:0 16px">
       <div id="shareCardContent" style="width:100%"></div>
