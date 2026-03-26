@@ -345,20 +345,7 @@ body.dark-mode .disc-filter-apply.has-results{background:#e8e8e8;color:#111}
 body.dark-mode .disc-filter-clear{background:#252525;border-color:rgba(255,255,255,0.1);color:#e8e8e8}
 
 /* Campaign detail */
-body.dark-mode .camp-detail{background:#111}
-body.dark-mode .camp-detail-brand-card{background:#1c1c1e;box-shadow:0 2px 12px rgba(0,0,0,0.3)}
-body.dark-mode .camp-detail-brand-logo{border-color:#333}
-body.dark-mode .camp-detail-title{color:#e8e8e8}
-body.dark-mode .camp-detail-desc{color:#aaa}
-body.dark-mode .camp-detail-stat{background:#252525}
-body.dark-mode .camp-detail-stat-val{color:#e8e8e8}
-body.dark-mode .camp-detail-stat-lbl{color:#888}
-body.dark-mode .camp-detail-section{background:#1c1c1e;box-shadow:0 2px 12px rgba(0,0,0,0.3)}
-body.dark-mode .camp-detail-section-title{color:#e8e8e8}
-body.dark-mode .camp-detail-req{border-bottom-color:rgba(255,255,255,0.06)}
-body.dark-mode .camp-detail-req-text{color:#aaa}
-body.dark-mode .camp-detail-req-text strong{color:#e8e8e8}
-body.dark-mode .camp-detail-cta{background:rgba(17,17,17,0.97);border-top-color:rgba(255,255,255,0.06)}
+/* Camp detail is always dark themed */
 
 /* ── Structural dark mode overrides ── */
 /* Page headers */
@@ -1244,30 +1231,46 @@ body.dark-mode{color-scheme:dark}
 .disc-filter-clear{width:100%;padding:16px;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;border:1.5px solid #e0ddd8;background:#fff;color:#1a1a1a}
 
 /* Campaign detail */
-.camp-detail{position:fixed;inset:0;z-index:9000;background:#f5f3f0;overflow-y:auto;display:none;-webkit-overflow-scrolling:touch}
+.camp-detail{position:fixed;inset:0;z-index:9000;background:#1a1a1a;color:#e8e8e8;overflow-y:auto;display:none;-webkit-overflow-scrolling:touch}
 .camp-detail.open{display:block}
-.camp-detail-header{position:relative}
+.camp-detail-back{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;padding:8px 14px;border-radius:20px;background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border:none;display:flex;align-items:center;gap:4px;cursor:pointer;z-index:2;font-size:12px;font-weight:600;color:#fff;font-family:inherit}
 .camp-detail-banner{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
-.camp-detail-back{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2}
-.camp-detail-body{padding:0 20px 120px;margin-top:-24px;position:relative}
-.camp-detail-brand-card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:16px}
-.camp-detail-brand-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.camp-detail-brand-logo{width:48px;height:48px;border-radius:14px;object-fit:cover;border:2px solid #f0edea}
-.camp-detail-title{font-size:16px;font-weight:700;color:#1a1a1a;line-height:1.4;margin-bottom:12px}
-.camp-detail-desc{font-size:14px;color:#666;line-height:1.6;margin-bottom:16px}
-.camp-detail-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.camp-detail-stat{background:#faf8f6;border-radius:14px;padding:14px;text-align:center}
-.camp-detail-stat-val{font-size:18px;font-weight:800;color:#1a1a1a}
-.camp-detail-stat-lbl{font-size:11px;font-weight:600;color:#999;margin-top:2px}
-.camp-detail-section{background:#fff;border-radius:20px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:16px}
-.camp-detail-section-title{font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:12px}
-.camp-detail-req{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.04)}
-.camp-detail-req:last-child{border-bottom:none}
-.camp-detail-req-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
-.camp-detail-req-text{font-size:13px;color:#666;line-height:1.4}
-.camp-detail-req-text strong{color:#1a1a1a}
-.camp-detail-cta{position:fixed;bottom:0;left:0;right:0;padding:16px 20px calc(16px + env(safe-area-inset-bottom));background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,0.06);z-index:9001;display:none}
-.camp-detail-cta.open{display:block}
+.camp-detail-body{padding:0 20px 100px}
+.cd-brand-row{display:flex;align-items:center;gap:10px;margin:16px 0 8px}
+.cd-brand-logo{width:28px;height:28px;border-radius:50%;object-fit:cover}
+.cd-brand-name{font-size:13px;font-weight:700;color:#e8e8e8}
+.cd-title{font-size:20px;font-weight:900;color:#fff;line-height:1.3;margin-bottom:14px}
+.cd-actions{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.cd-join-btn{padding:10px 24px;border-radius:12px;background:#fff;color:#1a1a1a;border:none;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit}
+.cd-share-btn{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.cd-budget{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:18px;margin-bottom:16px}
+.cd-budget-bar{height:4px;border-radius:2px;background:rgba(255,255,255,0.1);margin:10px 0 8px;overflow:hidden}
+.cd-budget-fill{height:100%;border-radius:2px;background:#E8734E}
+.cd-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.cd-tag{padding:4px 10px;border-radius:8px;background:rgba(255,255,255,0.06);font-size:11px;font-weight:700;color:#aaa}
+.cd-tag.cpm{background:rgba(232,115,78,0.15);color:#E8734E}
+.cd-info-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px}
+.cd-info-row:last-child{border-bottom:none}
+.cd-info-label{color:#888;font-weight:600}
+.cd-info-val{color:#e8e8e8;font-weight:700}
+.cd-tabs{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,0.08);margin:20px 0 16px}
+.cd-tab{flex:1;padding:12px 0;text-align:center;font-size:12px;font-weight:700;color:#666;cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;justify-content:center;gap:5px;font-family:inherit;background:none;border-top:none;border-left:none;border-right:none}
+.cd-tab.active{color:#fff;border-bottom-color:#fff}
+.cd-tab-content{display:none}
+.cd-tab-content.active{display:block}
+.cd-section-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:12px}
+.cd-req{padding:8px 0;font-size:13px;color:#aaa;line-height:1.5}
+.cd-req strong{color:#e8e8e8;display:block;font-size:13px}
+.cd-req-sub{font-size:12px;color:#666;margin-top:2px}
+.cd-earnings-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.cd-earn-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px}
+.cd-earn-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:13px;font-weight:700;color:#e8e8e8}
+.cd-earn-cpm{font-size:12px;color:#aaa}
+.cd-earn-range{display:flex;gap:10px;font-size:10px;font-weight:700;color:#888;margin-top:6px}
+.cd-resource{display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:12px;font-size:12px;font-weight:700;color:#aaa;cursor:pointer}
+.cd-lb-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:14px;margin-bottom:10px}
+.cd-cta{position:fixed;bottom:0;left:0;right:0;padding:12px 20px calc(12px + env(safe-area-inset-bottom));background:rgba(26,26,26,0.97);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.06);z-index:9001;display:none}
+.cd-cta.open{display:block}
 </style>
 
 <!-- ═══ PAGE: DISCOVER ═══ -->
@@ -1477,73 +1480,70 @@ body.dark-mode{color-scheme:dark}
 
 <!-- ═══ CAMPAIGN DETAIL ═══ -->
 <div class="camp-detail" id="campDetail">
-  <div class="camp-detail-header">
-    <button class="camp-detail-back" onclick="closeCampaignDetail()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
+  <div style="position:relative">
+    <button class="camp-detail-back" onclick="closeCampaignDetail()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>Back</button>
     <img class="camp-detail-banner" id="campDetailBanner" src="" alt="">
   </div>
   <div class="camp-detail-body">
-    <div class="camp-detail-brand-card">
-      <div class="camp-detail-brand-row">
-        <img class="camp-detail-brand-logo" id="campDetailLogo" src="" alt="">
-        <div>
-          <div style="font-size:18px;font-weight:800;color:#1a1a1a" id="campDetailBrand">Brand</div>
-          <div style="font-size:12px;color:#999;font-weight:600" id="campDetailCat">Category</div>
-        </div>
-      </div>
-      <div class="camp-detail-title" id="campDetailTitle">Campaign Title</div>
-      <div class="camp-detail-desc" id="campDetailDesc">Description</div>
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px" id="campDetailPlats"></div>
-      <div class="camp-detail-stats">
-        <div class="camp-detail-stat"><div class="camp-detail-stat-val" id="campDetailCpm">$1</div><div class="camp-detail-stat-lbl">per 1k views</div></div>
-        <div class="camp-detail-stat"><div class="camp-detail-stat-val" id="campDetailBudget">$10K</div><div class="camp-detail-stat-lbl">total budget</div></div>
-        <div class="camp-detail-stat"><div class="camp-detail-stat-val" id="campDetailCreators">78</div><div class="camp-detail-stat-lbl">creators</div></div>
-        <div class="camp-detail-stat"><div class="camp-detail-stat-val" id="campDetailViews">110M</div><div class="camp-detail-stat-lbl">total views</div></div>
-        <div class="camp-detail-stat"><div class="camp-detail-stat-val" style="color:#16a34a" id="campDetailPaid">$59K</div><div class="camp-detail-stat-lbl">paid out</div></div>
-        <div class="camp-detail-stat"><div class="camp-detail-stat-val" id="campDetailRemaining">$10K</div><div class="camp-detail-stat-lbl">remaining</div></div>
-      </div>
+    <div class="cd-brand-row"><img class="cd-brand-logo" id="campDetailLogo" src="" alt=""><span class="cd-brand-name" id="campDetailBrand">Brand</span></div>
+    <div class="cd-title" id="campDetailTitle">Campaign Title</div>
+    <div class="cd-actions"><button class="cd-join-btn" onclick="showToast('Application submitted!')">Join Campaign</button><button class="cd-share-btn" onclick="showToast('Link copied!')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button></div>
+    <!-- Budget -->
+    <div class="cd-budget">
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:22px;font-weight:900;color:#fff">$ <span id="campDetailBudget">7,500</span></span><span style="font-size:13px;font-weight:600;color:#888">budget</span></div>
+      <div class="cd-budget-bar"><div class="cd-budget-fill" id="campDetailBudgetFill" style="width:34%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700"><span style="color:#E8734E" id="campDetailPaid">$2,583</span><span style="color:#888" id="campDetailBudgetTotal">$7,500</span></div>
     </div>
-    <div class="camp-detail-section">
-      <div class="camp-detail-section-title">Requirements</div>
-      <div class="camp-detail-req">
-        <div class="camp-detail-req-icon" style="background:rgba(232,115,78,0.1)">&#x1F3AC;</div>
-        <div class="camp-detail-req-text"><strong>Original content only</strong><br>No AI-generated, synthetic voiceovers, or reused clips</div>
-      </div>
-      <div class="camp-detail-req">
-        <div class="camp-detail-req-icon" style="background:rgba(22,163,74,0.1)">&#x2705;</div>
-        <div class="camp-detail-req-text"><strong>Follow brand guidelines</strong><br>All editing rules and asset requirements must be followed</div>
-      </div>
-      <div class="camp-detail-req">
-        <div class="camp-detail-req-icon" style="background:rgba(59,130,246,0.1)">&#x1F30D;</div>
-        <div class="camp-detail-req-text" id="campDetailPlatReq"><strong>Post on supported platforms</strong><br>Tier 1 traffic only</div>
-      </div>
-      <div class="camp-detail-req">
-        <div class="camp-detail-req-icon" style="background:rgba(124,58,237,0.1)">&#x1F4CA;</div>
-        <div class="camp-detail-req-text"><strong>Minimum 1,000 views</strong><br>Clips under 1k views will not be eligible for payout</div>
-      </div>
+    <!-- Tags -->
+    <div class="cd-tags" id="campDetailTags"></div>
+    <!-- Info table -->
+    <div id="campDetailInfo"></div>
+    <!-- Tabs -->
+    <div class="cd-tabs">
+      <button class="cd-tab active" onclick="switchCampTab(this,'overview')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>Overview</button>
+      <button class="cd-tab" onclick="switchCampTab(this,'leaderboard')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 9 7 9 7h6s2-3 4.5-3a2.5 2.5 0 0 1 0 5H18"/><path d="M4 9h16v2a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9z"/></svg>Leaderboard</button>
+      <button class="cd-tab" onclick="switchCampTab(this,'analytics')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Analytics</button>
     </div>
-    <div class="camp-detail-section">
-      <div class="camp-detail-section-title">How it works</div>
-      <div style="display:flex;flex-direction:column;gap:14px">
-        <div style="display:flex;align-items:flex-start;gap:12px">
-          <div style="width:28px;height:28px;border-radius:50%;background:#E8734E;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0">1</div>
-          <div><div style="font-size:13px;font-weight:700;color:#1a1a1a">Create your content</div><div style="font-size:12px;color:#999;margin-top:2px">Follow the campaign guidelines and create engaging clips</div></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:12px">
-          <div style="width:28px;height:28px;border-radius:50%;background:#E8734E;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0">2</div>
-          <div><div style="font-size:13px;font-weight:700;color:#1a1a1a">Post and submit</div><div style="font-size:12px;color:#999;margin-top:2px">Post on the required platforms, then submit the link here</div></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:12px">
-          <div style="width:28px;height:28px;border-radius:50%;background:#E8734E;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0">3</div>
-          <div><div style="font-size:13px;font-weight:700;color:#1a1a1a">Get paid</div><div style="font-size:12px;color:#999;margin-top:2px">Earn based on your views. Payouts processed weekly.</div></div>
-        </div>
+    <!-- Tab: Overview -->
+    <div class="cd-tab-content active" id="cdOverview">
+      <div id="campDetailDesc" style="font-size:13px;color:#aaa;line-height:1.6;margin-bottom:16px"></div>
+      <div class="cd-section-title">Creator Requirements</div>
+      <div style="margin-bottom:16px" id="campDetailCreatorReqs"></div>
+      <div class="cd-section-title">Content Requirements</div>
+      <div style="margin-bottom:16px" id="campDetailContentReqs"></div>
+      <div style="font-size:12px;font-weight:700;color:#888;cursor:pointer;margin-bottom:20px" onclick="this.style.display='none';document.getElementById('cdMoreReqs').style.display='block'">Show more &#x25BE;</div>
+      <div id="cdMoreReqs" style="display:none;margin-bottom:20px">
+        <div class="cd-req"><strong>No watermarks or overlays</strong><div class="cd-req-sub">Content must be clean without third-party branding</div></div>
+        <div class="cd-req"><strong>Post within 24 hours</strong><div class="cd-req-sub">Clips must be posted within 24h of creation</div></div>
+      </div>
+      <div class="cd-section-title">Earnings</div>
+      <div class="cd-earnings-grid" id="campDetailEarnings"></div>
+      <div class="cd-section-title">Resources</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="campDetailResources"></div>
+    </div>
+    <!-- Tab: Leaderboard -->
+    <div class="cd-tab-content" id="cdLeaderboard">
+      <div class="cd-section-title">Top Earners</div>
+      <div id="campDetailLB"></div>
+    </div>
+    <!-- Tab: Analytics -->
+    <div class="cd-tab-content" id="cdAnalytics">
+      <div class="cd-section-title">Top Earners</div>
+      <div style="display:flex;gap:6px;margin-bottom:16px">
+        <button class="cd-tag" style="cursor:pointer;background:rgba(255,255,255,0.12);color:#fff" onclick="this.parentElement.querySelectorAll('.cd-tag').forEach(function(b){b.style.background='rgba(255,255,255,0.06)';b.style.color='#aaa'});this.style.background='rgba(255,255,255,0.12)';this.style.color='#fff'">Views</button>
+        <button class="cd-tag" style="cursor:pointer" onclick="this.parentElement.querySelectorAll('.cd-tag').forEach(function(b){b.style.background='rgba(255,255,255,0.06)';b.style.color='#aaa'});this.style.background='rgba(255,255,255,0.12)';this.style.color='#fff'">Submissions</button>
+        <button class="cd-tag" style="cursor:pointer" onclick="this.parentElement.querySelectorAll('.cd-tag').forEach(function(b){b.style.background='rgba(255,255,255,0.06)';b.style.color='#aaa'});this.style.background='rgba(255,255,255,0.12)';this.style.color='#fff'">Pending</button>
+      </div>
+      <div style="font-size:28px;font-weight:900;color:#fff" id="campDetailAnalyticsStat">2,279,190</div>
+      <div style="font-size:12px;color:#888;margin-bottom:16px">Total views</div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:16px;height:120px;display:flex;align-items:flex-end">
+        <svg viewBox="0 0 300 80" preserveAspectRatio="none" style="width:100%;height:100%" id="campDetailChart"></svg>
       </div>
     </div>
   </div>
 </div>
-<div class="camp-detail-cta" id="campDetailCta">
-  <button onclick="showToast('Application submitted!')" style="width:100%;padding:16px;background:#E8734E;color:#fff;border:none;border-radius:16px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;transition:transform 0.1s" onmousedown="this.style.transform='scale(0.98)'" onmouseup="this.style.transform=''">Apply to Campaign</button>
+<div class="cd-cta" id="campDetailCta">
+  <button onclick="showToast('Application submitted!')" style="width:100%;padding:14px;background:#E8734E;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit">Join Campaign</button>
 </div>
 
 
@@ -2992,29 +2992,66 @@ function openCampaignDetail(id){
   document.getElementById('campDetailBanner').src=c.thumb;
   document.getElementById('campDetailLogo').src=c.brandLogo;
   document.getElementById('campDetailBrand').textContent=c.brand;
-  document.getElementById('campDetailCat').textContent=c.cat;
   document.getElementById('campDetailTitle').textContent=c.title;
   document.getElementById('campDetailDesc').textContent=c.desc;
-  document.getElementById('campDetailCpm').textContent='$'+c.cpm.toFixed(2);
-  document.getElementById('campDetailBudget').textContent=fmtMoney(c.budget);
-  document.getElementById('campDetailCreators').textContent=c.creators.toLocaleString();
-  document.getElementById('campDetailViews').textContent=fmtViews(c.views);
-  document.getElementById('campDetailPaid').textContent=fmtMoney(c.paid);
-  document.getElementById('campDetailRemaining').textContent=fmtMoney(Math.max(0,c.budget-c.paid));
-  // Platform icons
-  var platHtml=c.plats.map(function(p){
-    return '<span style="display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:10px;background:'+(platColors[p]||'#999')+';font-size:11px;font-weight:700;color:#fff">'+(platSvgs[p]||'')+' '+(platNames[p]||p)+'</span>';
-  }).join('');
-  document.getElementById('campDetailPlats').innerHTML=platHtml;
-  // Platform requirement text
-  var platList=c.plats.map(function(p){return platNames[p]||p}).join(', ');
-  document.getElementById('campDetailPlatReq').innerHTML='<strong>Post on '+platList+'</strong><br>Tier 1 traffic only';
+  /* Budget */
+  document.getElementById('campDetailBudget').textContent=c.budget.toLocaleString();
+  document.getElementById('campDetailBudgetTotal').textContent='$'+c.budget.toLocaleString();
+  document.getElementById('campDetailPaid').textContent='$'+c.paid.toLocaleString();
+  var pct=Math.min(100,Math.round(c.paid/c.budget*100));
+  document.getElementById('campDetailBudgetFill').style.width=pct+'%';
+  /* Tags */
+  var platIcons=c.plats.map(function(p){return platSvgs[p]||''}).join(' ');
+  document.getElementById('campDetailTags').innerHTML='<span class="cd-tag cpm">$'+c.cpm.toFixed(2)+'/1K</span><span class="cd-tag">'+c.creators.toLocaleString()+' creators</span><span class="cd-tag">'+c.cat+'</span><span class="cd-tag">'+Math.round(65+Math.random()*25)+'%</span>';
+  /* Info rows */
+  var approvalRate=Math.round(65+Math.random()*25);
+  var deadline=new Date();deadline.setDate(deadline.getDate()+Math.round(5+Math.random()*20));
+  var daysLeft=Math.round((deadline-new Date())/(86400000));
+  var infoHtml='';
+  infoHtml+='<div class="cd-info-row"><span class="cd-info-label">Approval Rate</span><span class="cd-info-val">'+approvalRate+'%</span></div>';
+  infoHtml+='<div class="cd-info-row"><span class="cd-info-label">Category</span><span class="cd-info-val">'+c.cat+'</span></div>';
+  infoHtml+='<div class="cd-info-row"><span class="cd-info-label">Platforms</span><span class="cd-info-val" style="display:flex;gap:6px">'+c.plats.map(function(p){return'<span style="width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.1);display:inline-flex;align-items:center;justify-content:center">'+platSvgs[p].replace(/12/g,'11')+'</span>'}).join('')+'</span></div>';
+  infoHtml+='<div class="cd-info-row"><span class="cd-info-label">Last updated</span><span class="cd-info-val">01/26/2026</span></div>';
+  infoHtml+='<div class="cd-info-row"><span class="cd-info-label">Submission deadline</span><span class="cd-info-val">'+(deadline.getMonth()+1).toString().padStart(2,'0')+'/'+deadline.getDate().toString().padStart(2,'0')+'/2026</span></div>';
+  infoHtml+='<div class="cd-info-row"><span class="cd-info-label">Time remaining</span><span class="cd-info-val">'+daysLeft+' days</span></div>';
+  document.getElementById('campDetailInfo').innerHTML=infoHtml;
+  /* Creator requirements */
+  document.getElementById('campDetailCreatorReqs').innerHTML='<div class="cd-req">21+ years old</div><div class="cd-req">3+ years of experience</div><div class="cd-req">English proficiency</div>';
+  /* Content requirements */
+  document.getElementById('campDetailContentReqs').innerHTML='<div class="cd-req"><strong>Show face in video</strong><div class="cd-req-sub">Showing your face in the video is required</div></div><div class="cd-req"><strong>Use specific sound/music in video</strong><div class="cd-req-sub">This sound/music has to be used in the video</div></div><div class="cd-req"><strong>Specific video length</strong><div class="cd-req-sub">Video must be 15-30 seconds long</div></div><div class="cd-req"><strong>Mention the brand at least 4 times</strong></div><div class="cd-req"><strong>Mention competitor at least once</strong></div>';
+  /* Earnings */
+  var earnHtml='';
+  [{n:'YouTube',ic:'&#9654;'},{n:'X (Twitter)',ic:'&#120143;'},{n:'TikTok',ic:'&#9835;'},{n:'Instagram',ic:'&#9673;'}].forEach(function(p){
+    earnHtml+='<div class="cd-earn-card"><div class="cd-earn-head"><span>'+p.n+'</span><span style="font-size:16px">'+p.ic+'</span></div><div class="cd-earn-cpm">$'+c.cpm.toFixed(0)+' /1K views</div><div class="cd-earn-range"><span>$'+c.cpm.toFixed(0)+' Min</span><span>$750 Max</span></div></div>';
+  });
+  document.getElementById('campDetailEarnings').innerHTML=earnHtml;
+  /* Resources */
+  document.getElementById('campDetailResources').innerHTML='<div class="cd-resource"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Google Drive <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div><div class="cd-resource"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0061FF" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Dropbox <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div>';
+  /* Leaderboard */
+  var lbHtml='';var stars=['&#11088;&#11088;&#11088;','&#11088;&#11088;','&#11088;'];var colors=['linear-gradient(135deg,#FFD700,#FFA500)','linear-gradient(135deg,#C0C0C0,#A0A0A0)','linear-gradient(135deg,#CD7F32,#8B4513)'];
+  for(var li=0;li<3;li++){
+    lbHtml+='<div class="cd-lb-card"><div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span style="font-size:16px;font-weight:900;color:#fff">'+fmtViews(Math.round(c.views*(0.3-li*0.08)))+'</span></div><div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:6px"><div style="width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff">'+(li+1)+'</div><span style="font-size:12px;font-weight:600;color:#aaa">Creator '+(li+1)+'</span></div><div style="font-size:18px">'+stars[li]+'</div></div></div>';
+  }
+  document.getElementById('campDetailLB').innerHTML=lbHtml;
+  /* Analytics chart */
+  var rng=seededRandom(c.views);var pts=[];for(var ai=0;ai<20;ai++){pts.push(Math.round(c.views*0.02*(1+ai*0.15+rng()*0.3)))}
+  var maxP=Math.max.apply(null,pts);
+  var polyPts=pts.map(function(v,i){return(i/(pts.length-1)*300).toFixed(1)+','+(80-v/maxP*70).toFixed(1)}).join(' ');
+  document.getElementById('campDetailChart').innerHTML='<defs><linearGradient id="cdGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff" stop-opacity="0.15"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><polygon points="0,80 '+polyPts+' 300,80" fill="url(#cdGrad)"/><polyline points="'+polyPts+'" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linejoin="round"/>';
+  document.getElementById('campDetailAnalyticsStat').textContent=c.views.toLocaleString();
+  /* Reset to overview tab */
+  switchCampTab(document.querySelector('.cd-tab'),'overview');
   document.getElementById('campDetail').classList.add('open');
   document.getElementById('campDetailCta').classList.add('open');
   document.getElementById('campDetail').scrollTop=0;
-  if(typeof _applyDarkInline==='function')_applyDarkInline();
 }
-
+function switchCampTab(btn,tab){
+  btn.parentElement.querySelectorAll('.cd-tab').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  document.querySelectorAll('.cd-tab-content').forEach(function(t){t.classList.remove('active')});
+  var el=document.getElementById(tab==='overview'?'cdOverview':tab==='leaderboard'?'cdLeaderboard':'cdAnalytics');
+  if(el)el.classList.add('active');
+}
 function closeCampaignDetail(){
   document.getElementById('campDetail').classList.remove('open');
   document.getElementById('campDetailCta').classList.remove('open');
