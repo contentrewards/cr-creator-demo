@@ -152,6 +152,7 @@ html{scrollbar-width:none}
 .sub-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700}
 .sub-badge.approved{background:rgba(22,163,74,0.08);color:#16a34a}
 .sub-badge.pending{background:rgba(232,115,78,0.08);color:#E8734E}
+.sub-badge.rejected{background:rgba(239,68,68,0.08);color:#ef4444}
 .sub-badge.paid{background:rgba(22,163,74,0.08);color:#16a34a}
 .sub-badge.unpaid{background:rgba(202,138,4,0.08);color:#ca8a04}
 
@@ -618,7 +619,7 @@ body.dark-mode{color-scheme:dark}
       <div class="insights-text">
         <div style="font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:4px" id="insights-title">3 clips under review</div>
         <div style="font-size:12px;color:#666;line-height:1.5;margin-bottom:10px" id="insights-desc">3 of the 4 clips you've submitted are currently under review. Keep up the great work!</div>
-        <button onclick="switchPage('clips');filterClips(document.querySelectorAll('#clips-filters .filter-pill')[2],'in_review')" style="padding:8px 16px;border-radius:10px;border:1.5px solid #1a1a1a;background:#fff;font-size:12px;font-weight:700;color:#1a1a1a;cursor:pointer;font-family:inherit">View status</button>
+        <button onclick="switchPage('clips');filterClips(document.querySelectorAll('#clips-filters .filter-pill')[2],'pending')" style="padding:8px 16px;border-radius:10px;border:1.5px solid #1a1a1a;background:#fff;font-size:12px;font-weight:700;color:#1a1a1a;cursor:pointer;font-family:inherit">View status</button>
       </div>
       <div class="insights-thumbs" id="insights-thumbs"></div>
     </div>
@@ -752,17 +753,21 @@ body.dark-mode{color-scheme:dark}
 
   <!-- Stats row -->
   <div style="display:flex;gap:8px;padding:12px 16px" class="fade-up">
-    <div style="flex:1;background:#fff;border-radius:12px;padding:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
-      <div style="font-size:20px;font-weight:900;color:#16a34a" id="clips-approved-count">298</div>
-      <div style="font-size:10px;color:#999;margin-top:2px">approved</div>
+    <div style="flex:1;background:#fff;border-radius:12px;padding:10px 8px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
+      <div style="font-size:18px;font-weight:900;color:#16a34a" id="clips-approved-count">298</div>
+      <div style="font-size:9px;color:#999;margin-top:2px">approved</div>
     </div>
-    <div style="flex:1;background:#fff;border-radius:12px;padding:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
-      <div style="font-size:20px;font-weight:900;color:#E8734E" id="clips-review-count">8</div>
-      <div style="font-size:10px;color:#999;margin-top:2px">in review</div>
+    <div style="flex:1;background:#fff;border-radius:12px;padding:10px 8px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
+      <div style="font-size:18px;font-weight:900;color:#E8734E" id="clips-review-count">3</div>
+      <div style="font-size:9px;color:#999;margin-top:2px">pending</div>
     </div>
-    <div style="flex:1;background:#fff;border-radius:12px;padding:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
-      <div style="font-size:20px;font-weight:900;color:#1a1a1a" id="clips-total-earned">$127K</div>
-      <div style="font-size:10px;color:#999;margin-top:2px">earned</div>
+    <div style="flex:1;background:#fff;border-radius:12px;padding:10px 8px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
+      <div style="font-size:18px;font-weight:900;color:#ef4444" id="clips-rejected-count">2</div>
+      <div style="font-size:9px;color:#999;margin-top:2px">rejected</div>
+    </div>
+    <div style="flex:1;background:#fff;border-radius:12px;padding:10px 8px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
+      <div style="font-size:18px;font-weight:900;color:#1a1a1a" id="clips-total-earned">$127K</div>
+      <div style="font-size:9px;color:#999;margin-top:2px">earned</div>
     </div>
   </div>
 
@@ -770,11 +775,8 @@ body.dark-mode{color-scheme:dark}
   <div class="filter-row" id="clips-filters">
     <button class="filter-pill active" onclick="filterClips(this,'all')">All</button>
     <button class="filter-pill" onclick="filterClips(this,'approved')">Approved</button>
-    <button class="filter-pill" onclick="filterClips(this,'in_review')">In Review</button>
-    <button class="filter-pill" onclick="filterClips(this,'tiktok')">TikTok</button>
-    <button class="filter-pill" onclick="filterClips(this,'instagram')">Instagram</button>
-    <button class="filter-pill" onclick="filterClips(this,'youtube')">YouTube</button>
-    <button class="filter-pill" onclick="filterClips(this,'x')">X</button>
+    <button class="filter-pill" onclick="filterClips(this,'pending')">Pending</button>
+    <button class="filter-pill" onclick="filterClips(this,'rejected')">Rejected</button>
   </div>
 
   <!-- Clips list -->
@@ -1651,11 +1653,13 @@ var _realSubs = [
   {t:"Head to plutus.gg, create games with AI in minutes",u:"https://www.tiktok.com/@burrowfootball/video/7606009251332508958",p:"tiktok",v:838623,l:17967,c:70,pay:59.81,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_19.jpg",d:"Feb 12",camp:"Plutus.gg [Logo Clipping]",s:"approved",paid:true}
 ];
 
-/* Add a few "in review" items to make it feel alive */
+/* Add pending + rejected items to make it feel alive */
 _realSubs.push(
-  {t:"Street interview - London Bridge pt.2",u:"#",p:"tiktok",v:0,l:0,c:0,pay:0,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_20.jpg",d:"Mar 24",camp:"Cantina [TikTok Clips]",s:"in_review",paid:false},
-  {t:"NOBS reaction compilation",u:"#",p:"instagram",v:0,l:0,c:0,pay:0,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_21.jpg",d:"Mar 24",camp:"NOBS Toothpaste [STREET]",s:"in_review",paid:false},
-  {t:"Flooz Warzone highlights montage",u:"#",p:"tiktok",v:0,l:0,c:0,pay:0,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_22.jpg",d:"Mar 23",camp:"Flooz Clipping",s:"in_review",paid:false}
+  {t:"Street interview - London Bridge pt.2",u:"#",p:"tiktok",v:0,l:0,c:0,pay:0,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_20.jpg",d:"Mar 24",camp:"Cantina [TikTok Clips]",s:"pending",paid:false},
+  {t:"NOBS reaction compilation",u:"#",p:"instagram",v:0,l:0,c:0,pay:0,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_21.jpg",d:"Mar 24",camp:"NOBS Toothpaste [STREET]",s:"pending",paid:false},
+  {t:"Flooz Warzone highlights montage",u:"#",p:"tiktok",v:0,l:0,c:0,pay:0,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_22.jpg",d:"Mar 23",camp:"Flooz Clipping",s:"pending",paid:false},
+  {t:"Low quality Plutus reaction",u:"#",p:"tiktok",v:0,l:0,c:0,pay:0,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_18.jpg",d:"Mar 20",camp:"Plutus.gg [Logo Clipping]",s:"rejected",paid:false,reason:"Video quality below minimum resolution (720p required)"},
+  {t:"Atricent logo wrong placement",u:"#",p:"instagram",v:0,l:0,c:0,pay:0,thumb:"https://cdn.contentrewards.com/admin/creator-demo/thumb_17.jpg",d:"Mar 18",camp:"Atricent [GENERAL LOGO]",s:"rejected",paid:false,reason:"Logo not visible in first 3 seconds per campaign guidelines"}
 );
 
 /* ═══ DATA ENGINE ═══ */
@@ -1769,43 +1773,49 @@ var iconSvgs={
 };
 
 function renderClips(filter){
-  var subs=_realSubs;
+  var subs=_realSubs.slice();
   if(filter&&filter!=='all'){
-    if(filter==='approved'||filter==='in_review') subs=subs.filter(function(s){return s.s===filter});
-    else subs=subs.filter(function(s){return s.p===filter});
+    subs=subs.filter(function(s){return s.s===filter});
   }
-  // Sort: in_review first, then by views desc
-  subs.sort(function(a,b){if(a.s==='in_review'&&b.s!=='in_review')return-1;if(b.s==='in_review'&&a.s!=='in_review')return 1;return b.v-a.v});
+  // Sort: pending first, then rejected, then approved by views desc
+  var order={pending:0,rejected:1,approved:2};
+  subs.sort(function(a,b){var oa=order[a.s]!==undefined?order[a.s]:1;var ob=order[b.s]!==undefined?order[b.s]:1;if(oa!==ob)return oa-ob;return b.v-a.v});
 
   var html=subs.map(function(s){
-    var isReview=s.s==='in_review';
-    var statusBadge=isReview?'<span class="sub-badge pending">In Review</span>':'<span class="sub-badge approved">Approved</span>';
-    var payBadge=isReview?'':'<span class="sub-badge '+(s.paid?'paid':'unpaid')+'">'+(s.paid?'Paid':'Pending payout')+'</span>';
+    var isPending=s.s==='pending';
+    var isRejected=s.s==='rejected';
+    var statusBadge=isPending?'<span class="sub-badge pending">Pending</span>':isRejected?'<span class="sub-badge rejected">Rejected</span>':'<span class="sub-badge approved">Approved</span>';
+    var payBadge=s.s==='approved'?'<span class="sub-badge '+(s.paid?'paid':'unpaid')+'">'+(s.paid?'Paid':'Pending payout')+'</span>':'';
     var platIcon='<span class="plat-icon" style="background:'+(platColors[s.p]||'#999')+'">'+(platSvgs[s.p]||'')+'</span>';
 
     var hasLink=s.u&&s.u!=='#';
     var idx=_realSubs.indexOf(s);
-    return '<div class="sub-card" style="cursor:pointer" onclick="openVideo('+idx+')">' +
+    var bottomContent='';
+    if(isPending){
+      bottomContent='<div style="display:flex;gap:6px;align-items:center">'+statusBadge+'<span style="font-size:11px;color:#999">Reviewing your clip...</span></div>';
+    } else if(isRejected){
+      bottomContent='<div style="display:flex;flex-direction:column;gap:6px">'+statusBadge+(s.reason?'<div style="font-size:11px;color:#ef4444;line-height:1.4;padding:8px 10px;background:rgba(239,68,68,0.04);border-radius:8px">'+s.reason+'</div>':'')+'</div>';
+    } else {
+      bottomContent='<div class="sub-stats">'+
+        '<div class="sub-stat"><div class="sub-stat-val">'+fmtViews(s.v)+'</div><div class="sub-stat-lbl">views</div></div>'+
+        '<div class="sub-stat"><div class="sub-stat-val">'+fmtViews(s.l)+'</div><div class="sub-stat-lbl">likes</div></div>'+
+        '<div class="sub-stat"><div class="sub-stat-val">'+fmtViews(s.c)+'</div><div class="sub-stat-lbl">comments</div></div>'+
+        '<div class="sub-stat"><div class="sub-stat-val" style="color:#16a34a">'+fmtMoney(s.pay)+'</div><div class="sub-stat-lbl">earned</div></div>'+
+      '</div><div style="display:flex;gap:6px;margin-top:10px">'+statusBadge+payBadge+'</div>';
+    }
+    return '<div class="sub-card" style="cursor:pointer'+(isRejected?';opacity:0.7':'')+'" onclick="openVideo('+idx+')">' +
       '<div style="position:relative">' +
         '<img class="sub-thumb" src="'+s.thumb+'" alt="" onerror="this.style.background=\'#e0ddd8\';this.style.minHeight=\'160px\'" loading="lazy">' +
         (hasLink?'<div class="sub-play"><div class="sub-play-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" stroke="none"><polygon points="6 3 20 12 6 21 6 3"/></svg></div></div>':'') +
+        (isRejected?'<div style="position:absolute;top:8px;right:8px;background:rgba(239,68,68,0.9);color:#fff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:6px">REJECTED</div>':'') +
       '</div>' +
       '<div class="sub-body">' +
         '<div class="sub-title">'+s.t+'</div>' +
         '<div class="sub-meta">'+platIcon+' <span>'+(platNames[s.p]||s.p)+'</span> <span style="color:#ccc">|</span> <span>'+s.camp+'</span> <span style="color:#ccc">|</span> <span>'+s.d+'</span></div>' +
-        (isReview?
-          '<div style="display:flex;gap:6px;align-items:center">'+statusBadge+'<span style="font-size:11px;color:#999">Reviewing your clip...</span></div>'
-        :
-          '<div class="sub-stats">' +
-            '<div class="sub-stat"><div class="sub-stat-val">'+fmtViews(s.v)+'</div><div class="sub-stat-lbl">views</div></div>' +
-            '<div class="sub-stat"><div class="sub-stat-val">'+fmtViews(s.l)+'</div><div class="sub-stat-lbl">likes</div></div>' +
-            '<div class="sub-stat"><div class="sub-stat-val">'+fmtViews(s.c)+'</div><div class="sub-stat-lbl">comments</div></div>' +
-            '<div class="sub-stat"><div class="sub-stat-val" style="color:#16a34a">'+fmtMoney(s.pay)+'</div><div class="sub-stat-lbl">earned</div></div>' +
-          '</div>' +
-          '<div style="display:flex;gap:6px;margin-top:10px">'+statusBadge+payBadge+'</div>'
-        ) +
+        bottomContent+
       '</div></div>';
   }).join('');
+  if(subs.length===0)html='<div style="text-align:center;padding:40px 20px;color:#999;font-size:13px;font-weight:600">No clips match this filter</div>';
   document.getElementById('clips-list').innerHTML=html;
 }
 
@@ -1843,7 +1853,7 @@ function render(){
   document.getElementById('home-streak').textContent=d.streak+' days';
 
   /* AI Insights */
-  var reviewClips=_realSubs.filter(function(s){return s.s==='in_review'});
+  var reviewClips=_realSubs.filter(function(s){return s.s==='pending'});
   document.getElementById('insights-title').textContent=reviewClips.length+' clips under review';
   document.getElementById('insights-desc').textContent=reviewClips.length+' of the '+_realSubs.length+' clips you\'ve submitted are currently under review. Keep up the great work!';
   document.getElementById('insights-thumbs').innerHTML=reviewClips.slice(0,3).map(function(s){return'<img src="'+s.thumb+'" alt="" loading="lazy">'}).join('');
@@ -1900,7 +1910,8 @@ function render(){
   document.getElementById('best-platform-views').textContent=fmtViews(d.platforms[0].views)+' views';
   document.getElementById('clips-count').textContent=d.clipsSubmitted+' submissions';
   document.getElementById('clips-approved-count').textContent=d.clipsApproved;
-  document.getElementById('clips-review-count').textContent=_realSubs.filter(function(s){return s.s==='in_review'}).length;
+  document.getElementById('clips-review-count').textContent=_realSubs.filter(function(s){return s.s==='pending'}).length;
+  document.getElementById('clips-rejected-count').textContent=_realSubs.filter(function(s){return s.s==='rejected'}).length;
   document.getElementById('clips-total-earned').textContent=fmtMoney(d.totalEarnings);
   document.getElementById('top-clips').innerHTML=d.topClips.map(function(c,i){return'<div class="activity-item"><div style="width:28px;height:28px;border-radius:8px;background:#f0edea;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#999;flex-shrink:0">'+(i+1)+'</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+c.title+'</div><div style="font-size:11px;color:#999">'+fmtViews(c.views)+' views - '+c.platform+'</div></div><div style="font-size:13px;font-weight:800;color:#16a34a;flex-shrink:0">'+fmtMoney(c.earned)+'</div></div>'}).join('');
   document.getElementById('platform-breakdown').innerHTML=d.platforms.map(function(p){return'<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:2px;background:'+p.color+'"></div><span style="font-size:13px;font-weight:700;color:#1a1a1a">'+p.name+'</span></div><span style="font-size:13px;font-weight:800;color:#1a1a1a">'+fmtMoney(p.earnings)+'</span></div><div style="height:6px;border-radius:3px;background:#f0edea;overflow:hidden"><div style="height:100%;width:'+p.pct+'%;border-radius:3px;background:'+p.color+'"></div></div><div style="font-size:10px;color:#999;margin-top:4px">'+fmtViews(p.views)+' views</div></div>'}).join('');
@@ -1962,7 +1973,8 @@ function openVideo(idx){
   var el=document.getElementById('videoEl');
   var panel=document.getElementById('videoPlayer');
   var embedEl=document.getElementById('videoEmbed');
-  var isReview=s.s==='in_review';
+  var isPending=s.s==='pending';
+  var isRejected=s.s==='rejected';
   var hasLink=s.u&&s.u!=='#';
 
   // Title and campaign
@@ -1975,13 +1987,15 @@ function openVideo(idx){
   pIcon.innerHTML=(platSvgs[s.p]||'').replace(/12/g,'12');
 
   // Status badge
-  document.getElementById('videoStatusBadge').innerHTML=isReview?
-    '<div style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:rgba(232,115,78,0.12);border-radius:8px"><div style="width:8px;height:8px;border-radius:50%;background:#E8734E;animation:pulse 2s infinite"></div><span style="font-size:12px;font-weight:700;color:#E8734E">In Review - We\'re checking your clip</span></div>'
-    :'<div style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(22,163,74,0.12);border-radius:8px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span style="font-size:12px;font-weight:700;color:#16a34a">Approved</span></div>';
+  var badgeHtml;
+  if(isPending) badgeHtml='<div style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:rgba(232,115,78,0.12);border-radius:8px"><div style="width:8px;height:8px;border-radius:50%;background:#E8734E;animation:pulse 2s infinite"></div><span style="font-size:12px;font-weight:700;color:#E8734E">Pending review</span></div>';
+  else if(isRejected) badgeHtml='<div style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:rgba(239,68,68,0.12);border-radius:8px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span style="font-size:12px;font-weight:700;color:#ef4444">Rejected</span></div>'+(s.reason?'<div style="margin-top:8px;font-size:12px;color:#ef4444;line-height:1.5;padding:10px 14px;background:rgba(239,68,68,0.06);border-radius:8px">'+s.reason+'</div>':'');
+  else badgeHtml='<div style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(22,163,74,0.12);border-radius:8px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span style="font-size:12px;font-weight:700;color:#16a34a">Approved</span></div>';
+  document.getElementById('videoStatusBadge').innerHTML=badgeHtml;
 
   // Stats
   var statsRow=document.getElementById('videoStatsRow');
-  if(isReview){
+  if(isPending||isRejected){
     statsRow.style.display='none';
   } else {
     statsRow.style.display='grid';
