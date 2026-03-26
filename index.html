@@ -183,9 +183,11 @@ body.desktop-mode .page{max-width:100%!important}
 body.desktop-mode .card{max-width:100%!important}
 body.desktop-mode .sub-card{max-width:100%!important}
 body.desktop-mode .filter-row{max-width:100%!important}
-body.desktop-mode .bottom-nav{position:fixed;max-width:300px;bottom:16px}
+body.desktop-mode .bottom-nav{max-width:280px;bottom:12px}
 body.desktop-mode .dev-menu{position:fixed;width:390px;left:50%;right:auto;transform:translateX(-50%) translateY(-110%);border-radius:0 0 20px 20px}
 body.desktop-mode .dev-menu.open{transform:translateX(-50%) translateY(0)}
+/* Contain all fixed-position elements (modals, nav) inside phone frame */
+body.desktop-mode #phone-frame-inner{transform:translateZ(0)}
 body:not(.desktop-mode) #phone-frame{display:contents}
 body:not(.desktop-mode) #phone-frame-inner{display:contents}
 /* Desktop mode toggle pill */
