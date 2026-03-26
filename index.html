@@ -1292,11 +1292,11 @@ body.dark-mode{color-scheme:dark}
 <div class="disc-filter-overlay" id="discFilterOverlay" onclick="if(event.target===this)closeDiscoverFilters()">
   <div class="disc-filter-sheet">
     <div class="disc-filter-header">
-      <h3>filters</h3>
+      <h3>Filters</h3>
       <button onclick="closeDiscoverFilters()" style="background:none;border:none;cursor:pointer;padding:4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="disc-filter-section">
-      <div class="disc-filter-section-label">categories</div>
+      <div class="disc-filter-section-label">Categories</div>
       <div class="cat-pills" id="discCatPills">
         <button class="cat-pill" data-cat="Gaming" onclick="toggleDiscCat(this)"><span class="cat-emoji">&#x1F3AE;</span> Gaming</button>
         <button class="cat-pill" data-cat="Beauty" onclick="toggleDiscCat(this)"><span class="cat-emoji">&#x2764;&#xFE0F;</span> Beauty</button>
@@ -1309,21 +1309,21 @@ body.dark-mode{color-scheme:dark}
       </div>
     </div>
     <div class="disc-filter-section">
-      <div class="disc-filter-section-label">min CPM</div>
+      <div class="disc-filter-section-label">Min CPM</div>
       <div class="disc-filter-input-wrap">
         <input class="disc-filter-input" type="text" value="$0.00" id="discMinCpm" onfocus="if(this.value==='$0.00')this.value='$'" oninput="updateDiscFilterCount()">
         <button class="disc-filter-input-clear" id="discCpmClear" onclick="document.getElementById('discMinCpm').value='$0.00';this.classList.remove('show');updateDiscFilterCount()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
     </div>
     <div class="disc-filter-section">
-      <div class="disc-filter-section-label">min budget</div>
+      <div class="disc-filter-section-label">Min budget</div>
       <div class="disc-filter-input-wrap">
         <input class="disc-filter-input" type="text" value="$0.00" id="discMinBudget" onfocus="if(this.value==='$0.00')this.value='$'" oninput="updateDiscFilterCount()">
         <button class="disc-filter-input-clear" id="discBudgetClear" onclick="document.getElementById('discMinBudget').value='$0.00';this.classList.remove('show');updateDiscFilterCount()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
     </div>
-    <button class="disc-filter-apply has-results" id="discFilterApply" onclick="applyDiscoverFilters()">show 20 campaigns</button>
-    <button class="disc-filter-clear" onclick="clearDiscoverFilters()">clear all</button>
+    <button class="disc-filter-apply has-results" id="discFilterApply" onclick="applyDiscoverFilters()">Show 20 campaigns</button>
+    <button class="disc-filter-clear" onclick="clearDiscoverFilters()">Clear all</button>
   </div>
 </div>
 
@@ -2939,7 +2939,7 @@ function updateDiscFilterCount(){
   document.getElementById('discCpmClear').classList.toggle('show',minCpm!=='$0.00'&&minCpm!=='$');
   document.getElementById('discBudgetClear').classList.toggle('show',minBudget!=='$0.00'&&minBudget!=='$');
   if(count>0){
-    btn.textContent='show '+count+' campaigns';
+    btn.textContent='Show '+count+' campaigns';
     btn.className='disc-filter-apply has-results';
   } else {
     btn.textContent='0 campaigns';
