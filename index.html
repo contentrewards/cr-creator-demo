@@ -187,7 +187,6 @@ body.desktop-mode .bottom-nav{max-width:280px;bottom:12px}
 body.desktop-mode .dev-menu{position:fixed;width:390px;left:50%;right:auto;transform:translateX(-50%) translateY(-110%);border-radius:0 0 20px 20px}
 body.desktop-mode .dev-menu.open{transform:translateX(-50%) translateY(0)}
 /* Contain all fixed-position elements (modals, nav) inside phone frame */
-body.desktop-mode #phone-frame-inner{transform:translateZ(0)}
 body:not(.desktop-mode) #phone-frame{display:contents}
 body:not(.desktop-mode) #phone-frame-inner{display:contents}
 /* Desktop mode toggle pill */
@@ -1209,9 +1208,9 @@ body.dark-mode{color-scheme:dark}
 .disc-empty{text-align:center;padding:60px 20px;color:#999;font-size:14px;font-weight:600}
 
 /* Filter modal */
-.disc-filter-overlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.45);backdrop-filter:blur(4px)}
-.disc-filter-overlay.open{display:block}
-.disc-filter-sheet{position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:24px 24px 0 0;padding:28px 24px calc(28px + env(safe-area-inset-bottom));max-height:85vh;overflow-y:auto;animation:discSlideUp 0.25s ease-out}
+.disc-filter-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:10000;background:rgba(0,0,0,0.45);backdrop-filter:blur(4px);flex-direction:column;justify-content:flex-end}
+.disc-filter-overlay.open{display:flex}
+.disc-filter-sheet{background:#fff;border-radius:24px 24px 0 0;padding:28px 24px calc(28px + env(safe-area-inset-bottom));max-height:85vh;overflow-y:auto;animation:discSlideUp 0.25s ease-out}
 @keyframes discSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .disc-filter-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
 .disc-filter-header h3{font-size:20px;font-weight:800;color:#1a1a1a}
