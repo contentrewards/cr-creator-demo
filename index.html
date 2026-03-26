@@ -315,6 +315,7 @@ body.dark-mode .discover-search::placeholder{color:#666}
 body.dark-mode .disc-filter-btn{background:#1c1c1e;border-color:rgba(255,255,255,0.1)}
 body.dark-mode .disc-filter-btn svg{stroke:#e8e8e8}
 body.dark-mode .disc-card{background:#1c1c1e;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+body.dark-mode .disc-card-grid{}
 body.dark-mode .disc-brand-name{color:#aaa}
 body.dark-mode .disc-title{color:#e8e8e8}
 body.dark-mode .disc-cpm{color:#e8e8e8}
@@ -674,7 +675,7 @@ body.dark-mode{color-scheme:dark}
     <div class="card fade-up" style="margin:0">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
         <div style="font-size:14px;font-weight:800;color:#1a1a1a">Active Campaigns</div>
-        <div style="font-size:11px;color:#999;font-weight:600">View all <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" style="vertical-align:middle"><polyline points="9 18 15 12 9 6"/></svg></div>
+        <div onclick="setDiscoverView('list');switchPage('discover')" style="font-size:11px;color:#999;font-weight:600;cursor:pointer">View all <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" style="vertical-align:middle"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
       <div id="campaigns-list"></div>
     </div>
@@ -1177,10 +1178,11 @@ body.dark-mode{color-scheme:dark}
 .view-toggle{display:flex;border:1.5px solid #e0ddd8;border-radius:12px;overflow:hidden;flex:1}
 .view-toggle button{flex:1;padding:10px 0;border:none;background:#fff;font-size:13px;font-weight:700;color:#999;cursor:pointer;font-family:inherit;transition:all 0.15s;position:relative;z-index:1}
 .view-toggle button.active{color:#1a1a1a;background:#f0edea;box-shadow:inset 0 1px 3px rgba(0,0,0,0.08)}
-.disc-card{background:#fff;border-radius:20px;margin:0 16px 16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);cursor:pointer;transition:transform 0.15s}
+.disc-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px}
+.disc-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);cursor:pointer;transition:transform 0.15s}
 .disc-card:active{transform:scale(0.98)}
-.disc-card-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
-.disc-card-body{padding:14px 16px 16px}
+.disc-card-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.disc-card-body{padding:10px 12px 12px}
 .disc-brand-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .disc-brand-logo{width:22px;height:22px;border-radius:50%;object-fit:cover}
 .disc-brand-name{font-size:12px;font-weight:600;color:#666}
@@ -2873,20 +2875,20 @@ function renderDiscover(){
     return;
   }
   if(_discView==='card'){
-    container.innerHTML=camps.map(function(c){
+    container.innerHTML='<div class="disc-card-grid">'+camps.map(function(c){
       return '<div class="disc-card" onclick="openCampaignDetail(\''+c.id+'\')">'+
-        '<img class="disc-card-img" src="'+c.thumb+'" alt="" onerror="this.style.background=\'#e0ddd8\';this.style.minHeight=\'180px\'" loading="lazy">'+
+        '<img class="disc-card-img" src="'+c.thumb+'" alt="" onerror="this.style.background=\'#e0ddd8\';this.style.minHeight=\'120px\'" loading="lazy">'+
         '<div class="disc-card-body">'+
           '<div class="disc-brand-row"><img class="disc-brand-logo" src="'+c.brandLogo+'" alt="" onerror="this.style.background=\'#e0ddd8\'"><span class="disc-brand-name">'+c.brand+'</span></div>'+
-          '<div class="disc-title">'+c.desc+'</div>'+
-          '<div class="disc-cpm">$'+c.cpm.toFixed(0)+' <span>/ 1k views</span></div>'+
+          '<div class="disc-title" style="font-size:13px;-webkit-line-clamp:2">'+c.desc+'</div>'+
+          '<div class="disc-cpm" style="font-size:13px">$'+c.cpm.toFixed(0)+' <span>/ 1k views</span></div>'+
           '<div class="disc-footer">'+
-            '<div class="disc-creators">'+makeAvatarStack(c.creators)+'<span class="disc-earned">$'+Math.round(c.paid).toLocaleString()+'</span></div>'+
+            '<div class="disc-creators" style="font-size:10px">'+makeAvatarStack(c.creators)+'<span class="disc-earned" style="font-size:11px">$'+Math.round(c.paid).toLocaleString()+'</span></div>'+
             makePlatIcons(c.plats)+
           '</div>'+
         '</div>'+
       '</div>';
-    }).join('');
+    }).join('')+'</div>';
   } else {
     container.innerHTML=camps.map(function(c){
       return '<div class="disc-list-item" onclick="openCampaignDetail(\''+c.id+'\')">'+
